@@ -7,10 +7,13 @@ export type CaseStudy = {
     previewSubtitle: string;
 
     primaryField: string;
-    fieldTags?: readonly string[];
+    fieldTags: readonly string[];
+    fieldDescription?: string;
+
     toolTags: readonly string[];
 
     projectAffiliation: string;
+    affiliationDescription: string;
 
     coverImageFilename: string;
     coverImageAlt: string;
@@ -18,6 +21,7 @@ export type CaseStudy = {
 
     // For case study page
     title: string;
+    subtitle: string;
 };
 
 export const caseStudies: readonly CaseStudy[] = [
@@ -29,9 +33,13 @@ export const caseStudies: readonly CaseStudy[] = [
         previewSubtitle: "An end-to-end internal email production wizard that sends 5 million emails a month.",
 
         primaryField: "Fullstack",
+        fieldTags: ["Backend", "Frontend Integration"],
+        fieldDescription: "",
+
         toolTags: ["Framework - React, Next.js", "Language - TypeScript", "Styles - TailwindCSS", "Components - MantineUI", "Storage - Airtable", "Integrations - Google Drive, ActiveCampaign, Postmark, Notion, Slack"],
 
         projectAffiliation: "Center Centre",
+        affiliationDescription: "",
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
@@ -39,25 +47,31 @@ export const caseStudies: readonly CaseStudy[] = [
 
         // For case study page
         title: "",
+        subtitle: "",
     },
     {
         slug: "cache",
 
         // For preview cards
-        previewTitle: "Prehydrated Static Cache",
-        previewSubtitle: "Reducing latency of critical data to +0ms on serverless websites.",
+        previewTitle: "'Prehydrated' Static Cache",
+        previewSubtitle: "Reducing latency of remote data to 0ms on client-only websites.",
 
-        primaryField: "Fullstack",
-        toolTags: ["Framework - React", "Language - TypeScript", "Storage - Airtable, NoSQL", "Tools - Vite"],
+        primaryField: "Backend",
+        fieldTags: ["Backend", "Frontend"],
+        fieldDescription: "Frontend + backend integration",
+
+        toolTags: ["Tools - React, Vite, Airtable, Next.js", "Technology - TypeScript, RESTful, Ubuntu"],
 
         projectAffiliation: "Center Centre",
+        affiliationDescription: "Center Centre, 2025",
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
         coverImageMinGlyphSize: 8,
 
         // For case study page
-        title: "Prehydrated Static Cache",
+        title: "'Prehydrated' Static Cache",
+        subtitle: "Designing a unique cache strategy that delivers instant remote data to static websites, while automatically adapting to variation on both sides of the stack.",
     },
     {
         slug: "iot",
@@ -67,9 +81,13 @@ export const caseStudies: readonly CaseStudy[] = [
         previewSubtitle: "Reducing latency of critical data to +0ms on serverless websites.",
 
         primaryField: "Fullstack",
+        fieldTags: ["Backend", "Frontend Integration"],
+        fieldDescription: "",
+
         toolTags: ["Framework - React, Next.js", "Language - TypeScript", "Styles - TailwindCSS", "Components - MantineUI", "Storage - Airtable", "Integrations - Google Drive, ActiveCampaign, Postmark, Notion, Slack"],
 
         projectAffiliation: "Center Centre",
+        affiliationDescription: "",
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
@@ -77,5 +95,6 @@ export const caseStudies: readonly CaseStudy[] = [
 
         // For case study page
         title: "",
+        subtitle: "",
     },
 ];

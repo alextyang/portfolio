@@ -1,6 +1,27 @@
 import { CaseStudy } from "@/content/cases";
-import Markdown from "react-markdown";
+import { Tooltip } from "@mantine/core";
+import { default as Markdown } from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
+const SafeTooltip = ({ children, title }: { children: React.ReactNode, title: string }) => (
+    <Tooltip
+        label={
+            title
+        }
+        inline
+        multiline
+        position='bottom'
+        w={360}
+        events={{ hover: true, focus: true, touch: true }}
+        bg={'white'}
+        c={'black'}
+        classNames={{ 'tooltip': ' tooltip-shadow sans text-[0.95rem]! font-light! text-(--text-light-large)! rounded-lg! px-4! pb-3! pt-2.5!' }}
+    >
+        <span className="underline underline-offset-4 decoration-(--underline-color-inline)  decoration-1 opacity-100 hover:opacity-60 transition-all cursor-pointer">
+            {children}
+        </span>
+    </Tooltip>
+);
 
 export async function CaseBody({ caseStudy }: { caseStudy: CaseStudy }) {
     const c = caseStudy;
@@ -14,14 +35,28 @@ export async function CaseBody({ caseStudy }: { caseStudy: CaseStudy }) {
         <>
             {
                 content.split("FIGURE").map((section, index) => {
-                    if (index === 0) return <Markdown key={index}>{section}</Markdown>;
+                    if (index === 0) return <Markdown key={index}
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                            abbr: ({ node, children, title }) => (
+                                <SafeTooltip title={title ?? ''}>{children}</SafeTooltip>
+                            ),
+                        }}
+                    >{section}</Markdown>;
 
                     const figureName = section.substring(section.indexOf("(") + 1, section.indexOf(")"));
 
                     if (!figures[figureName]) {
                         console.log(`[WARNING] Figure "${figureName}" not found in figures.tsx for case study "${slug}".`);
 
-                        return <Markdown key={index}>{section.substring(section.indexOf(")") + 1)}</Markdown>;
+                        return <Markdown key={index}
+                            rehypePlugins={[rehypeRaw]}
+                            components={{
+                                abbr: ({ node, children, title }) => (
+                                    <SafeTooltip title={title ?? ''}>{children}</SafeTooltip>
+                                ),
+                            }}
+                        >{section.substring(section.indexOf(")") + 1)}</Markdown>;
                     }
 
                     return (
@@ -29,7 +64,16 @@ export async function CaseBody({ caseStudy }: { caseStudy: CaseStudy }) {
                             <div className="figure-container">
                                 {figures[figureName]}
                             </div>
-                            <Markdown>{section.substring(section.indexOf(")") + 1)}</Markdown>
+                            <Markdown
+                                rehypePlugins={[rehypeRaw]}
+                                components={{
+                                    abbr: ({ node, children, title }) => (
+                                        <SafeTooltip title={title ?? ''}>{children}</SafeTooltip>
+                                    ),
+                                }}
+                            >
+                                {section.substring(section.indexOf(")") + 1)}
+                            </Markdown>
                         </div>
                     );
                 })

@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+
+import { mantineHtmlProps, MantineProvider } from "@mantine/core";
+import '@mantine/core/styles.css';
+
 import "./globals.css";
 
 
@@ -13,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" {...mantineHtmlProps}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -22,7 +26,9 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
-        {children}
+        <MantineProvider>
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );

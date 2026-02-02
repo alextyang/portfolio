@@ -7,8 +7,8 @@ export default function Home() {
     <div className="flex min-h-screen items-start justify-center px-(--page-x-margin) pt-(--page-top) ">
       <main className="max-w-(--page-width) w-full ">
         <h2>Alexander Yang</h2>
-        <p>I'm a full-stack developer with an interdisciplinary toolkit. Lorem Ipsum is simply dummy text of the printing and typesetting industry. It was popularised in the 1960s with the release of Letraset containing passages.</p>
-        <p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged, lorem ipsum.</p>
+        <p>I'm a full-stack developer with an interdisciplinary toolkit. Building pixel-perfect interfaces for things I believe in. Designing backend systems that work smarter, not harder. Supporting diverse teams with obvious internal tools.</p>
+        <p>Not sure what to talk about here.</p>
 
 
 
