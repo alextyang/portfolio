@@ -60,7 +60,7 @@ export const caseStudies: readonly CaseStudy[] = [
         fieldTags: ["Backend", "Frontend"],
         fieldDescription: "Frontend + backend integration",
 
-        toolTags: ["Tools - React, Vite, Airtable, Next.js", "Technology - TypeScript, RESTful, Ubuntu"],
+        toolTags: ["Tools - React, Vite, Airtable, Next.js", "Technology - TypeScript, RESTful, Linux"],
 
         projectAffiliation: "Center Centre",
         affiliationDescription: "Center Centre, 2025",
@@ -71,7 +71,7 @@ export const caseStudies: readonly CaseStudy[] = [
 
         // For case study page
         title: "'Prehydrated' Static Cache",
-        subtitle: "Designing a unique cache strategy that delivers instant remote data to static websites, while automatically adapting to variation on both sides of the stack.",
+        subtitle: "Designing a unique cache strategy that instantly delivers data to static websites, and automatically adapts to variation on both sides of the stack.",
     },
     {
         slug: "iot",
