@@ -62,7 +62,7 @@ export default {
                     </div>
                 )
             ]} />
-            <p className="sans small opacity-60 mt-5!">The delay before data populated could take up to 10 seconds. Almost all pages featured dynamic content above the fold, and cohort-specific pages were almost entirely data-driven. On the timeline, see the sequential/paginated requests play out.</p>
+            <p className="sans small opacity-60 mt-5!">Almost all pages features dynamic content above the fold, and cohort-specific pages were almost entirely data-driven. On the timeline, the sequential requests have to all complete before the content renders.</p>
         </>
     ),
     "Videos of runtime cache loading time - home & cohort pages": (
@@ -113,7 +113,7 @@ export default {
                     </div>
                 )
             ]} />
-            <p className="sans small opacity-60 mt-5!">The delay was now much better, only a few seconds at most. However, the data-driven pages still suffered from a noticeable awkward content shift.</p>
+            <p className="sans small opacity-60 mt-5!">The delay was now much better, only a few seconds at most. The data-driven pages, thought, still suffered from an awkward content shift after the requests returned.</p>
         </>
     ),
     "Videos of preload solution loading time - home & cohort pages": (
@@ -164,7 +164,7 @@ export default {
                     </div>
                 )
             ]} />
-            <p className="sans small opacity-60 mt-5!">The data was now populating on first render. Even the richest schedules and pages felt completely integrated into the site.</p>
+            <p className="sans small opacity-60 mt-5!">The data was now populating on first render, so even the most dynamic components and pages felt completely integrated into the site.</p>
         </>
     ),
     "Videos of aggregated schedules on one page": (
@@ -178,7 +178,7 @@ export default {
                     loop
                 />
             </div>
-            <p className="sans small opacity-60 mt-5!">A new homepage for Center Centre is in development, full of dynamic content and bridging the gap between various courses, programs, and events.</p>
+            <p className="sans small opacity-60 mt-5!">A new homepage for Center Centre relied heavily on the middleman, full of dynamic content and bridging the gap between various courses, programs, and events.</p>
 
         </>
     ),
