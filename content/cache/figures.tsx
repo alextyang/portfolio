@@ -5,16 +5,16 @@ import Image from "next/image";
 
 export default {
     // Images
-    "Image of Cohort Selector": (
+    "Image of Cohort Selector": (caption: string) => (
         <div className="relative w-full">
             <Image src={'/case/cache/metrics-homepage.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
-            <p className="sans small opacity-60 mt-5!">A landing page for one of Center Centre's UX courses, featuring a call-to-action that lists the options for upcoming cohorts.</p>
+            <p className="sans small opacity-60 mt-5!">{caption}</p>
         </div>
     ),
 
 
     // Videos
-    "Videos of initial loading time - home & cohort pages": (
+    "Videos of initial loading time - home & cohort pages": (caption: string) => (
         <>
             <SegmentedContent labels={['Landing page', 'Cohort-specific pages']} segments={[
                 (
@@ -62,10 +62,10 @@ export default {
                     </div>
                 )
             ]} />
-            <p className="sans small opacity-60 mt-5!">Almost all pages features dynamic content above the fold, and cohort-specific pages were almost entirely data-driven. On the timeline, the sequential requests have to all complete before the content renders.</p>
+            <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
-    "Videos of runtime cache loading time - home & cohort pages": (
+    "Videos of runtime cache loading time - home & cohort pages": (caption: string) => (
         <>
             <SegmentedContent labels={['Landing page', 'Cohort-specific pages']} segments={[
                 (
@@ -113,10 +113,10 @@ export default {
                     </div>
                 )
             ]} />
-            <p className="sans small opacity-60 mt-5!">The delay was now much better, only a few seconds at most. The data-driven pages, thought, still suffered from an awkward content shift after the requests returned.</p>
+            <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
-    "Videos of preload solution loading time - home & cohort pages": (
+    "Videos of preload solution loading time - home & cohort pages": (caption: string) => (
         <>
             <SegmentedContent labels={['Landing page', 'Cohort-specific pages']} segments={[
                 (
@@ -164,10 +164,10 @@ export default {
                     </div>
                 )
             ]} />
-            <p className="sans small opacity-60 mt-5!">The data was now populating on first render, so even the most dynamic components and pages felt completely integrated into the site.</p>
+            <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
-    "Videos of aggregated schedules on one page": (
+    "Videos of aggregated schedules on one page": (caption: string) => (
         <>
             <div className="relative w-full mt-10!">
                 <video
@@ -178,13 +178,13 @@ export default {
                     loop
                 />
             </div>
-            <p className="sans small opacity-60 mt-5!">A new homepage for Center Centre relied heavily on the middleman, full of dynamic content and bridging the gap between various courses, programs, and events.</p>
+            <p className="sans small opacity-60 mt-5!">{caption}</p>
 
         </>
     ),
 
     // Diagrams
-    "Flowchart of Initial Solution": (
+    "Flowchart of Initial Solution": (caption: string) => (
         <>
             <div className="relative w-full">
                 <Image src={'/case/cache/initial-flow.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
@@ -192,7 +192,7 @@ export default {
             </div>
         </>
     ),
-    "Pros Cons chart of initial solutions": (
+    "Pros Cons chart of initial solutions": (caption: string) => (
         <>
             <Table data={{
                 caption: "",
@@ -262,13 +262,13 @@ export default {
             }} classNames={{ 'td': 'sans' }} />
         </>
     ),
-    "Flow chart of runtime middleman cache": (
+    "Flow chart of runtime middleman cache": (caption: string) => (
         <>
             <Image src={'/case/cache/runtime-flow.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
             {/* <p className="sans small opacity-60 mt-5!">A map of the 'runtime' middleman implementation. Instead of calling to Airtable directly, API calls are made to the Next.js service, which serves cached requests much faster.</p> */}
         </>
     ),
-    "Pros Cons chart of final solutions": (
+    "Pros Cons chart of final solutions": (caption: string) => (
         <>
             <Table data={{
                 caption: "",
@@ -338,11 +338,11 @@ export default {
             }} />
         </>
     ),
-    "Flowchart of preload solution": (
+    "Flowchart of preload solution": (caption: string) => (
         <>
             <Image src={'/case/cache/static-flow.png'} width={1225} height={600} alt='' className="rounded-2xl "></Image>
             {/* <p className="sans small opacity-60 mt-5!">A map of the static bundle implementation. The middleman's cache is pre-loaded onto the client, and it can instantly serve itself all cached requests.</p> */}
         </>
     ),
 
-} as { [key: string]: React.ReactNode };
+} as { [key: string]: (caption: string) => React.ReactNode };

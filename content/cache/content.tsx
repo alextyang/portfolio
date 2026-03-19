@@ -4,7 +4,7 @@ Each of Center Centre’s courses has a website with topics, <abbr title='The co
 
 React was chosen to be a modern foundation for new development, and Vite provided a smooth transition. Vite bundles the React code into a <abbr title='A static website is delivered to the user as a collection of ready-to-go files. Because it does not require live storage or server-side processing, it is highly secure, fast, and inexpensive to host. For example, a simple HTML/CSS/JS project uploaded to Github Pages or Netlify.'>static site</abbr>, which can be deployed similarly to the previous versions. By keeping the sites static, we were able to keep our cost-efficient hosting and simple QA process.
 
-FIGURE (Image of Cohort Selector)
+FIGURE (Image of Cohort Selector | A landing page for one of Center Centre's UX courses, featuring a call-to-action that lists the options for upcoming cohorts.)
 
 Not all the content on these sites was purely static, though. The pages have a call-to-action that lists upcoming cohorts, with dates and links that need to stay current. To avoid re-deploying new versions of each selector every week, the previous fellows maintained a database in <abbr title='Airtable is a low-code database platform. It provides a user-friendly spreadsheet interface and spreadsheet-like relational tools to manage and link records. Developers can query the tables with a RESTful API.'>Airtable</abbr> with the schedules and pulled them on each page load. 
 
@@ -16,7 +16,7 @@ However, this Airtable fetch had a critical downside: latency. It would often ta
 
 Airtable’s API was not designed to be a CDN, so it would frequently give slow responses to the elevated traffic. And more so, the client-side fetch couldn’t even begin until the website’s code had completely finished loading. Together, these factors created an egregiously long pause between the webpage displaying and the page's key touchpoint appearing.
 
-FIGURE (Videos of initial loading time - home & cohort pages)
+FIGURE (Videos of initial loading time - home & cohort pages | Almost all pages features dynamic content above the fold, and cohort-specific pages were almost entirely data-driven. On the timeline, the sequential requests have to all complete before the content renders.)
 
 This delay was at odds with the websites’ core value to both the users and business. Until the Airtable data loaded, the list of available cohorts—and the enrollment buttons tied to them—were completely out-of-order. 
 
@@ -50,7 +50,7 @@ It only took 1-2 seconds of waiting before the dynamic content appeared. After a
 
 I only needed to add a few more lines of code for <abbr title='Refreshing cached data periodically by re-requesting data and saving the latest version; keeping data up-to-date'>revalidation</abbr> and <abbr title='Forgetting cached responses when they go unused for an extended period; keeping the cache optimized for current needs'>eviction</abbr>, and we had a completely hands-free caching service.
 
-FIGURE (Videos of runtime cache loading time - home & cohort pages)
+FIGURE (Videos of runtime cache loading time - home & cohort pages | The delay was now much better, only a few seconds at most. The data-driven pages, thought, still suffered from an awkward content shift after the requests returned.)
 
 This implementation was also completely neutral to specific requests, websites, and data structures. No matter how the schedule data and API queries were formatted, they can be stored as strings in a HTTP request-response dictionary. 
 
@@ -88,7 +88,7 @@ In the middleman’s code, I saved the cache dictionaries for each site periodic
 
 In the websites' code, I added a line to the HTML header that imports the JavaScript cache file. Then, I had the clients check this downloaded cache when they’re about to make a remote fetch. If they find pre-loaded data for the request, they skip making a remote call altogether.
 
-FIGURE (Videos of preload solution loading time - home & cohort pages)
+FIGURE (Videos of preload solution loading time - home & cohort pages | The data was now populating on first render, so even the most dynamic components and pages felt completely integrated into the site.)
 
 This worked so well, it was hard to believe. The live data appeared instantly, at the same time as all other text on the screen. 
 
@@ -120,7 +120,7 @@ Without the static cache, these powerful marketing and operational tools would h
 
 These features supported the marketing of a number of programs and ended up being critical to the launch of a new product that bundled courses together.
 
-FIGURE (Videos of aggregated schedules on one page)
+FIGURE (Videos of aggregated schedules on one page | A new homepage for Center Centre relied heavily on the middleman, full of dynamic content and bridging the gap between various courses, programs, and events.)
 
 With an investment into thoughtful system design, our websites were able to receive the benefits of server-side rendering without bulldozing all of our existing technical and operational setup. 
 

@@ -38,6 +38,13 @@ const fragmentShader = /* glsl */ `
     uniform float uEdgeStrength;  // e.g. 1.0–6.0, how much edges darken glyphs
     uniform float uEdgeMix;       // 0..1, how much edges affect final glyph selection
 
+    uniform float uRevealProgress;   // 0..1
+    uniform float uCascadeSoftness;  // 0..1 (order-space fade width)
+    uniform float uRevealResidue;    // 0..1, glyph amount left on revealed image
+    uniform float uRevealDir;        // 1.0 = reveal, 0.0 = unreveal
+    uniform float uGroupCells;       // grouping size in cells (e.g. 2.0 => 2x2)
+
+
     float hash12(vec2 p) { // from https://www.shadertoy.com/view/4djSRW
         float h = dot(p, vec2(127.1, 311.7));
         return fract(sin(h) * 43758.5453123);
@@ -178,8 +185,44 @@ const fragmentShader = /* glsl */ `
         // ink becomes black in highlights, stays colored elsewhere
         vec3 inkFinal = mix(ink, vec3(0.0), tHi);
 
-        vec3 outCol = mix(vec3(1.0), inkFinal, aa);
+        vec3 asciiCol = mix(vec3(1.0), inkFinal, aa);
+
+        // Diagonal cascade order in grouped cells
+        vec2 grid = max(ceil(uResolution / uCell), vec2(1.0));
+
+        // Configurable NxN grouping
+        float g = max(uGroupCells, 1.0);
+        vec2 groupSize = vec2(g, g);
+        vec2 groupId = floor(cellId / groupSize);
+        vec2 groupGrid = max(ceil(grid / groupSize), vec2(1.0));
+
+        float rowTop = (groupGrid.y - 1.0) - groupId.y; // top row first
+        float diagIndex = groupId.x + rowTop;
+
+        // Normalize diagonal index to 0..1 in grouped space
+        float diagDenom = max((groupGrid.x - 1.0) + (groupGrid.y - 1.0), 1.0);
+        float order = clamp(diagIndex / diagDenom, 0.0, 1.0);
+
+        // Tiny per-group fade (same as before, but now per 2x2 group)
+        float soft = max(uCascadeSoftness / diagDenom, 1e-5);
+
+        // Reveal path (uRevealProgress: 0 -> 1): TL -> BR
+        float revealForward = smoothstep(order - soft, order + soft, uRevealProgress);
+
+        // Unreveal path (uRevealProgress: 1 -> 0), still TL -> BR
+        float unrevealForward = 1.0 - smoothstep(order - soft, order + soft, 1.0 - uRevealProgress);
+
+        float revealCell = mix(unrevealForward, revealForward, uRevealDir);
+
+        vec3 originalCol = texture2D(uImage, vUv).rgb;
+        vec3 baseCol = mix(asciiCol, originalCol, revealCell);
+
+        // Leave a little glyph opacity behind when revealed
+        float residueA = aa * uRevealResidue * revealCell;
+        vec3 outCol = mix(baseCol, inkFinal, residueA);
+
         gl_FragColor = vec4(outCol, 1.0);
+        #include <colorspace_fragment>
     }
 `;
 
@@ -233,9 +276,10 @@ function AsciiImagePlane({
     padding = 0.005, // padding on glyph inside cell
     uEdgeStrength = 3.0, // edge darkening strength
     uEdgeMix = 0.8, // edge effect mix
-    hovered, // whether the plane is hovered
+    reveal, // whether the background image is revealed
     baseCell, // base cell size
     hoverCell, // cell size when hovered
+    groupCells = 4, // 2 => 2x2 groups
 }: {
     imageUrl: string;
     cell?: number;
@@ -244,9 +288,11 @@ function AsciiImagePlane({
     padding?: number;
     uEdgeStrength?: number;
     uEdgeMix?: number;
-    hovered: boolean;
+    reveal: boolean;
     baseCell: number;
     hoverCell: number;
+    groupCells?: number;
+
 }) {
     const imageTex = useLoader(THREE.TextureLoader, imageUrl, undefined, undefined);
     const { gl, viewport } = useThree();
@@ -276,6 +322,14 @@ function AsciiImagePlane({
             uImageSize: { value: new THREE.Vector2(1, 1) },
             uEdgeStrength: { value: 3.0 },
             uEdgeMix: { value: 0.8 },
+
+            uRevealProgress: { value: reveal ? 1 : 0 },
+            uCascadeSoftness: { value: 2.5 },
+            uRevealDir: { value: reveal ? 1.0 : 0.0 },
+            uRevealResidue: { value: 0.33 },
+            uGroupCells: { value: groupCells },
+
+
         };
     }, [imageTex, atlas, cell, sample, padding, jitter]);
 
@@ -305,6 +359,7 @@ function AsciiImagePlane({
         uniforms.uSample.value = sample;
         uniforms.uPadding.value = padding;
         uniforms.uJitter.value = jitter;
+        uniforms.uGroupCells.value = groupCells;
 
         uniforms.uEdgeStrength.value = uEdgeStrength;
         uniforms.uEdgeMix.value = uEdgeMix;
@@ -318,14 +373,21 @@ function AsciiImagePlane({
         if (!matRef.current) return;
 
         matRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
+        matRef.current.uniforms.uRevealDir.value = reveal ? 1.0 : 0.0;
 
         const damp = (cur: number, tgt: number) =>
             THREE.MathUtils.damp(cur, tgt, 24, delta); // number = snappiness
 
         // Smooth cell size
-        const targetCell = hovered ? hoverCell : baseCell;
-        const curCell = matRef.current.uniforms.uCell.value;
-        matRef.current.uniforms.uCell.value = damp(curCell, targetCell);
+        // const targetCell = reveal ? hoverCell : baseCell;
+        // const curCell = matRef.current.uniforms.uCell.value;
+        // matRef.current.uniforms.uCell.value = damp(curCell, targetCell);
+
+        const revealRate = 6; // progress units/sec (lower = slower sweep)
+        const dir = reveal ? 1 : -1;
+        const curReveal = matRef.current.uniforms.uRevealProgress.value;
+        const nextReveal = THREE.MathUtils.clamp(curReveal + dir * revealRate * delta, 0, 1);
+        matRef.current.uniforms.uRevealProgress.value = nextReveal;
 
         // keep resolution updated (covers resize + DPR changes)
         const v = new THREE.Vector2();
@@ -341,6 +403,7 @@ function AsciiImagePlane({
                 vertexShader={vertexShader}
                 fragmentShader={fragmentShader}
                 uniforms={uniforms}
+                toneMapped={false}
             />
         </mesh>
     );
@@ -376,7 +439,7 @@ export default function GlyphImage({
                     onCreated={({ gl }) => gl.setClearColor("#ffffff", 1)}
                 >
                     <AsciiImagePlane imageUrl={imageUrl}
-                        hovered={isHovered}
+                        reveal={isHovered}
                         baseCell={cellSize}
                         hoverCell={hoveredCellSize}
                     />

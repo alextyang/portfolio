@@ -16,7 +16,7 @@ export function CasePoster({ caseStudy }: { caseStudy: CaseStudy }) {
                         imageUrl={`/case/${caseStudy.slug}/${caseStudy.coverImageFilename}`}
                         height={525}
                         width={300}
-                        isHovered={isHovered && false}
+                        isHovered={isHovered}
                         hoveredCellSize={caseStudy.coverImageMinGlyphSize}
                     />
                 </div>
