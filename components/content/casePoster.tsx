@@ -17,7 +17,7 @@ export function CasePoster({ caseStudy }: { caseStudy: CaseStudy }) {
                         height={525}
                         width={300}
                         isHovered={isHovered}
-                        hoveredCellSize={caseStudy.coverImageMinGlyphSize}
+                        showGlyphOnHover={false}
                     />
                 </div>
             </div>

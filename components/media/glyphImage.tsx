@@ -280,6 +280,7 @@ function AsciiImagePlane({
     baseCell, // base cell size
     hoverCell, // cell size when hovered
     groupCells = 4, // 2 => 2x2 groups
+    showGlyphOnHover = true, // whether to show glyphs at all when hovered
 }: {
     imageUrl: string;
     cell?: number;
@@ -292,6 +293,7 @@ function AsciiImagePlane({
     baseCell: number;
     hoverCell: number;
     groupCells?: number;
+    showGlyphOnHover?: boolean;
 
 }) {
     const imageTex = useLoader(THREE.TextureLoader, imageUrl, undefined, undefined);
@@ -326,7 +328,7 @@ function AsciiImagePlane({
             uRevealProgress: { value: reveal ? 1 : 0 },
             uCascadeSoftness: { value: 2.5 },
             uRevealDir: { value: reveal ? 1.0 : 0.0 },
-            uRevealResidue: { value: 0.33 },
+            uRevealResidue: { value: showGlyphOnHover ? 0.33 : 0.0 },
             uGroupCells: { value: groupCells },
 
 
@@ -411,12 +413,13 @@ function AsciiImagePlane({
 
 export default function GlyphImage({
     imageUrl,
-    height = 500,
+    height = 700,
     width = 300,
     dpr = 3,
     cellSize = 16,
     hoveredCellSize = 8,
     isHovered = false,
+    showGlyphOnHover = true,
 }: {
     imageUrl: string;
     height?: number;
@@ -425,6 +428,7 @@ export default function GlyphImage({
     cellSize?: number;
     hoveredCellSize?: number;
     isHovered?: boolean;
+    showGlyphOnHover?: boolean;
 }) {
 
     return (
@@ -442,6 +446,7 @@ export default function GlyphImage({
                         reveal={isHovered}
                         baseCell={cellSize}
                         hoverCell={hoveredCellSize}
+                        showGlyphOnHover={showGlyphOnHover}
                     />
                 </Canvas>
             </div>

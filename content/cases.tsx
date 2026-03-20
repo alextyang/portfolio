@@ -17,7 +17,6 @@ export type CaseStudy = {
 
     coverImageFilename: string;
     coverImageAlt: string;
-    coverImageMinGlyphSize?: number;
 
     // For case study page
     title: string;
@@ -43,10 +42,9 @@ export const caseStudies: readonly CaseStudy[] = [
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
-        coverImageMinGlyphSize: 8,
 
         // For case study page
-        title: "",
+        title: "Email Production App",
         subtitle: "",
     },
     {
@@ -67,31 +65,75 @@ export const caseStudies: readonly CaseStudy[] = [
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
-        coverImageMinGlyphSize: 8,
 
         // For case study page
-        title: "'Prehydrated' Static Cache",
-        subtitle: "Designing a unique cache strategy that instantly delivers data to static websites, and automatically adapts to variation on both sides of the stack.",
+        title: "Prehydrated Data Service",
+        subtitle: "Implementing a cache service that anticipates data needs of static websites, and automatically adapts to variation on both sides of the stack.",
+    },
+    {
+        slug: "songs",
+
+        // For preview cards
+        previewTitle: "Spotify Research Companion",
+        previewSubtitle: "A Spotify-synced web app that finds and summarizes journalism on the current song.",
+
+        primaryField: "Fullstack",
+        fieldTags: ["Frontend", "Backend", "Product Design", "UX/UI"],
+        fieldDescription: "",
+
+        toolTags: [""],
+
+        projectAffiliation: "Independent",
+        affiliationDescription: "",
+
+        coverImageFilename: "poster.png",
+        coverImageAlt: "",
+
+        // For case study page
+        title: "",
+        subtitle: "",
+    },
+    {
+        slug: "brands",
+
+        // For preview cards
+        previewTitle: "Accountability Wiki",
+        previewSubtitle: "A Mediawiki-powered platform to track anti-consumer behavior and patterns of corporate abuse.",
+
+        primaryField: "Fullstack",
+        fieldTags: ["Frontend", "Backend", "Product Design", "UX/UI"],
+        fieldDescription: "",
+
+        toolTags: [""],
+
+        projectAffiliation: "Independent",
+        affiliationDescription: "",
+
+        coverImageFilename: "poster.png",
+        coverImageAlt: "",
+
+        // For case study page
+        title: "",
+        subtitle: "",
     },
     {
         slug: "iot",
 
         // For preview cards
-        previewTitle: "Prehydrated Static Cache",
-        previewSubtitle: "Reducing latency of critical data to +0ms on serverless websites.",
+        previewTitle: "Smart Home Automation UX",
+        previewSubtitle: "An alternative vision for IoT automation interfaces, outperforming the current convention.",
 
-        primaryField: "Fullstack",
-        fieldTags: ["Backend", "Frontend Integration"],
+        primaryField: "UX/UI",
+        fieldTags: ["UX/UI", "Frontend", "Product Design"],
         fieldDescription: "",
 
-        toolTags: ["Framework - React, Next.js", "Language - TypeScript", "Styles - TailwindCSS", "Components - MantineUI", "Storage - Airtable", "Integrations - Google Drive, ActiveCampaign, Postmark, Notion, Slack"],
+        toolTags: [""],
 
-        projectAffiliation: "Center Centre",
+        projectAffiliation: "Independent",
         affiliationDescription: "",
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
-        coverImageMinGlyphSize: 14,
 
         // For case study page
         title: "",
