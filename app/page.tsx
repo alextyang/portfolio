@@ -7,10 +7,11 @@ export default function Home() {
     <div className="flex min-h-screen items-start justify-center px-(--page-x-margin) pt-(--page-top) ">
       <main className="max-w-(--page-width) w-full ">
         <h2>Alexander Yang</h2>
-        <p>I'm a full-stack developer with an interdisciplinary toolkit. Building beautiful interfaces + scalable architecture for things I believe in.</p>
+        <p>I'm a full-stack developer that closes gaps between design, engineering, and product with a broad toolkit and rapid iteration. <span className="opacity-50">Your impatient PM's favorite developer.</span></p>
+        {/* launch-hungry PM, most ambitious designer,  */}
         <div className="mt-4.5! mb-7.5! grid grid-cols-2 ">
           <p className="m-0! text-base! font-light! italic">
-            <a href="/about" className="pr-1.75 py-1.5 opacity-60 hover:opacity-100 hover:underline underline-offset-4 ">About</a>
+            <a href="" className="pr-1.75 py-1.5 opacity-60 hover:opacity-100 hover:underline underline-offset-4 ">About</a>
             <a href="" className="px-1.75 py-1.5 opacity-60 hover:opacity-100 hover:underline underline-offset-4">Resume</a>
             <a href="" className="pl-1.75 py-1.5 opacity-60 hover:opacity-100 hover:underline underline-offset-4">Contact</a></p>
         </div>

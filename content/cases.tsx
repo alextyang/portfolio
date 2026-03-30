@@ -33,19 +33,19 @@ export const caseStudies: readonly CaseStudy[] = [
 
         primaryField: "Fullstack",
         fieldTags: ["Backend", "Frontend Integration"],
-        fieldDescription: "",
+        fieldDescription: "Fullstack development + product engineering",
 
         toolTags: ["Framework - React, Next.js", "Language - TypeScript", "Styles - TailwindCSS", "Components - MantineUI", "Storage - Airtable", "Integrations - Google Drive, ActiveCampaign, Postmark, Notion, Slack"],
 
         projectAffiliation: "Center Centre",
-        affiliationDescription: "",
+        affiliationDescription: "Center Centre, 2025",
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
 
         // For case study page
         title: "Email Production App",
-        subtitle: "",
+        subtitle: "Designing and building an internal tool that automated Center Centre's email production, supporting 5M sends/month.",
     },
     {
         slug: "cache",

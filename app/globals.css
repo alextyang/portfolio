@@ -149,6 +149,13 @@ p+h1 {
   /* --weight-heading: 600; */
 }
 
+p+h2,
+h3 {
+  margin-top: 2.0rem;
+  margin-bottom: 0.25rem;
+  --weight-heading: 600;
+}
+
 td {
   font-family: "Atkinson Hyperlegible Next", sans-serif !important;
   font-weight: 225;

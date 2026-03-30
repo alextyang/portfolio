@@ -10,7 +10,7 @@ export function CasePoster({ caseStudy }: { caseStudy: CaseStudy }) {
 
     return (
         <a className="case-poster hover-bg-link w-74 cursor-pointer" href={`/case/${caseStudy.slug}`} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            <div className="relative w-75 h-[525px] mb-4">
+            <div className="relative w-75 h-[510px] mb-4">
                 <div className="absolute w-74 h-111 top-0 left-0 ">
                     <GlyphImage
                         imageUrl={`/case/${caseStudy.slug}/${caseStudy.coverImageFilename}`}
@@ -22,7 +22,7 @@ export function CasePoster({ caseStudy }: { caseStudy: CaseStudy }) {
                 </div>
             </div>
             <h3 className="">{caseStudy.previewTitle}</h3>
-            <p className="opacity-60 sans small mt-1!">
+            <p className="opacity-60 sans small mt-1! mb-1!">
                 {caseStudy.previewSubtitle}
             </p>
         </a>

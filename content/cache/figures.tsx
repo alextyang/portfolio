@@ -24,7 +24,6 @@ export default {
                             className="relative left-0 lg:-left-30 rounded-xl w-full sm:max-w-132 lg:max-w-124 shadow-md"
                             muted={true}
                             autoPlay
-
                             loop
                             id="vid-hs1p1"
                         />
