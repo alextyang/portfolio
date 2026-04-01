@@ -4,9 +4,9 @@ Emails are the organization’s primary form of communication: supporting ongoin
 
 I inherited a process for creating emails, though, that had clearly evolved out of urgency. With the standard workflow, it took 1-2 hours to create, schedule, and review each email. Between 15-25 emails per week, the developer faced a tight turnaround that would occupy their entire workload. 
 
-FIGURE (Heavy email calendar in Notion)
+FIGURE (Heavy email calendar in Notion | A normal weekly email calendar, with both course operations and marketing campaign emails. Alongside the high volume, some entries represent multiple variations or last-minute additions.)
 
-When there were two developers, only one would be able to focus on website development and maintenance. When there was only one developer, often no projects were progressed at all. 
+When we had two web developers, only one of them would be able to focus on website projects and maintenance. When there was only one, often no projects were progressed at all. 
 
 Email production consumed so much time that most developers felt like they were treading water, unable to step back and iterate on the process. This state of survival left a fragmented workflow that achieved its goals but at disproportionate cost; scaled far beyond what it could reasonably support.
 
@@ -30,7 +30,7 @@ Regular emails were scheduled based on course/event calendars. Each week, I cros
 
 The scheduling was quick to do once a week, but it introduced a silent risk of failure—miss one entry and a paying cohort or thousands of subscribers wouldn’t receive critical information. Around once a month, someone would catch an email missing or misclassified in the schedule.
 
-FIGURE (Course schedule sheet vs schedule documentation)
+FIGURE (Course schedule sheet vs schedule documentation | On the left, a calendar spreadsheet with all sessions and their details. On the right, a document that specifies which emails each session needs, based on its type and timing. Manually cross-referencing the two created the email schedule.| On the top, a calendar spreadsheet with all sessions and their details. On the bottom, a document that specifies which emails each session needs, based on its type and timing. Manually cross-referencing the two created the email schedule.)
 
 ## 1. Content
 
@@ -42,7 +42,7 @@ For regular emails, a pre-existing Google Doc was used as a template. The conten
 
 The dev would insert and format the new snippets piece-by-piece, using a source of truth for each type of information: an official calendar spreadsheet for times, forum pages for links, and syllabus documents for topics. At least once a week, a developer would miss or incorrectly fill a snippet.
 
-FIGURE (Image of content doc template with highlighted placeholders)
+FIGURE (Image of content doc template with highlighted placeholders | A Google Doc template for a routine course email's content and metadata. The majority of content stays the same, dynamic portions are highlighted to be manually populated by the developer.)
 
 +10
 Complete a QA checklist to double-check accuracy of inserted details. 
@@ -59,7 +59,7 @@ Stripo’s text editor was, unfortunately, tedious to work with. The editor woul
 
 For each email, the developer would need to strip the markdown, copy and paste the email line-by-line, and re-apply each styling option. Multiple times a week, small formatting issues or style corruptions would be introduced in this stage. At least once a week, a link, sentence, or snippet would be transferred incorrectly.
 
-FIGURE (Image of Stripo editor)
+FIGURE (Image of Stripo editor | A Stripo email design in the editor. The content is being manually copied and pasted from a Google Doc, then styled/re-styled with the editor’s formatting options.)
 
 +10
 Complete a QA checklist to: make sure each sentence, link, and date was correctly copied from content document, then that the styling and format matches the documentation. The content document is used as the source of truth (SoT), though, which means anything missed in the first QA review will no longer be reviewed.
@@ -79,14 +79,14 @@ To maximize deliverability, the two types need to be sent with different service
 +10
 For marketing emails, we used ActiveCampaign’s campaign feature, which sends a synchronous ‘blast’ of marketing emails to a regulation-compliant list of contacts.
 
-FIGURE (Image of ActiveCampaign campaign)
+FIGURE (Image of ActiveCampaign campaign | The campaign creation page in ActiveCampaign. The Stripo design is imported, then the audience and scheduling are configured manually, based on the content document's header.)
 
 +20
 For transactional emails, we used Postmark in ActiveCampaign automations. ActiveCampaign’s automations are step-by-step funnels, similar to Zapier, that do sequential or conditional actions on select contacts.
 
 Our courses require scheduled, synchronous transactional emails, but Postmark doesn’t natively support scheduled email blasts. By adding ‘wait’ conditions in between Postmark email send actions, we were able to workaround the Postmark limitation to schedule ahead our course-related emails.
 
-FIGURE (Image of ActiveCampaign automations)
+FIGURE (Image of ActiveCampaign automations | A page of automation setup in ActiveCampaign. The configuration is similar to campaigns, but with additional setup steps and a slower interface.)
 
 ActiveCampaign’s interface was slow to use, with long load times between each page, form, and even field in each form. Manual entry of the most important details, like recipients and date, inevitably led to serious problems at least once a month. Small mistakes would sometimes send out emails immediately, before the developer could even review the configuration.
 
@@ -106,7 +106,7 @@ Developers and reviewers weren’t excited about their bandwidth going towards s
 
 The course and event emails were just parameterized templates operated by hand. Even the irregular one-off emails seemed automate-able: the documents were markdown text that could be parsed to HTML without hours of high-stakes copying and pasting.
 
-FIGURE (Comparison of two instances of the same email type)
+FIGURE (Comparison of two instances of the same email type | Two versions of the same type of email, created for different sessions. The changes in content are small and systematic.)
 
 # The Solution
 
@@ -114,14 +114,14 @@ I began to scaffold out an internal web app that could assist with each stage in
 
 # Page 1. The Schedule
 
-FIGURE (Airtable with only website fields)
-
 For our websites, we already maintained a database with a complete calendar of courses and events. If my app knew which emails each session needed, it could generate the email schedule based on the calendar data.
+
+FIGURE (Airtable with only website fields | A view of the calendar database for the 'UX Metrics' course. The database included all the information necessary to schedule emails, and much of what was needed to populate them.)
 
 I created a configuration file to store the conditions that necessitate each type of email. If “Course:Research”, schedule “Today’s Session” at 8am on the day. An entry in the calendar could be compared to each ‘filter’ to collect a list of applicable emails and their send date.
 
-FIGURE (Notion or screenshot of schedule configuration)
-(I’ll explain the ‘{…}’ part later.)
+FIGURE (Notion or screenshot of schedule configuration | The schedule configuration format, which specifies emails based on filter conditions for each session.)
+(Put a pin in the "Send Date":"{…}" part in a moment.)
 
 Compared to hard-coding the scheduling logic, this format enabled long-term change—new courses or new types of emails—to be made easily by junior developers.
 

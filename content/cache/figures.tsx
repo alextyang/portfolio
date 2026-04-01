@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default {
     // Images
-    "Image of Cohort Selector": (caption: string) => (
+    "Image of Cohort Selector": (caption: string, mobileCaption?: string) => (
         <div className="relative w-full">
             <Image src={'/case/cache/metrics-homepage.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
             <p className="sans small opacity-60 mt-5!">{caption}</p>
@@ -14,7 +14,7 @@ export default {
 
 
     // Videos
-    "Videos of initial loading time - home & cohort pages": (caption: string) => (
+    "Videos of initial loading time - home & cohort pages": (caption: string, mobileCaption?: string) => (
         <>
             <SegmentedContent labels={['Landing page', 'Cohort-specific pages']} segments={[
                 (
@@ -64,7 +64,7 @@ export default {
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
-    "Videos of runtime cache loading time - home & cohort pages": (caption: string) => (
+    "Videos of runtime cache loading time - home & cohort pages": (caption: string, mobileCaption?: string) => (
         <>
             <SegmentedContent labels={['Landing page', 'Cohort-specific pages']} segments={[
                 (
@@ -115,7 +115,7 @@ export default {
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
-    "Videos of preload solution loading time - home & cohort pages": (caption: string) => (
+    "Videos of preload solution loading time - home & cohort pages": (caption: string, mobileCaption?: string) => (
         <>
             <SegmentedContent labels={['Landing page', 'Cohort-specific pages']} segments={[
                 (
@@ -166,7 +166,7 @@ export default {
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
-    "Videos of aggregated schedules on one page": (caption: string) => (
+    "Videos of aggregated schedules on one page": (caption: string, mobileCaption?: string) => (
         <>
             <div className="relative w-full mt-10!">
                 <video
@@ -178,12 +178,11 @@ export default {
                 />
             </div>
             <p className="sans small opacity-60 mt-5!">{caption}</p>
-
         </>
     ),
 
     // Diagrams
-    "Flowchart of Initial Solution": (caption: string) => (
+    "Flowchart of Initial Solution": (caption: string, mobileCaption?: string) => (
         <>
             <div className="relative w-full">
                 <Image src={'/case/cache/initial-flow.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
@@ -191,7 +190,7 @@ export default {
             </div>
         </>
     ),
-    "Pros Cons chart of initial solutions": (caption: string) => (
+    "Pros Cons chart of initial solutions": (caption: string, mobileCaption?: string) => (
         <>
             <Table data={{
                 caption: "",
@@ -261,13 +260,13 @@ export default {
             }} classNames={{ 'td': 'sans' }} />
         </>
     ),
-    "Flow chart of runtime middleman cache": (caption: string) => (
+    "Flow chart of runtime middleman cache": (caption: string, mobileCaption?: string) => (
         <>
             <Image src={'/case/cache/runtime-flow.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
             {/* <p className="sans small opacity-60 mt-5!">A map of the 'runtime' middleman implementation. Instead of calling to Airtable directly, API calls are made to the Next.js service, which serves cached requests much faster.</p> */}
         </>
     ),
-    "Pros Cons chart of final solutions": (caption: string) => (
+    "Pros Cons chart of final solutions": (caption: string, mobileCaption?: string) => (
         <>
             <Table data={{
                 caption: "",
@@ -337,11 +336,11 @@ export default {
             }} />
         </>
     ),
-    "Flowchart of preload solution": (caption: string) => (
+    "Flowchart of preload solution": (caption: string, mobileCaption?: string) => (
         <>
             <Image src={'/case/cache/static-flow.png'} width={1225} height={600} alt='' className="rounded-2xl "></Image>
             {/* <p className="sans small opacity-60 mt-5!">A map of the static bundle implementation. The middleman's cache is pre-loaded onto the client, and it can instantly serve itself all cached requests.</p> */}
         </>
     ),
 
-} as { [key: string]: (caption: string) => React.ReactNode };
+} as { [key: string]: (caption: string, mobileCaption?: string) => React.ReactNode };

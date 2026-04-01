@@ -29,7 +29,7 @@ export async function CaseBody({ caseStudy }: { caseStudy: CaseStudy }) {
 
     const content = await import(`@/content/${slug}/content.tsx`).then((mod) => mod.default as string);
 
-    const figures = await import(`@/content/${slug}/figures.tsx`).then((mod) => mod.default as { [key: string]: (caption: string) => React.ReactNode });
+    const figures = await import(`@/content/${slug}/figures.tsx`).then((mod) => mod.default as { [key: string]: (caption?: string, mobileCaption?: string) => React.ReactNode });
 
     return (
         <>
@@ -47,6 +47,7 @@ export async function CaseBody({ caseStudy }: { caseStudy: CaseStudy }) {
                     const figureDeclaration = section.substring(section.indexOf("(") + 1, section.indexOf(")")).trim();
                     const figureName = figureDeclaration.split("|")[0].trim();
                     const figureCaption = figureDeclaration.split("|")[1]?.trim() ?? '';
+                    const figureMobileCaption = figureDeclaration.split("|")[2]?.trim() ?? '';
 
                     if (!figures[figureName]) {
                         console.log(`[WARNING] Figure "${figureName}" not found in figures.tsx for case study "${slug}".`);
@@ -64,7 +65,7 @@ export async function CaseBody({ caseStudy }: { caseStudy: CaseStudy }) {
                     return (
                         <div key={index} className="">
                             <div className="figure-container">
-                                {figures[figureName](figureCaption)}
+                                {figures[figureName](figureCaption, figureMobileCaption)}
                             </div>
                             <Markdown
                                 rehypePlugins={[rehypeRaw]}
