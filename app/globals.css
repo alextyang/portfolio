@@ -66,6 +66,23 @@ p.small {
   line-height: 1.4;
 }
 
+ul {
+  margin-top: 0.75rem;
+  margin-left: 1.75rem;
+  list-style-type: disc;
+  color: var(--text-light);
+}
+
+
+li {
+  color: var(--text-copy);
+  font-weight: var(--weight-copy);
+  font-size: 18px;
+  line-height: 1.45;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-left: 0.33rem;
+}
 
 
 h1,
@@ -167,4 +184,14 @@ th {
   white-space: nowrap;
 }
 
+code {
+  display: inline-block;
+  font-size: 0.85rem;
+  background-color: #f9f4ee;
+  padding: 0rem 0.3rem;
+  border-radius: 4px;
+}
+
+
+/*  */
 /*  */

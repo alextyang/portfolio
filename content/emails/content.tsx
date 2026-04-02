@@ -23,7 +23,8 @@ This case study will tour the production process before and after my project, in
 I’ll walk through the original lifecycle of an email. Each step had serious points of friction and risks that were easy targets for automation.
 
 ## 0. Schedule
-+45
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+45m</div>
+
 Emails were sent for a variety of operational needs, divided into two categories: regular and irregular. Most emails were routine notifications for participants in a course or event: ‘Today’s Session’ with the day’s topic and zoom link, ‘Next Week’s Schedule’ with times and homework, or ‘Session Recording’ after a webinar. And occasionally, we would have one-off email blasts to our marketing lists: promotions, free resources, or newsletters.
 
 Regular emails were scheduled based on course/event calendars. Each week, I cross-referenced the upcoming sessions with documentation that specified exactly what type of email to send and when. I would populate our Notion schedule with the corresponding email needs. Throughout the week, one-off emails would be added by other teams.
@@ -34,25 +35,30 @@ FIGURE (Course schedule sheet vs schedule documentation | On the left, a calenda
 
 ## 1. Content
 
-+0
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+0m</div>
+
 For one-off emails, a Google Doc with markdown-formatted text content was provided.
 
-+20
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+20m</div>
+
 For regular emails, a pre-existing Google Doc was used as a template. The content would stay the same, but the dates, links, and topics would change. 
 
 The dev would insert and format the new snippets piece-by-piece, using a source of truth for each type of information: an official calendar spreadsheet for times, forum pages for links, and syllabus documents for topics. At least once a week, a developer would miss or incorrectly fill a snippet.
 
 FIGURE (Image of content doc template with highlighted placeholders | A Google Doc template for a routine course email's content and metadata. The majority of content stays the same, dynamic portions are highlighted to be manually populated by the developer.)
 
-+10
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+10m</div>
+
 Complete a QA checklist to double-check accuracy of inserted details. 
 
-+30 (Inactive)
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+30m</div>
+
 Send a QA ticket for another person to do the same. In most cases, inaccuracies would be caught here.
 
 ## 2. Production
 
-+25
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+25m</div>
+
 Once a content document was approved, the developer translated it into an HTML email. In Stripo, a visual editor for HTML emails, we would find the closest existing email. A small storage limit meant overall designs were always re-used, but text content usually needed to be completely re-written.
 
 Stripo’s text editor was, unfortunately, tedious to work with. The editor would corrupt the HTML if multiple lines or mixed styles were pasted in. And it would continuously revert to default styling: making links bright green, removing fonts, and breaking indentation. 
@@ -61,10 +67,12 @@ For each email, the developer would need to strip the markdown, copy and paste t
 
 FIGURE (Image of Stripo editor | A Stripo email design in the editor. The content is being manually copied and pasted from a Google Doc, then styled/re-styled with the editor’s formatting options.)
 
-+10
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+10m</div>
+
 Complete a QA checklist to: make sure each sentence, link, and date was correctly copied from content document, then that the styling and format matches the documentation. The content document is used as the source of truth (SoT), though, which means anything missed in the first QA review will no longer be reviewed.
 
-+30 (Inactive)
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+30m</div>
+
 Send a QA ticket for another person to do the same. In most cases, unnoticed issues with format or content would be caught by the second set of eyes. 
 
 ## 3. Scheduling
@@ -76,12 +84,14 @@ Legally, there are two types of emails: marketing and transactional. Marketing e
 
 To maximize deliverability, the two types need to be sent with different service providers. ActiveCampaign provides marketing email sending, but supports this distinction by integrating the transactional email service Postmark.
 
-+10
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+10m</div>
+
 For marketing emails, we used ActiveCampaign’s campaign feature, which sends a synchronous ‘blast’ of marketing emails to a regulation-compliant list of contacts.
 
 FIGURE (Image of ActiveCampaign campaign | The campaign creation page in ActiveCampaign. The Stripo design is imported, then the audience and scheduling are configured manually, based on the content document's header.)
 
-+20
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+20m</div>
+
 For transactional emails, we used Postmark in ActiveCampaign automations. ActiveCampaign’s automations are step-by-step funnels, similar to Zapier, that do sequential or conditional actions on select contacts.
 
 Our courses require scheduled, synchronous transactional emails, but Postmark doesn’t natively support scheduled email blasts. By adding ‘wait’ conditions in between Postmark email send actions, we were able to workaround the Postmark limitation to schedule ahead our course-related emails.
@@ -90,10 +100,12 @@ FIGURE (Image of ActiveCampaign automations | A page of automation setup in Acti
 
 ActiveCampaign’s interface was slow to use, with long load times between each page, form, and even field in each form. Manual entry of the most important details, like recipients and date, inevitably led to serious problems at least once a month. Small mistakes would sometimes send out emails immediately, before the developer could even review the configuration.
 
-+20
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+20m</div>
+
 After adding the exported email to a campaign or automation, the developer sends out a test email. The final QA checklist checks the content and design of the test email, using the Stripo design as the SoT, then verifies the scheduling settings.
 
-+45 (Inactive)
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+45m</div>
+
 Have two additional people complete the final checklist.
 
 FIGURE (Map of full process)
@@ -118,10 +130,10 @@ For our websites, we already maintained a database with a complete calendar of c
 
 FIGURE (Airtable with only website fields | A view of the calendar database for the 'UX Metrics' course. The database included all the information necessary to schedule emails, and much of what was needed to populate them.)
 
-I created a configuration file to store the conditions that necessitate each type of email. If “Course:Research”, schedule “Today’s Session” at 8am on the day. An entry in the calendar could be compared to each ‘filter’ to collect a list of applicable emails and their send date.
+I created a configuration file to store the conditions that necessitate each type of email. If \`Course: Research\`, schedule a \`Today’s Session\` email at 8am on the same day. An entry in the calendar could be compared to each ‘filter’ to collect a list of applicable emails and their send date.
 
 FIGURE (Notion or screenshot of schedule configuration | The schedule configuration format, which specifies emails based on filter conditions for each session.)
-(Put a pin in the "Send Date":"{…}" part)
+(Put a pin in the \`"Send Date":"{…}"\` part)
 
 Compared to hard-coding the scheduling logic, this format enabled long-term change—new courses or new types of emails—to be made easily by junior developers.
 
@@ -141,24 +153,24 @@ Before sacrificing skill floor, inspectability, and interoperability, I looked f
 
 ## A Custom Placeholder System
 
-Email providers already have a simple variable system, %FIRSTNAME% or %COMPANY\_ADDRESS%. Our templates, though, ask for things like:
+Email providers already have a simple variable system, \`%FIRSTNAME%\` or \`%COMPANY\_ADDRESS%\`. Our templates, though, ask for things like:
 - Different formats or timezones of the same date
 - Information about other sessions (example: a link to last week’s recording)
 - Iterated content (example: a list of upcoming events)
 
-I created a parser to replace any curly braced ’{Variable}’ with a text value, with built-in guardrails for missing or bad data. I also added robust support for recursion: so templates could use compound placeholders like ‘{{Topic} Title}’ to derive values based on other fields.
+I created a parser to replace any curly braced \`{Variable}\` with a text value, with built-in guardrails for missing or bad data. I also added robust support for recursion: so templates could use compound placeholders like \`{{Topic} Title}\` to derive values based on other fields.
 
 FIGURE (Component, notion article, and video of the variable system I created | After selecting an email, the app populates a variable-filled HTML template with database values.)
 
-Inside the curly braces, it interprets parenthesis-wrapped phrases as ‘transformations’ on the value. {Session Date (GMT)(HH:mm A z)} converts the session’s Date field to GMT time, and formats it to a string like ‘10:30 AM GMT’.
+Inside the curly braces, it interprets parenthesis-wrapped phrases as ‘transformations’ on the value. \`{Session Date (GMT)(HH:mm A z)}\` converts the session’s date to GMT time, and formats it to a string like \`‘10:30 AM GMT’\`.
 
 I created transformations as needed and they turned plaintext HTML into robust, flexible templates that could be programmed from within Stripo. 
 
-Even the one-off marketing emails, where the entire body was provided, could be templated: the content could be pasted into a {Body (MD to HTML)} variable that parses the markdown into HTML.
+Even the one-off marketing emails, where the entire body was provided, could be templated: the content could be pasted into a \`{Body (MD to HTML)}\` variable that parses the markdown into HTML.
 
 FIGURE (Stripo templates, transforms notion page | A variable-ized template for a weekly course agenda email. Variables, especially dates, use transformations to adjust the format or modify the value. _The documentation listing transformations and their effect on the value displayed.)
 
-Some values that couldn’t be found in the calendar, like course-wide information, would be annoying to manually input every time. I repurposed the schedule configuration format to provide additional values based on the type of course, session, or email. Templates were able to use the email value configuration for zoom links, topic colors, and a universal {Footer}; all managed in a readable, flexible format.
+Some values that couldn’t be found in the calendar, like course-wide information, would be annoying to manually input every time. I repurposed the schedule configuration format to provide additional values based on the type of course, session, or email. Templates were able to use the email value configuration for zoom links, topic colors, and a universal \`{Footer}\`; all managed in a readable, flexible format.
 
 FIGURE (Settings code, settings Notion page | Excerpt of the conditional value settings, which provides additional values to templates based on conditions like course or email type. _The Notion page specifying the settings format, which provides additional values to templates based on conditions like course or email type.)
 

@@ -147,7 +147,7 @@ export default {
     ),
     "Marketing email publishing stage in app": (caption: string, mobileCaption?: string) => (
         <div className="relative w-full">
-            <Image src={'/case/emails/eta-publisher.png'} width={500} height={300} alt='' className="rounded-2xl mx-auto shadow-md bg-white p-2.5"></Image>
+            <Image src={'/case/emails/eta-publisher.png'} width={525} height={300} alt='' className="rounded-2xl mx-auto shadow-md bg-white p-3.5"></Image>
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </div>
     ),
@@ -156,7 +156,7 @@ export default {
             <div className="relative w-full mt-6!">
                 <video
                     src={'/case/emails/eta-automation-assistant.mp4'}
-                    className="relative rounded-2xl w-full shadow-md bg-white p-5 pb-0"
+                    className="relative rounded-2xl w-full shadow-md bg-white px-5 pt-1 pb-0"
                     muted={true}
                     autoPlay
                     loop
