@@ -49,7 +49,7 @@ export default {
     ),
     "Image of ActiveCampaign automations": (caption: string, mobileCaption?: string) => (
         <div className="relative w-full">
-            <Image src={'/case/emails/ac-automation.png'} width={650} height={300} alt='' className="rounded-2xl mx-auto shadow-md mt-15! scale-110 "></Image>
+            <Image src={'/case/emails/ac-automation.png'} width={650} height={300} alt='' className="rounded-2xl mx-auto shadow-md mt-16! scale-110 "></Image>
             <p className="sans small opacity-60 mt-12!">{caption}</p>
         </div>
     ),
@@ -88,75 +88,75 @@ export default {
                 ),
                 (
                     <div className="relative w-full mt-3.5">
-                        <Image src={'/case/emails/schedule-config.png'} width={625} height={300} alt='' className="bg-[#1f1f1f] pl-3 py-4 rounded-2xl"></Image>
+                        <Image src={'/case/emails/schedule-config.png'} width={625} height={300} alt='' className="bg-[#1f1f1f] pl-3 pt-4 rounded-2xl"></Image>
                     </div>
                 )
             ]} />
             <p className="sans small opacity-60 mt-3!">{caption}</p>
         </>
     ),
-    "Image of schedule page of app": (caption: string, mobileCaption?: string) => (
-        <div className="relative w-full">
-            <Image src={'/case/emails/eta-schedule.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
-            <p className="sans small opacity-60 mt-5!">{caption}</p>
-        </div>
-    ),
-    "Stripo templates, transforms notion page": (caption: string, mobileCaption?: string) => (
+    "Video of schedule page of app": (caption: string, mobileCaption?: string) => (
         <>
-            <div className="relative w-full mt-6">
-                <Image
-                    width={625} height={300}
-                    src={'/case/emails/dynamic-template-transactional.png'}
-                    className="relative left-0 lg:-left-30 rounded-xl w-full sm:max-w-132 lg:max-w-124 shadow-md"
-                    alt=""
-                />
-                <Image
-                    width={625} height={300}
-                    src={'/case/emails/eta-transformation-doc.png'}
-                    className="relative lg:absolute sm:-mb-23 lg:mb-0 sm:bottom-24 mt-8 sm:mt-0 sm:ml-auto lg:bottom-14 right-0 lg:-right-32 rounded-md w-full sm:max-w-112 lg:max-w-106 shadow-md"
-                    alt=""
+            <div className="relative w-full mt-10!">
+                <video
+                    src={'/case/emails/eta-schedule.mp4'}
+                    className="relative rounded-2xl w-full shadow-md overflow-hidden "
+                    muted={true}
+                    autoPlay
+                    loop
                 />
             </div>
             <p className="sans small opacity-60 mt-5!">{caption}</p>
+        </>
+    ),
+    "Stripo templates, transforms notion page": (caption: string, mobileCaption?: string) => (
+        <>
+            <SegmentedContent labels={['Stripo Template', 'Transformation Documentation']} segments={[
+                (
+                    <div className="relative w-full mt-4">
+                        <Image src={'/case/emails/dynamic-template-transactional.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
+                        <p className="sans small opacity-60 mt-4!">{caption.split('_')[0] ?? ''}</p>
+                    </div>
+                ),
+                (
+                    <div className="relative w-full mt-4.5">
+                        <Image src={'/case/emails/eta-transformation-doc.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
+                        <p className="sans small opacity-60 mt-4!">{caption.split('_')[1] ?? ''}</p>
+                    </div>
+                )
+            ]} />
         </>
     ),
     "Settings code, settings Notion page": (caption: string, mobileCaption?: string) => (
         <>
-            <div className="relative w-full mt-6">
-                <Image
-                    width={625} height={300}
-                    src={'/case/emails/eta-value-config.png'}
-                    className="relative left-0 lg:-left-30 rounded-xl w-full sm:max-w-132 lg:max-w-124 shadow-md"
-                    alt=""
-                />
-                <Image
-                    width={625} height={300}
-                    src={'/case/emails/eta-value-config-docs.png'}
-                    className="relative lg:absolute sm:-mb-23 lg:mb-0 sm:bottom-24 mt-8 sm:mt-0 sm:ml-auto lg:bottom-14 right-0 lg:-right-32 rounded-md w-full sm:max-w-112 lg:max-w-106 shadow-md"
-                    alt=""
-                />
-            </div>
-            <p className="sans small opacity-60 mt-5!">{caption}</p>
+            <SegmentedContent labels={['Code', 'Documentation']} segments={[
+                (
+                    <div className="relative w-full mt-4">
+                        <Image src={'/case/emails/eta-value-config.png'} width={625} height={300} alt='' className="shadow-md bg-[#1f1f1f] pl-1 py-1.5 rounded-2xl"></Image>
+                        <p className="sans small opacity-60 mt-4!">{caption.split('_')[0] ?? ''}</p>
+                    </div>
+                ),
+                (
+                    <div className="relative w-full mt-4.5">
+                        <Image src={'/case/emails/eta-value-config-docs.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
+                        <p className="sans small opacity-60 mt-4!">{caption.split('_')[1] ?? ''}</p>
+                    </div>
+                )
+            ]} />
         </>
-    ),
-    "Image of filling variables stage": (caption: string, mobileCaption?: string) => (
-        <div className="relative w-full">
-            <Image src={'/case/emails/eta-template-editor.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
-            <p className="sans small opacity-60 mt-5!">{caption}</p>
-        </div>
     ),
     "Marketing email publishing stage in app": (caption: string, mobileCaption?: string) => (
         <div className="relative w-full">
-            <Image src={'/case/emails/eta-publisher.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
+            <Image src={'/case/emails/eta-publisher.png'} width={500} height={300} alt='' className="rounded-2xl mx-auto shadow-md bg-white p-2.5"></Image>
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </div>
     ),
-    "Image of automation assistant": (caption: string, mobileCaption?: string) => (
+    "Video of automation assistant": (caption: string, mobileCaption?: string) => (
         <>
-            <div className="relative w-full mt-10!">
+            <div className="relative w-full mt-6!">
                 <video
                     src={'/case/emails/eta-automation-assistant.mp4'}
-                    className="relative rounded-2xl w-full shadow-md"
+                    className="relative rounded-2xl w-full shadow-md bg-white p-5 pb-0"
                     muted={true}
                     autoPlay
                     loop
@@ -169,20 +169,24 @@ export default {
     // Compound figures
     "Component, notion article, and video of the variable system I created": (caption: string, mobileCaption?: string) => (
         <>
-            <div className="relative w-full mt-6">
-                <Image
-                    width={625} height={300}
-                    src={'/case/emails/eta-template-editor.png'}
-                    className="relative left-0 lg:-left-30 rounded-xl w-full sm:max-w-132 lg:max-w-124 shadow-md"
-                    alt=""
-                />
-                <Image
-                    width={625} height={300}
-                    src={'/case/emails/eta-variables-doc.png'}
-                    className="relative lg:absolute sm:-mb-23 lg:mb-0 sm:bottom-24 mt-8 sm:mt-0 sm:ml-auto lg:bottom-14 right-0 lg:-right-32 rounded-md w-full sm:max-w-112 lg:max-w-106 shadow-md"
-                    alt=""
-                />
-            </div>
+            <SegmentedContent labels={['Email Production Tool', 'Variable Documentation']} segments={[
+                (
+                    <div className="relative w-full mt-4">
+                        <video
+                            src={'/case/emails/eta-template-population.mp4'}
+                            className="relative rounded-2xl w-full shadow-md"
+                            muted={true}
+                            autoPlay
+                            loop
+                        />
+                    </div>
+                ),
+                (
+                    <div className="relative w-full mt-3.5">
+                        <Image src={'/case/emails/eta-variables-doc.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
+                    </div>
+                )
+            ]} />
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),

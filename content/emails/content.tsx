@@ -106,7 +106,7 @@ Developers and reviewers weren’t excited about their bandwidth going towards s
 
 The course and event emails were just parameterized templates operated by hand. Even the irregular one-off emails seemed automate-able: the documents were markdown text that could be parsed to HTML without hours of high-stakes copying and pasting.
 
-FIGURE (Comparison of two instances of the same email type | Two versions of the same type of email, created for different sessions. The changes in content are small and systematic.)
+FIGURE (Comparison of two instances of the same email type | Two instances of the same type of email, created for different sessions. The changes in content are small and systematic.)
 
 # The Solution
 
@@ -121,11 +121,13 @@ FIGURE (Airtable with only website fields | A view of the calendar database for 
 I created a configuration file to store the conditions that necessitate each type of email. If “Course:Research”, schedule “Today’s Session” at 8am on the day. An entry in the calendar could be compared to each ‘filter’ to collect a list of applicable emails and their send date.
 
 FIGURE (Notion or screenshot of schedule configuration | The schedule configuration format, which specifies emails based on filter conditions for each session.)
-(Put a pin in the "Send Date":"{…}" part in a moment.)
+(Put a pin in the "Send Date":"{…}" part)
 
 Compared to hard-coding the scheduling logic, this format enabled long-term change—new courses or new types of emails—to be made easily by junior developers.
 
-FIGURE (Video of schedule page of app)
+I put these things into the app...
+
+FIGURE (Video of schedule page of app | The schedule page of the app, generating an up-to-date email schedule based on the calendar. Each entry is either linked to an in-progress save state or begins production. Emails can also be added manually, for one-off needs, and will also appear in the schedule.)
 
 We could now instantly see, search, and filter multiple years’ email needs. It completely eliminated scheduling errors during my tenure.
 
@@ -146,7 +148,7 @@ Email providers already have a simple variable system, %FIRSTNAME% or %COMPANY\_
 
 I created a parser to replace any curly braced ’{Variable}’ with a text value, with built-in guardrails for missing or bad data. I also added robust support for recursion: so templates could use compound placeholders like ‘{{Topic} Title}’ to derive values based on other fields.
 
-FIGURE (Component, notion article, and video of the variable system I created)
+FIGURE (Component, notion article, and video of the variable system I created | After selecting an email, the app populates a variable-filled HTML template with database values.)
 
 Inside the curly braces, it interprets parenthesis-wrapped phrases as ‘transformations’ on the value. {Session Date (GMT)(HH:mm A z)} converts the session’s Date field to GMT time, and formats it to a string like ‘10:30 AM GMT’.
 
@@ -154,15 +156,13 @@ I created transformations as needed and they turned plaintext HTML into robust, 
 
 Even the one-off marketing emails, where the entire body was provided, could be templated: the content could be pasted into a {Body (MD to HTML)} variable that parses the markdown into HTML.
 
-FIGURE (Stripo templates, transforms notion page)
+FIGURE (Stripo templates, transforms notion page | A variable-ized template for a weekly course agenda email. Variables, especially dates, use transformations to adjust the format or modify the value. _The documentation listing transformations and their effect on the value displayed.)
 
 Some values that couldn’t be found in the calendar, like course-wide information, would be annoying to manually input every time. I repurposed the schedule configuration format to provide additional values based on the type of course, session, or email. Templates were able to use the email value configuration for zoom links, topic colors, and a universal {Footer}; all managed in a readable, flexible format.
 
-FIGURE (Settings code, settings Notion page)
+FIGURE (Settings code, settings Notion page | Excerpt of the conditional value settings, which provides additional values to templates based on conditions like course or email type. _The Notion page specifying the settings format, which provides additional values to templates based on conditions like course or email type.)
 
 ## The Result
-
-FIGURE (Video of filling variables stage)
 
 With placeholder-ized HTML templates imported to the app, all the dev needs to do is select an email from the schedule and it is populated with rich, dynamic data.
 
@@ -176,13 +176,13 @@ We now have a ready-to-send email in only moments, all that’s left is reviewin
 
 The platform, though, doesn’t have documented API methods for the majority of email-related features. Because no supported API existed for critical functionality, I implemented a client-emulation layer that supported creating, configuring, and deleting email designs and marketing campaigns.
 
-FIGURE (Marketing email publishing stage in app)
+FIGURE (Marketing email publishing stage in app | After the populated template is reviewed, the app's publishing interface allows the developer to trigger high-level automated actions in a predefined sequence.)
 
 With error-monitoring and fallbacks, the custom integration saved a significant amount of time while mitigating the long-term risk of maintenance.
 
 For automation editing, where emulating the client wasn’t possible, the fallback helper provides a copy-able version of each value that needs to be entered. Even just this fallback drastically reduced data entry time.
 
-FIGURE (Image of automation assistant)
+FIGURE (Video of automation assistant | For manual-only actions, the app provides a prefilled version of the form to copy from.)
 
 Alongside the ActiveCampaign automated actions, I added helper integrations for the other administrative tasks: back-linking the scheduled item in Notion, populating Google Doc class notes templates, and submitting the QA tickets in Slack.
 
