@@ -333,24 +333,28 @@ The email application quickly became the biggest and most impactful piece of sof
 
 FIGURE (Hours saved header)
 
-**Manual Process**
+<div className="opacity-100 font-[350]! text-lg bg-gray-100 px-2 py-1 block w-full">
+<b>Manual Process</b>
 <br/>
-<span className="sans opacity-60 font-normal!">
-    0-30min Content + 40-55min Design + 35-40min Scheduling = <b>1hr 40min</b> avg.
+<span className="sans opacity-90 font-normal!">
+    0-30min Content + 40-55min Design + 35-40min Scheduling = <b className="bg-yellow-100 px-1">1hr 40min</b>
 <br/>
-    (+1-2 hours of review time = <b>2.5-3.5hr</b> turnaround)
+    (+1-2 hours of review time = <b>2.5-3.5hr</b> average turnaround)
 </span>
-
-**Tool-Assisted Process**
+</div>
 <br/>
-<span className="sans opacity-60 font-normal!">
-    10min Content/Design + 15min Scheduling = <b>25min</b> avg.
+<div className="opacity-100 font-[350]! text-lg bg-blue-100 px-2 py-1 block w-full">
+<b>Tool-Assisted Process</b>
+<br/>
+<span className="sans opacity-90 font-normal!">
+    10min Content/Design + 15min Scheduling = <b className="bg-yellow-100 px-1">25min</b>
 <br/>
     (+35m of review time = <b>45-90min</b> turnaround)
 </span>
+</div>
 
 <br/>
-<span className="sans opacity-100 font-[350]! text-lg bg-blue-100 px-2">
+<span className="sans opacity-100 font-[350]! text-lg bg-yellow-100 px-2">
     1hr 40m - 25m = <b>1hr 15min (75%) avg. of active work saved per email</b>
 </span>
 FIGURE (Time saved estimate)
