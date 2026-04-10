@@ -1,245 +1,428 @@
-export default `In 2025, I was a web development fellow at Center Centre, where I owned the production of Center Centre’s public-facing emails. 
+export default `In 2025, I was a Web Development Fellow at Center Centre, where I was in charge of Center Centre’s emails. 
 
-Emails are the organization’s primary form of communication: supporting ongoing courses, marketing campaigns, and community engagement. Timely, accurate emails were essential for the event turnouts, campaigns’ effectiveness, and—over the long-term—earned trust from our students and clients. 
+Emails are their primary form of communication: a critical part of running courses, events, and marketing. The timeliness and accuracy of these emails was essential for event turnouts, campaign effectiveness, and—over time—built trust with our students and clients. 
 
-I inherited a process for creating emails, though, that had clearly evolved out of urgency. With the standard workflow, it took 1-2 hours to create, schedule, and review each email. Between 15-25 emails per week, the developer faced a tight turnaround that would occupy their entire workload. 
+In part due to their importance, I inherited an email production process that had evolved out of urgency. 
 
-FIGURE (Heavy email calendar in Notion | A normal weekly email calendar, with both course operations and marketing campaign emails. Alongside the high volume, some entries represent multiple variations or last-minute additions.)
+FIGURE (Heavy email calendar in Notion | An average weekly calendar, with both course ops and marketing campaign emails. On top of the pictured volume, some entries represent multiple variations or last-minute additions.)
 
-When we had two web developers, only one of them would be able to focus on website projects and maintenance. When there was only one, often no projects were progressed at all. 
+With the workflow I was trained to use, it took 1-2 hours to create, review, and schedule each email. It was a slow, manual process with a lot of room for error.
 
-Email production consumed so much time that most developers felt like they were treading water, unable to step back and iterate on the process. This state of survival left a fragmented workflow that achieved its goals but at disproportionate cost; scaled far beyond what it could reasonably support.
+At a rate of 15-25 emails per week, emails took up an entire full-time workload. When we didn't have multiple developers, progress was exceedingly slow on other priorities, like new product launches,  web dev projects, and even some maintenance.
 
-I was able to optimize my personal workflow to the point where I had some bandwidth outside of emails. Instead of just passing the torch, I decided to put my extra time towards improving the process. 
+Developers felt like they were treading water. Even though the process clearly needed rethinking, there wasn't enough time to make all but surface-level changes.
 
-The team had built up a sense of security in the current production and QA review system, but was open to change. Leadership agreed when I proposed improvements: the emails were mostly variations on the same structure, we should be able to just “push a button and have the emails for a course scheduled out.” They emphasized, though, that reliability and the QA process can’t be compromised.
+I was able to optimize my personal workflow to the point where I had some extra bandwidth outside of emails, and I decided to put my extra time towards process improvement. 
 
-I decided to pursue incremental interventions, especially backwards-compatible automation, to rebuild the system in a way that stayed both trustworthy and coherent. 
+## Can We Just Use React Email?
 
-This case study will tour the production process before and after my project, in order to show how targeted tooling can transform brittle operational pipelines from the inside out.
+The team was supportive when I floated the idea of streamlining production. They reasonably qualified, though, that they would need to feel just as comfortable with its reliability, inspectability, and inheritability.
 
-# How Emails Used to Work
+The co-founder agreed that most of the emails were just variations on the same structure; he proposed an aspirational vision: have these systematic emails scheduled out at just the 'push of a button'.
 
-I’ll walk through the original lifecycle of an email. Each step had serious points of friction and risks that were easy targets for automation.
+They had built up years of trust in the production and extensive QA review system, so change that would fit neatly into the existing architecture would be much easier to get buy-in on than a complete overhaul.
 
-## 0. Schedule
+I decided to pursue a series of constrained interventions, especially backwards-compatible automation, to incrementally overhaul the system in a way that stays both trustworthy and coherent to everyone. 
+
+This case study will tour the initial production process and then the final overhauled workflow, demonstrating how targeted tooling can completely transform brittle operational pipelines from the inside out.
+
+# The Aforementioned, Brittle Pipeline
+
+I’ll walk through the original lifecycle of an email, in order to illustrate the time sinks and risks that necessitated this project, as well as to establish the structure that my inside-out redesign would need to fit into.
+
+Time estimates are included and totaled for each step, based on mine and two other developers' experience at our fastest. Inactive delays, ie. waiting for a QA review, are shown in blue.
+
+## Step 0. Creating the Schedule
+
+Center Centre sends out emails for a variety of operational needs, which can be divided into two categories: regular and irregular. 
+
+Most emails were regular: routine notifications for participants in a course or event (*Today’s Session* with the day’s topic and zoom link, *Next Week’s Schedule* with times and homework, or *Session Recording* after a webinar). 
+
+Occasionally, we would have one-off irregular emails for our marketing lists (promotions, free resources, or news). Irregular emails would be added to our shared Notion calendar by other teams.
+
+FIGURE (Heavy email calendar in Notion | An average weekly calendar, with both course ops and marketing campaign emails. On top of the pictured volume, some entries represent multiple variations or last-minute additions.)
+
 <div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+45m</div>
 
-Emails were sent for a variety of operational needs, divided into two categories: regular and irregular. Most emails were routine notifications for participants in a course or event: ‘Today’s Session’ with the day’s topic and zoom link, ‘Next Week’s Schedule’ with times and homework, or ‘Session Recording’ after a webinar. And occasionally, we would have one-off email blasts to our marketing lists: promotions, free resources, or newsletters.
-
-Regular emails were scheduled based on course/event calendars. Each week, I cross-referenced the upcoming sessions with documentation that specified exactly what type of email to send and when. I would populate our Notion schedule with the corresponding email needs. Throughout the week, one-off emails would be added by other teams.
+Regular emails, though, were scheduled ahead-of-time, based on course/event calendars. Each week, the dev would cross-reference calendars with documentation that specified what type of email to send and when.
 
 The scheduling was quick to do once a week, but it introduced a silent risk of failure—miss one entry and a paying cohort or thousands of subscribers wouldn’t receive critical information. Around once a month, someone would catch an email missing or misclassified in the schedule.
 
 FIGURE (Course schedule sheet vs schedule documentation | On the left, a calendar spreadsheet with all sessions and their details. On the right, a document that specifies which emails each session needs, based on its type and timing. Manually cross-referencing the two created the email schedule.| On the top, a calendar spreadsheet with all sessions and their details. On the bottom, a document that specifies which emails each session needs, based on its type and timing. Manually cross-referencing the two created the email schedule.)
 
-## 1. Content
+## Step 1. Filling in the Content
+
+The first step for an individual email was to put together a Google Doc with the content and scheduling information. Depending on how ahead the developer was, we'd start this a day or two before it would go out.
 
 <div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+0m</div>
 
-For one-off emails, a Google Doc with markdown-formatted text content was provided.
+For one-off irregular emails, a pre-reviewed document with content was provided by the requesting team.
 
 <div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+20m</div>
 
-For regular emails, a pre-existing Google Doc was used as a template. The content would stay the same, but the dates, links, and topics would change. 
+For regular emails, use a pre-existing document as a template. The copy and structure of these regular emails stays the same, just with dynamic dates, links, and topics. 
 
-The dev would insert and format the new snippets piece-by-piece, using a source of truth for each type of information: an official calendar spreadsheet for times, forum pages for links, and syllabus documents for topics. At least once a week, a developer would miss or incorrectly fill a snippet.
+Paste in and format the snippets, using a designated source of truth for each type of information: a spreadsheet for dates and times, forum pages for links, and syllabuses for topics. 
 
-FIGURE (Image of content doc template with highlighted placeholders | A Google Doc template for a routine course email's content and metadata. The majority of content stays the same, dynamic portions are highlighted to be manually populated by the developer.)
+As a high-volume manual process, mistakes were unavoidable. At least once a week, a developer would miss or incorrectly fill a snippet.
+
+FIGURE (Image of content doc template with highlighted placeholders | A partially-completed content doc for a regular course email, with metadata and text content in markdown. The placeholders are highlighted to be manually populated by the developer.)
 
 <div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+10m</div>
 
-Complete a QA checklist to double-check accuracy of inserted details. 
+Complete a QA checklist to double-check accuracy of all inserted details. 
+
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-50! text-blue-600! ">+35m</div>
+
+Send a QA ticket for another person to do the same. In most cases, any remaining content inaccuracies were caught here.
+
+## 2. Copying Content into A Design
 
 <div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+30m</div>
 
-Send a QA ticket for another person to do the same. In most cases, inaccuracies would be caught here.
+Once the document is reviewed, copy the content into an HTML email design with Stripo. 
 
-## 2. Production
+In Stripo, a visual editor for HTML emails, we had one copy of each email design in limited storage space. Most email types share designs, though, so the text components normally needed to be redone from scratch.
 
-<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+25m</div>
+Inserting text was especially tedious with Stripo. Text needed to be stripped of formatting and pasted in line-by-line, otherwise the editor would, without fail, visibly corrupt the HTML. 
 
-Once a content document was approved, the developer translated it into an HTML email. In Stripo, a visual editor for HTML emails, we would find the closest existing email. A small storage limit meant overall designs were always re-used, but text content usually needed to be completely re-written.
+The editor would also continuously revert designs to default styling, making links bright green, recursively adding margins, and breaking indentation.
 
-Stripo’s text editor was, unfortunately, tedious to work with. The editor would corrupt the HTML if multiple lines or mixed styles were pasted in. And it would continuously revert to default styling: making links bright green, removing fonts, and breaking indentation. 
-
-For each email, the developer would need to strip the markdown, copy and paste the email line-by-line, and re-apply each styling option. Multiple times a week, small formatting issues or style corruptions would be introduced in this stage. At least once a week, a link, sentence, or snippet would be transferred incorrectly.
+Multiple times a week, formatting issues or style corruptions would be introduced in this stage. At least once a week, content mistakes would be introduced.
 
 FIGURE (Image of Stripo editor | A Stripo email design in the editor. The content is being manually copied and pasted from a Google Doc, then styled/re-styled with the editor’s formatting options.)
 
-<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+10m</div>
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+15m</div>
 
-Complete a QA checklist to: make sure each sentence, link, and date was correctly copied from content document, then that the styling and format matches the documentation. The content document is used as the source of truth (SoT), though, which means anything missed in the first QA review will no longer be reviewed.
-
-<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+30m</div>
-
-Send a QA ticket for another person to do the same. In most cases, unnoticed issues with format or content would be caught by the second set of eyes. 
-
-## 3. Scheduling
-
-After the Stripo design is reviewed, the dev exports it to ActiveCampaign, the marketing and CMS platform, and configures it to be delivered.
-
-Note:
-Legally, there are two types of emails: marketing and transactional. Marketing emails have strict regulations, like unsubscribe links, and are subject to much more scrutiny by email providers and filters. An email counts as transactional if it is a necessary part of a user-initiated interaction, like confirmations or password resets. 
-
-To maximize deliverability, the two types need to be sent with different service providers. ActiveCampaign provides marketing email sending, but supports this distinction by integrating the transactional email service Postmark.
+Irregular one-off emails were usually either included custom design elements, or had many pages of copy that needed to be copied over.
 
 <div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+10m</div>
 
-For marketing emails, we used ActiveCampaign’s campaign feature, which sends a synchronous ‘blast’ of marketing emails to a regulation-compliant list of contacts.
+Complete a QA checklist to make sure each sentence, link, and date was correctly copied from content document, and then that the styling and design matches convention. 
+
+The content document is used as the source of truth, though, which means anything missed in the first QA review will no longer be caught.
+
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-50! text-blue-600!">+30m</div>
+
+Send a QA ticket for another person to do the checklist. In most cases, unnoticed issues with styling or content was be caught here. 
+
+## 3. High-Stakes Delivery Configuration
+
+After the Stripo design is reviewed, export it to ActiveCampaign, our marketing and CMS platform, and to be configured for delivery.
+
+Legally, there are two types of emails: marketing and transactional. 
+
+Marketing emails have strict regulations, like mandatory unsubscribe links, and are subject to much more scrutiny by email providers and spam filters. 
+
+Transactional emails are treated as priority and are afforded less scrutiny. An email counts as transactional if it is a necessary part of a user-initiated interaction, like confirmations or password resets. 
+
+To ensure email providers distinguish the two, they need to be sent with different service providers. ActiveCampaign provides native marketing email delivery, and also has integrations with a transactional-only email service Postmark.
+
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+10m</div>
+
+For marketing campaign or event emails, configure an ActiveCampaign 'campaign', which sends a synchronous blast of marketing emails to a list of contacts.
 
 FIGURE (Image of ActiveCampaign campaign | The campaign creation page in ActiveCampaign. The Stripo design is imported, then the audience and scheduling are configured manually, based on the content document's header.)
 
 <div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+20m</div>
 
-For transactional emails, we used Postmark in ActiveCampaign automations. ActiveCampaign’s automations are step-by-step funnels, similar to Zapier, that do sequential or conditional actions on select contacts.
+For course-related transactional emails, use the Postmark integration inside of an ActiveCampaign automation. 
 
-Our courses require scheduled, synchronous transactional emails, but Postmark doesn’t natively support scheduled email blasts. By adding ‘wait’ conditions in between Postmark email send actions, we were able to workaround the Postmark limitation to schedule ahead our course-related emails.
+ActiveCampaign’s automations are step-by-step funnels, similar to Zapier, that do sequential actions on specific contacts.
 
-FIGURE (Image of ActiveCampaign automations | A page of automation setup in ActiveCampaign. The configuration is similar to campaigns, but with additional setup steps and a slower interface.)
+Our paid programs require scheduled notifications and resources, but Postmark doesn’t natively support pre-scheduled emails. It may do so to encourage compliance, but our use case is within the bounds of a limited user-initiated transaction, so we needed to find a workaround.
 
-ActiveCampaign’s interface was slow to use, with long load times between each page, form, and even field in each form. Manual entry of the most important details, like recipients and date, inevitably led to serious problems at least once a month. Small mistakes would sometimes send out emails immediately, before the developer could even review the configuration.
+By adding ‘wait’ conditions in between Postmark email send actions, we could create course-long sequences that deliver emails at a predetermined time and date.
 
-<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+20m</div>
+FIGURE (Image of ActiveCampaign automations | One portion of automation setup in ActiveCampaign. The email scheduling configuration is similar to campaigns, but with additional setup steps and a slower interface.)
 
-After adding the exported email to a campaign or automation, the developer sends out a test email. The final QA checklist checks the content and design of the test email, using the Stripo design as the SoT, then verifies the scheduling settings.
+ActiveCampaign’s interface was generally slow to use, often taking 30+ seconds to load a page. The automation editor was especially slow, because each field in a form would only begin to load options when individually selected.
 
-<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+45m</div>
+Manual entry of the critical details, like recipients and date, led to consequential mistakes at least once a month. Even small mistakes in input could prompt an immediate send.
 
-Have two additional people complete the final checklist.
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+15m</div>
 
-FIGURE (Map of full process)
+One-off emails always had multiple versions, corresponding to different marketing lists. Each version needed to be exported and configured separately.
 
-# The Problem
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-33!">+15m</div>
 
-If emails were an occasional need, this process would be fine. Completing 3-5 mistake-free emails per day with this system, though, was an overwhelming task.
+After configuring the email in a campaign or automation, send out a test email. 
 
-Developers and reviewers weren’t excited about their bandwidth going towards slow, repetitive work. The organization wasn’t able to get out timely messages, experiment with email content, or make all but slow progress on web initiatives. The manual process achieved a lot of ceremonial QA—continuously reviewing unfinished artifacts—but it was not efficient, scalable, or even particularly reliable.
+The final QA checklist compares the content and design of the test to the Stripo design, then verifies the scheduling settings.
 
-The course and event emails were just parameterized templates operated by hand. Even the irregular one-off emails seemed automate-able: the documents were markdown text that could be parsed to HTML without hours of high-stakes copying and pasting.
+<div className="relative md:-left-15 top-4 md:top-6 mt-1 md:mt-0 md:h-0 font-medium! sans opacity-50! text-blue-600!">+45m</div>
 
-FIGURE (Comparison of two instances of the same email type | Two instances of the same type of email, created for different sessions. The changes in content are small and systematic.)
+Have two additional people complete the final checklist. 
 
-# The Solution
+Mistakes introduced in ActiveCampaign were usually caught here, but earlier issues and more abstract problems, like it being the wrong type of email, were not. 
 
-I began to scaffold out an internal web app that could assist with each stage in the production process. 
+## Total Time Tally
+
+**Regular emails**
+<br/>
+<span className="sans opacity-60 font-normal!">
+    30min content + 40min design + 35min scheduling = <b>1hr 45min</b>
+<br/>
+    (plus 1hr 50min of review time = <b>3hr 35min</b> turnaround)
+</span>
+
+Regular emails are done in parallel, so that inactive time for one email is spend on another. The active work per email, though, is still a unfortunate 1-2 hours of repetitive, manual work.
+
+<br/>
+
+**Irregular emails**
+<br/>
+<span className="sans opacity-60 font-normal!">
+    55min design + 40min scheduling = <b>1hr 35min</b>
+<br/>
+    (plus 1hr of review time = <b>2hr 35min</b> turnaround)
+</span>
+
+Irregular emails are faster to produce because they are always provided last minute, and so inactive wait time is minimized. They have different needs, but at 1-2 hours of active work, their process is just as in need of improvement.
+
+# It Gives Me a Headache to Imagine Doing That 5 Times a Day
+
+If emails were an *occasional* need, this process would be fine. Using this process to get 25 mistake-free emails per week, though, is an overwhelming task.
+
+Neither the developers nor the reviewers were excited about that amount of bandwidth going towards slow, repetitive work. Center Centre wasn’t able to get out timely messages, experiment with emails, or make all but slow progress on websites. 
+
+The manual process achieved a lot of ceremonial QA—continuously reviewing unfinished artifacts—but it was not efficient, scalable, or even particularly reliable.
+
+FIGURE (Comparison of two instances of the same email type | Two instances of the same type of email. The changes in content are small and systematic.)
+
+The repetitive nature of the work was demoralizing. All the developers I spoke to agreed: it felt like a task that a machine should be doing, but the tools and organization weren't set up to support that.
+
+The course and event emails were essentially just programmatic templates being operated by hand. Even the one-off marketing emails seemed automate-able: the bulk of the work was just converting markdown into HTML.
+
+# The Birth of a Wizard
+
+After my discussions with the team, I went step-by-step through the process. For each stage, I identified opportunities for automation that would keep the overall process and role of the developer intact.
+
+As a home for these semi-automated tools, I built a web application that could interact with our data sources, connect the steps together, and integrate with our existing platforms.
 
 # Page 1. The Schedule
 
-For our websites, we already maintained a database with a complete calendar of courses and events. If my app knew which emails each session needed, it could generate the email schedule based on the calendar data.
+We already maintained a comprehensive database with a complete calendar of courses and events, necessitated by our websites. 
+
+If a tool knew which emails to send for each type of session, it could resolve a comprehensive email schedule based on the calendar data.
 
 FIGURE (Airtable with only website fields | A view of the calendar database for the 'UX Metrics' course. The database included all the information necessary to schedule emails, and much of what was needed to populate them.)
 
-I created a configuration file to store the conditions that necessitate each type of email. If \`Course: Research\`, schedule a \`Today’s Session\` email at 8am on the same day. An entry in the calendar could be compared to each ‘filter’ to collect a list of applicable emails and their send date.
+*Which emails to send for each type of session* was the key piece of logic that I needed to formalize. The first session of a course, for example, would need a different set of emails than the subsequent sessions. A webinar would need different emails than a workshop.
 
-FIGURE (Notion or screenshot of schedule configuration | The schedule configuration format, which specifies emails based on filter conditions for each session.)
-(Put a pin in the \`"Send Date":"{…}"\` part)
+I created a configuration file to store the conditions that necessitate each type of email. Ex: *If \`Course: Research\`, schedule a \`Today’s Session\` email at 8am on the same day.* Each session in the calendar could be ran down the ‘filter’ tree to collect a complete list of applicable emails.
 
-Compared to hard-coding the scheduling logic, this format enabled long-term change—new courses or new types of emails—to be made easily by junior developers.
+FIGURE (Notion or screenshot of schedule configuration | The schedule configuration format, which specifies emails based on filter conditions for each session. Put a pin in the "{Session Date}" part)
 
-I put these things into the app...
+Compared to hard-coding the scheduling logic, this format enabled long-term change—new courses or new types of emails—to be made quickly, flexibly, and within a guardrailed environment.
 
-FIGURE (Video of schedule page of app | The schedule page of the app, generating an up-to-date email schedule based on the calendar. Each entry is either linked to an in-progress save state or begins production. Emails can also be added manually, for one-off needs, and will also appear in the schedule.)
+I integrated the database and schedule logic into a page of the app, and created an interface to view, search, and filter the agenda.
 
-We could now instantly see, search, and filter multiple years’ email needs. It completely eliminated scheduling errors during my tenure.
+FIGURE (Video of schedule page of app | The schedule page, generating a live email schedule based on the calendar. Each entry is linked to the progress made in other steps. One-off emails can be added manually, and will also appear in the schedule. Entries have buttons that sync to the Notion calendar and create participant notes in Google Docs.)
 
-# Page 2. Filling Variables
+For the first time, Center Centre's email needs could be visualized months in advance. It completely eliminated scheduling errors during mine and my successors tenure.
 
-Ideally, from here, we could just run some React code and generate an HTML email that’s filled with the data. That would be a total break from longstanding processes, though. 
+# Page 2. Filling Templates
 
-With the Stripo visual editor and HTML source, the entire process is transparent, accessible, and traceable. A transition to React would require a ground-up rebuild of every design, and the team would not be able to build trust with the process in the same way.
+We have selected an email and have all the relevant dates, topic, links, etc. We just need to plug it into an email design. The most straightforward way to do that would be to use a JS rendering solution, like a React-based email framework.
 
-Before sacrificing skill floor, inspectability, and interoperability, I looked for an approach that could directly populate our Stripo-made HTML designs with dynamic data, preserving visual editing and our review culture.
+With a drastic break from procedure like that, however, the team would not be able to build trust, collaborate, or train fellows the same. When populating designs inside the Stripo visual editor, the entire process is accessible and traceable for everyone.
 
-## A Custom Placeholder System
+I wanted an approach that could plug dynamic data into our Stripo-made HTML designs, preserving both accessible editing and our review culture.
 
-Email providers already have a simple variable system, \`%FIRSTNAME%\` or \`%COMPANY\_ADDRESS%\`. Our templates, though, ask for things like:
-- Different formats or timezones of the same date
+## A Custom Variable System
+
+Email providers already have a way to plug dynamic content into designs, it looks like \`%FIRSTNAME%\` or \`%COMPANY\_ADDRESS%\`. Our templates, though, would need to make complex requests:
+- Different formats and timezones of the same datetime value
+- The segments of strings (example: 'April 2025' cohort -> 'April' in copy)
 - Information about other sessions (example: a link to last week’s recording)
-- Iterated content (example: a list of upcoming events)
+- Dynamically iterated content (example: a list item for each upcoming event)
 
-I created a parser to replace any curly braced \`{Variable}\` with a text value, with built-in guardrails for missing or bad data. I also added robust support for recursion: so templates could use compound placeholders like \`{{Topic} Title}\` to derive values based on other fields.
+After surveying placeholder/variable solutions, I decided to create a custom system that could address our unique requirements without compromise. 
 
-FIGURE (Component, notion article, and video of the variable system I created | After selecting an email, the app populates a variable-filled HTML template with database values.)
+I designed a O(n) parser to replace any curly braced \`{Variable}\` with a corresponding text value, and built in guardrails for missing or bad data. 
 
-Inside the curly braces, it interprets parenthesis-wrapped phrases as ‘transformations’ on the value. \`{Session Date (GMT)(HH:mm A z)}\` converts the session’s date to GMT time, and formats it to a string like \`‘10:30 AM GMT’\`.
+After experimentation, I also added robust, O(n) support for unlimited recursion in both variables and values. This is a feature other string-placeholder systems do not bother tackling, and it is remarkably powerful.
 
-I created transformations as needed and they turned plaintext HTML into robust, flexible templates that could be programmed from within Stripo. 
+With recursion, strings could use compound variables like \`{{Topic} Title}\` to lookup values based on other values. ie. \`{{Topic} Title}\` -> \`{Topic 4 Title}\` -> \`"How to Measure UX Goals"\`. 
 
-Even the one-off marketing emails, where the entire body was provided, could be templated: the content could be pasted into a \`{Body (MD to HTML)}\` variable that parses the markdown into HTML.
+Infilled values can also contain more values, so that \`{Footer}\` can reference a template-ized footer, ex. \`You're receiving this from {Program Name}\` \`<br/>{Unsubscribe Link}\`
 
-FIGURE (Stripo templates, transforms notion page | A variable-ized template for a weekly course agenda email. Variables, especially dates, use transformations to adjust the format or modify the value. _The documentation listing transformations and their effect on the value displayed.)
+By typing these plaintext variables directly into Stripo designs, detailed emails could turn into dynamic data-driven templates without any change to the editor or workflow.
 
-Some values that couldn’t be found in the calendar, like course-wide information, would be annoying to manually input every time. I repurposed the schedule configuration format to provide additional values based on the type of course, session, or email. Templates were able to use the email value configuration for zoom links, topic colors, and a universal \`{Footer}\`; all managed in a readable, flexible format.
+FIGURE (Simple Stripo template, variable documentation page | A variable-ized template for a course's first weekly email. Dynamic snippets are rewritten in-place as variables, to be filled by the tool. Link href's are also variables, but aren't visible. _The documented guide to writing variables, and the built-in features of the parser.)
 
-FIGURE (Settings code, settings Notion page | Excerpt of the conditional value settings, which provides additional values to templates based on conditions like course or email type. _The Notion page specifying the settings format, which provides additional values to templates based on conditions like course or email type.)
+With the foundation of the variable system established, I designed two specialized features to support the specific needs of our emails.
 
-## The Result
+To lookup values from other sessions, variable names can be **prefixed** with a \`Week # Session #\`. For example, \`{Week 1 Session 2 Topic}\` would pull the topic of the 1st week's 2nd session.
 
-With placeholder-ized HTML templates imported to the app, all the dev needs to do is select an email from the schedule and it is populated with rich, dynamic data.
+To support date formatting, timezones, and other in-place modifications, I designated parenthesis-wrapped phrases as pre-defined **transformations** on the value. For example, \`{Session Date (GMT)(HH:mm A z)}\` would convert the sessions' datetime value to GMT time, then insert it as a \`"10:30 AM GMT"\`-style formatted string, without modifying the original value.
 
-Most types of emails were so programmatic, they needed no editing at all. No templates required more than a few minutes of value input.
+FIGURE (Transformation Stripo templates | A template for a course email that explains the agenda for the week's two sessions. Links are green because a hidden variable in the CSS will set the color on population. _A tiny Stripo template using the markdown-to-HTML transformation, which allows the content of one-off marketing emails to be easily pasted in markdown format and converted to HTML. Styling, the banner, and footer are all dynamically embedded in the HTML as variables.)
 
-The placeholders were vastly more reliable than manual entry. Not only were issues rare, but they became much easier to spot. Programmatic problems, like broken designs or segments, were obvious compared to human-made mistakes, like doubled words or common misspellings.
+In the template above, the \`Lecture Date\` value is prefixed to lookup both of a week's sessions, then formatted with transformations:
+\`{{Week} Session #2 Lecture Date (dddd, MMMM Do [at] h:mma z)(:00)}\`
+\`{Week #3 Session #2 Lecture Date (dddd, MMMM Do [at] h:mma z)(:00)}\`
+\`= 2026-02-18T18:00:00Z - (dddd, MMMM Do [at] h:mma z)(:00)\`
+\`= "Wednesday, February 18th at 6:00PM EST" - (:00)\`
+\`= "Wednesday, February 18th at 6PM EST"\`
+
+Even the one-off marketing emails, where an entire unique body was given, could be templated: the content could be pasted into a \`{Body}\` variable, and a \`(MD to HTML)\` transformation could parse the markdown.
+
+Between the interoperable features and recursion, I had essentially created a lightweight, highly-targeted scripting environment.
+
+FIGURE (Transformation documentation | The list of available transformations. New transformations were added as needed, and were implemented in a modular, order-opinionated waterfall system that safely bridged inter-type transformations.)
+
+Instances of the same email could be found between courses, only having different banners, colors, and titles. These course-scoped values, though, couldn’t be found in the session-scoped calendar data. 
+
+While creating templates, I realized that if there was a way to resolve additional, conditional values, there would be no need to make a separate set of templates for every program.
+
+I repurposed the schedule configuration format to provide these 'settings' to each course, session, and email. Not only could reusable templates use this for course zoom links, colors, etc., but snippets like \`{Footer}\` could be easily defined and conditionally overridden here.
+
+FIGURE (Settings code, settings Notion page | Excerpt of the email value config, specifying settings for the program named 'AI'. At the top, program-wide values are declared. Below that, a program-specific email type 'Lightning Talk' is given metadata. At the bottom, universal email types like 'Email Type:Message' have their settings imported and destructured from a shared file. _The Notion page specifying the settings format, which structured identically to the schedule logic format. Key-value filters are used as keys, either in parallel or in nested sequences, to specify values for different contexts.)
+
+The simple, flexible format was also the perfect place to specify the critical technical details for each email type in the schedule, like the file path of the HTML template, marketing or transactional categorization, and metadata.
+
+## The Final Template Interface
+
+After selecting an email from the schedule, the second page of the app compiles all relevant values (from the calendar, then the settings config), and provides an interface to review the data for accuracy.
+
+After the developer confirms the compiled values, the third page displays the populated HTML template, alongside a dynamic form with all the in-use values.
+
+FIGURE (Variable fill demonstration | A walkthrough of the template population interface.)
+
+Most of the templates were fully populated with calendar data and conditional values, requiring no manual input. For these, all the developer needed to do was select an email and review the results for accuracy.
+
+A few templates required manual input, like the one-off marketing emails, and these only took a few minutes to fill in. The purpose-made transformations automatically handled the common formatting issues and allowed manually-input HTML for custom components.
+
+The variable-population system had achieved the 'press a button' vision, and was vastly more reliable than manual entry. 
+
+Not only did content issues become rare, but also became difficult to miss. The tool automatically flagged missing or malformed data, and any remaining issues (like corrupt CSS or missing sections) were obvious compared to subtle mistakes in the manual process.
+
+The design of templates was the only significant entry point for human error. To ensure templates were reliable and accurate, I designed a strict QA review process for new templates. After this stage of comprehensive testing, templates were promoted to a less repetitive QA regimen, much to the benefit of reviewers and at no cost to reliability.
 
 # Page 3. Publishing
 
-We now have a ready-to-send email in only moments, all that’s left is reviewing and scheduling. Adding and configuring the email in ActiveCampaign, though, would still be a tedious, error-prone pain point.
+We now have a ready-to-send HTML design. All that’s left is uploading to ActiveCampaign and configuration.
 
-The platform, though, doesn’t have documented API methods for the majority of email-related features. Because no supported API existed for critical functionality, I implemented a client-emulation layer that supported creating, configuring, and deleting email designs and marketing campaigns.
+The platform, though, doesn’t have documented API methods for email-related features. Uploading and configuring manually was not only time-consuming, but also a common source of critical errors.
 
-FIGURE (Marketing email publishing stage in app | After the populated template is reviewed, the app's publishing interface allows the developer to trigger high-level automated actions in a predefined sequence.)
+To overcome the limited API functionality, I studied the inner workings of ActiveCamapaign's web application and built a client-emulation layer that could import HTML designs, set up campaigns, and/or undo any of its actions.
 
-With error-monitoring and fallbacks, the custom integration saved a significant amount of time while mitigating the long-term risk of maintenance.
+I encoded the functionality into modular automations, assembled into different sequences depending on the type of email.
 
-For automation editing, where emulating the client wasn’t possible, the fallback helper provides a copy-able version of each value that needs to be entered. Even just this fallback drastically reduced data entry time.
+FIGURE (Marketing email publishing stage in app | The publishing page for a transactional course-related email, waiting for final QA approval in Slack after export and configuration was completed.)
 
-FIGURE (Video of automation assistant | For manual-only actions, the app provides a prefilled version of the form to copy from.)
+With these high-level automations, the developer could publish, test, and coordinate reviews of an email with just a few clicks. Each module had pre- and post- flight checks, rollback functionality, and a manual fallback.
 
-Alongside the ActiveCampaign automated actions, I added helper integrations for the other administrative tasks: back-linking the scheduled item in Notion, populating Google Doc class notes templates, and submitting the QA tickets in Slack.
+For ActiveCampaign's automation editor, where emulating the client wasn’t feasible, a fallback helper provides copy-able versions of each field. Even just this fallback drastically improved data entry time and accuracy.
 
-Time-consuming data entry was no longer necessary at any stage of creating an email. Most of the time, this publishing stage only required triggering the integrations and inspecting the results. 
+FIGURE (Video of automation assistant | A demonstration of the manual form-fill helper, shown when emails needed to be added to an ActiveCampaign automation. It provides copy-able versions of each field, with the exact formatting accepted, to speed up manual entry and reduce errors.)
+
+Beyond ActiveCampaign, I designed integrations all other administrative tasks: back-linking the Notion entry, creating participant notes in Google Docs, and submitting/tracking the QA tickets in Slack.
+
+Instead of high-stakes data input, the publishing stage only required triggering the integrations and inspecting the results.
+
+With the transfer of content from sources of truth to the final design managed by the tool, QA could focus on validating accuracy and design. Collaboration could still happen in automatically-generated content docs and the Stripo editor, but without the need to review these intermediate artifacts.
+
+FIGURE (Gallery of email tool)
 
 # The Impact
 
+The email application quickly became the biggest and most impactful piece of software I had worked on. The scale of the benefits was apparent to both the developers and the entire team.
+
+FIGURE (Hours saved header)
+
+**Manual Process**
+<br/>
+<span className="sans opacity-60 font-normal!">
+    0-30min Content + 40-55min Design + 35-40min Scheduling = <b>1hr 40min</b> avg.
+<br/>
+    (+1-2 hours of review time = <b>2.5-3.5hr</b> turnaround)
+</span>
+
+**Tool-Assisted Process**
+<br/>
+<span className="sans opacity-60 font-normal!">
+    10min Content/Design + 15min Scheduling = <b>25min</b> avg.
+<br/>
+    (+35m of review time = <b>45-90min</b> turnaround)
+</span>
+
+<br/>
+<span className="sans opacity-100 font-[350]! text-lg bg-blue-100 px-2">
+    1hr 40m - 25m = <b>1hr 15min (75%) avg. of active work saved per email</b>
+</span>
+FIGURE (Time saved estimate)
+
+Any email could be created and scheduled in only 15-30 minutes, and the only manual work was a single QA review and occasional form input. 
+
+Far from the hour-minimum of repetitive, unconstrained text manipulation, the process was quick and guided enough to be done in large batches or on a whim, without filling the day.  
+
+Urgent email requests were a clear indicator. For emails handed off to be sent ASAP, the effect of the tool could be measured, isolated from parallel work.
+
+FIGURE (Chart of one-off email speed)
+
+This was the first thing the team noticed, these urgent emails were being handed back in a fraction of the time.
+
+For the first time, these urgent communications had a reliable timeline. The quick turnover also gave the team significantly more wiggle room to iterate, experiment, and collaborate on email design and content.
+
+With the tool, we built a new community onboarding flow—engaging new users with our free and paid resources—and we universally integrated a topic-based selective unsubscribe system—a feature that was in the backlog for years.
+
+FIGURE (Gallery of side projects)
+
+The relief from repetitive work gave both developers and reviewers more time and energy throughout the day.
+
+The email-designated developer was, for the first time, able to reliably expand their focus beyond emails. For the rest of mine and my successors time, product and website launch timelines were halved and the backlog of maintenance, migration, and redesign projects rapidly shrunk.
+
+We completed three major product launches, five website redesigns, and a variety of smaller web projects, where many fellowships only had time for one completed project and partial progress on another.
+
+FIGURE (Chart of email QA speed)
+
+On the reviewer side, QA reviews were easier to complete for a variety of reasons. 
+
+After demonstrating the reliability of the automated intermediate stages, the team became comfortable merging the front-loaded accuracy checks into the latter 'transfer-checking' QA. The review workload was cut in half, without a single reduction in the meaningful, ie. accuracy-testing, checks.
+
+Faster production also meant that reviews could be provided in intuitive batches, allowing us to knock out an entire course's emails in one go, and review each easily in the context of the others.
+
+FIGURE (Errors saved header)
+
+The tool-assisted workflow eliminated the majority of entry points for human error. It created a minimized-risk journey of important information from source to students, contacts, and clients.
+
+There was a significant reduction in errors, overall and in critical areas, like inaccurate content or visible design issues. The rate that serious issues were flagged in QA went from 2-5 times a day to only 1-2 times a week.
+
+FIGURE (Chart of email error rate)
+
+FIGURE (Errors saved estimate)
+
+Manual, human mistakes were more difficult to catch in review: repeated words, typos, missing sentences, or links to incorrect pages. 
+
+Mistakes made inside the tool were easier to catch, not only because of safety features but also because they tended away from tricky nuance. Between volume and noticeability, significant errors reaching production was less common.
+
+## c. Speaking a Familiar Language
+
+I kept the team involved with discussions and demonstrations as I created tools stage-by-stage. By the time a complete workflow was ready, everyone was familiar with the tools, had a role in their design, and understood each one's place in the existing process.
+
+A key part of my pitch, the team could continue collaborating and overseeing in the same capacity: copywriting in Google Docs, designing in Stripo, managing contacts in ActiveCampaign, and reviewing any/all of the same artifacts as before. 
+
+The tool only shifted how these pieces—content document, Stripo design, ActiveCampaign config—were integrated on the developer's side.
+
 FIGURE (Map of final email process)
 
-This email application quickly became the biggest and most impactful piece of software I had worked on. It lifted a weight off the shoulders of the development team and, in the process, uplifted the organization as a whole.
+The moving parts and key concepts of the assisted workflow were either the same or derived from the manual one, meaning new fellows could be efficiently trained on both. 
 
-## a. Hours Saved
+The team made it clear: the manual process was a mandatory part of training and a familiar fallback. The tool's parity allowed me to position it as a quick, optional follow-up. Compared to a react-email level overhaul, which would be mutually-exclusive training time, the barrier to sustainable adoption was much lower.
 
-The majority of emails could be scheduled start-to-finish without leaving the application. The app had become a real version of the ‘press a button’ vision. 
-
-Production time per email dropped from 1-2 hours (25m copy/edit + 25m Stripo + 15m config + 30m dev QA) to 15-30 minutes (5m review + 5m publish + 10m dev QA); a 4-6x improvement. 
-
-The developer was, for the first time, able to comfortably expand their focus beyond emails. This improved product and website launch timelines, enabled faster responses to maintenance issues, and helped developers pursue projects that aligned with their personal goals.
-
-We also had more bandwidth to experiment, iterate, and collaborate on email design and content, which led to a new community onboarding flow that increased new user activation rate by 8-15% each month.
-
-The only manual part of the process remaining was the essential one: QA reviews. I restructured the reviews away from front-loading and re-checking to only validating _output_. It significantly decreased the volume of review work while increasing the amount of meaningful validation.
-
-The start-to-finish email turnover time, including QA latency, dropped from 3-5 hours to 45-90 minutes. The more efficient review workload added time to the day for everyone.
-
-The improved timeline meant that the one-off urgent messages and marketing content could reach its audience much earlier. It greatened the impact of time-sensitive material and created the opportunity for teams to iterate. 
-
-These urgent email timelines demonstrate the difference in efficiency, because they don’t include review wait time or parallel work. Using Slack timestamps, I graphed the urgent email turnover before and after the introduction of the email tool.
-
-FIGURE (Chart of one-off email speed) 
-
-## b. Errors Eliminated
-
-Even while the QA workload was reduced, errors became scarce.  The system lowered overall risk and shifted the remaining from subtle human errors to obvious, testable failures. Problems caught in review decreased from once-a-day to once-a-week. Content and design issues in the final email became near-zero in the rest of my time there.
-
-## c. Longevity
-
-The developers who became responsible for email production after me received this tool and were also able to reap the benefits. The time and accuracy improvements remained, and they were able to adapt the configuration and templates when the needs changed, when a new course launched and branding shifted.
+Indeed, the tool has been handed off to the two subsequent developers, who learned the manual process before transitioning to the tool, and subsequently maintained, configured, and used it at scale.
 
 ## d. Conclusion
 
-This project became much more than an internal tool. It was a lesson in how to improve a critical system without breaking the trust people have built around it. I wasn’t just speeding up email production; I was redesigning a process that touched deliverability, review culture, and the organization’s day-to-day ability to operate.
+Partway through, I understood why no one had built a tool like this before me. The problem seemed tailor-made for a software solution, but the culture of the team, rightly, set a high bar for would-be interventions.
 
-My role combined systems design, product judgment, and pragmatic engineering. I identified where the real bottlenecks were, built a flexible technical foundation to remove them, and kept the solution compatible with the workflows the team already relied on. Instead of replacing the process outright, I focused on making it faster, safer, and easier to trust.
+An *adoptable* solution for this team needed to preserve the channels of coordination, provide inspectability to everyone, and embody both technical and social maintainability.
 
-That approach shaped how I think about iterating on systems. The best solutions are not always the most novel ones; often, they are the ones that meet people where they are, reduce risk, and create room for better work to happen.
+Respecting these constraints created a unique engineering challenge: formalizing tacit knowledge, integrating disjointed platforms, and automating discreet mechanisms.
 
-“By prioritizing trust, backwards compatibility, and clear operational wins, I was able to make a critical organizational process both faster and more dependable.”`;
+The result was not only faster email production, but a more reliable and sustainable operational pipeline—one that afforded the team capacity toward launches, redesigns, and other product work.
+
+The most important validation of the project is that it outlived its initial implementation. Subsequent fellows were able to learn, maintain, and extend the system because it was designed around organizational continuity, adding extra bandwidth, long-term.`;

@@ -1,11 +1,12 @@
 import { SegmentedContent } from "@/components/content/segmentedContent";
 import Image from "next/image";
+import { ErrorsSavedEstimate, ErrorsSavedSnippet, HoursSavedSnippet, IncidentsSavedSnippet, TimeSavedEstimate } from "./clientFigures";
 
 export default {
     // Images
     "Heavy email calendar in Notion": (caption: string, mobileCaption?: string) => (
         <div className="relative w-full ">
-            <Image src={'/case/emails/email-calendar.png'} width={625} height={300} alt='' className="rounded-2xl "></Image>
+            <Image src={'/case/emails/email-calendar.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </div>
     ),
@@ -109,9 +110,27 @@ export default {
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
-    "Stripo templates, transforms notion page": (caption: string, mobileCaption?: string) => (
+    "Simple Stripo template, variable documentation page": (caption: string, mobileCaption?: string) => (
         <>
-            <SegmentedContent labels={['Stripo Template', 'Transformation Documentation']} segments={[
+            <SegmentedContent labels={['Template-ized Design', 'Variable System Documentation']} segments={[
+                (
+                    <div className="relative w-full mt-4">
+                        <Image src={'/case/emails/dynamic-template-simple.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
+                        <p className="sans small opacity-60 mt-4!">{caption.split('_')[0] ?? ''}</p>
+                    </div>
+                ),
+                (
+                    <div className="relative w-full mt-3.5">
+                        <Image src={'/case/emails/eta-variables-doc.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
+                        <p className="sans small opacity-60 mt-4!">{caption.split('_')[1] ?? ''}</p>
+                    </div>
+                )
+            ]} />
+        </>
+    ),
+    "Transformation Stripo templates": (caption: string, mobileCaption?: string) => (
+        <>
+            <SegmentedContent labels={['Transactional Template', 'Marketing Template']} segments={[
                 (
                     <div className="relative w-full mt-4">
                         <Image src={'/case/emails/dynamic-template-transactional.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
@@ -120,16 +139,38 @@ export default {
                 ),
                 (
                     <div className="relative w-full mt-4.5">
-                        <Image src={'/case/emails/eta-transformation-doc.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
+                        <Image src={'/case/emails/dynamic-template-marketing.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
                         <p className="sans small opacity-60 mt-4!">{caption.split('_')[1] ?? ''}</p>
                     </div>
-                )
+                ),
             ]} />
+        </>
+    ),
+    "Transformation documentation": (caption: string, mobileCaption?: string) => (
+        <>
+            <div className="relative w-full mt-4.5">
+                <Image src={'/case/emails/eta-transformation-doc.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
+                <p className="sans small opacity-60 mt-4!">{caption.split('_')[0] ?? ''}</p>
+            </div>
+        </>
+    ),
+    "Variable fill demonstration": (caption: string, mobileCaption?: string) => (
+        <>
+            <div className="relative w-full mt-4">
+                <video
+                    src={'/case/emails/eta-template-population.mp4'}
+                    className="relative rounded-2xl w-full shadow-md"
+                    muted={true}
+                    autoPlay
+                    loop
+                />
+            </div>
+            <p className="sans small opacity-60 mt-5!">{caption}</p>
         </>
     ),
     "Settings code, settings Notion page": (caption: string, mobileCaption?: string) => (
         <>
-            <SegmentedContent labels={['Code', 'Documentation']} segments={[
+            <SegmentedContent labels={['Settings Config', 'Settings Documentation']} segments={[
                 (
                     <div className="relative w-full mt-4">
                         <Image src={'/case/emails/eta-value-config.png'} width={625} height={300} alt='' className="shadow-md bg-[#1f1f1f] pl-1 py-1.5 rounded-2xl"></Image>
@@ -166,39 +207,184 @@ export default {
         </>
     ),
 
+    // Scripted figures
+    "Time saved estimate": (caption: string, mobileCaption?: string) => (
+        <TimeSavedEstimate />
+    ),
+
+    "Hours saved header": (caption: string, mobileCaption?: string) => (
+        <h2 className="block w-fit -mt-2! -mb-3! ">
+            a. <span className=" text-2xl! relative -top-0.5 inline-block h-0! "><HoursSavedSnippet /></span> Hours Saved (so Far)
+        </h2>
+    ),
+
+    "Errors saved estimate": (caption: string, mobileCaption?: string) => (
+        <span className="sans opacity-100 font-[350]! text-lg bg-gray-100 px-2 -mt-3! -mb-5! block w-fit">
+            <ErrorsSavedEstimate />
+        </span>
+    ),
+    "Errors saved header": (caption: string, mobileCaption?: string) => (
+        <h2 className="block w-fit -mt-2! -mb-3! ">
+            b. <span className=" text-2xl! relative -top-0.5 inline-block h-0! "><ErrorsSavedSnippet /></span> Mistakes Prevented (<span className=" text-2xl! relative -top-0.5 inline-block h-0! "><IncidentsSavedSnippet /></span> in production)
+        </h2>
+    ),
+
     // Compound figures
-    "Component, notion article, and video of the variable system I created": (caption: string, mobileCaption?: string) => (
+    "Gallery of email tool": (caption: string, mobileCaption?: string) => (
         <>
-            <SegmentedContent labels={['Email Production Tool', 'Variable Documentation']} segments={[
-                (
-                    <div className="relative w-full mt-4">
+            <div className="relative w-full flex flex-col gap-5 lg:-mx-20! lg:w-[calc(100%+160px)]">
+                <div className="relative w-full flex flex-row gap-5">
+                    <div className="flex flex-col gap-4">
+                        <div className="">
+                            <img
+                                src={'/case/emails/eta-demo-edit-popup.png'}
+                                className="relative rounded-2xl shadow-md w-full"
+                            />
+                            <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">A warning system to prevent local & exported versions from conflicting.</p>
+                        </div>
+                        <div className="">
+                            <video
+                                src={'/case/emails/eta-demo-publisher.mp4'}
+                                className="relative rounded-2xl shadow-md w-full"
+                                muted={true}
+                                autoPlay
+                                loop
+                            />
+                            <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">Features of the publishing process: undo, smart links, and polling.</p>
+                        </div>
+
+                    </div>
+
+                    <div className="">
                         <video
-                            src={'/case/emails/eta-template-population.mp4'}
-                            className="relative rounded-2xl w-full shadow-md"
+                            src={'/case/emails/eta-demo-dynamic-form.mp4'}
+                            className="relative rounded-2xl shadow-md w-full"
                             muted={true}
                             autoPlay
                             loop
                         />
+                        <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">Dynamically-generated template form.</p>
                     </div>
-                ),
-                (
-                    <div className="relative w-full mt-3.5">
-                        <Image src={'/case/emails/eta-variables-doc.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
-                    </div>
-                )
-            ]} />
-            <p className="sans small opacity-60 mt-5!">{caption}</p>
-        </>
-    ),
+                </div>
 
-    "Map of full process": (caption: string, mobileCaption?: string) => (
-        <></>
+                <div className="">
+                    <video
+                        src={'/case/emails/eta-demo-html-editor.mp4'}
+                        className="relative rounded-2xl shadow-md w-full"
+                        muted={true}
+                        autoPlay
+                        loop
+                    />
+                    <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">Built-in HTML editor for one-time adjustments to template styles or layout.</p>
+                </div>
+
+                <div className="relative w-full flex flex-row gap-5">
+
+                    <div className="">
+                        <video
+                            src={'/case/emails/eta-demo-email-saves.mp4'}
+                            className="relative rounded-2xl shadow-md w-full"
+                            muted={true}
+                            autoPlay
+                            loop
+                        />
+                        <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">In-progress emails in sidebar.</p>
+                    </div>
+
+                    <div className="flex flex-col gap-5">
+                        <div className="">
+                            <video
+                                src={'/case/emails/eta-demo-email-card.mp4'}
+                                className="relative rounded-2xl shadow-md w-full"
+                                muted={true}
+                                autoPlay
+                                loop
+                            />
+                            <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">Quick-access card for manual fallbacks during publishing.</p>
+                        </div>
+                        <div className="">
+                            <video
+                                src={'/case/emails/eta-demo-schedule-entry.mp4'}
+                                className="relative rounded-2xl shadow-md w-full"
+                                muted={true}
+                                autoPlay
+                                loop
+                            />
+                            <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">Email-session entry in schedule, with calendar and participant notes integration.</p>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </>
+
+    ),
+    "Gallery of side projects": (caption: string, mobileCaption?: string) => (
+        <>
+            <div className="relative w-full flex flex-col gap-5 md:-mx-15! lg:gap-8 lg:-mx-25! xl:-mx-45! md:w-[calc(100%+120px)] lg:w-[calc(100%+200px)] xl:w-[calc(100%+360px)] mt-8!">
+                <div className="relative w-full flex flex-col md:flex-row gap-8 md:gap-5 lg:gap-8">
+                    <div className="">
+                        <video
+                            src={'/case/emails/backlog-bundle-navigation.mp4'}
+                            className="relative rounded-2xl shadow-md w-full"
+                            muted={true}
+                            autoPlay
+                            loop
+                        />
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A bundled-course product, launched with a brand-new data driven website and navigation design.</p>
+                    </div>
+                    <div className="">
+                        <img
+                            src={'/case/emails/backlog-redesign.png'}
+                            className="relative rounded-2xl shadow-md w-full"
+                        />
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A re-designed landing page with new branding for our flagship 16-week leadership course.</p>
+                    </div>
+                </div>
+                <div className="relative w-full flex flex-col md:flex-row gap-8 md:gap-5 lg:gap-8">
+                    <div className="">
+                        <img
+                            src={'/case/emails/backlog-footer.png'}
+                            className="relative rounded-2xl shadow-md w-full"
+                        />
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">An new universal footer, providing a newly succinct map of Center Centre programs.</p>
+                    </div>
+                    <div className="">
+                        <video
+                            src={'/case/emails/backlog-speaking.mp4'}
+                            className="relative rounded-2xl shadow-md w-full"
+                            muted={true}
+                            autoPlay
+                            loop
+                        />
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">Call to actions on a new website that explores corporate-oriented services in detail, a key profit driver.</p>
+                    </div>
+                </div>
+            </div>
+        </>
+
     ),
     "Map of final email process": (caption: string, mobileCaption?: string) => (
         <></>
     ),
     "Chart of one-off email speed": (caption: string, mobileCaption?: string) => (
-        <></>
+        <>
+            <div dangerouslySetInnerHTML={{ __html: '<iframe title="Urgent Email Turnaround Time" aria-label="Scatter Plot" id="datawrapper-chart-Asfta" src="https://datawrapper.dwcdn.net/Asfta/7/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="480" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>' }} />
+        </>
     ),
 
-} as { [key: string]: (caption: string, mobileCaption?: string) => React.ReactNode }; 
+    "Chart of email QA speed": (caption: string, mobileCaption?: string) => (
+        <>
+            <div dangerouslySetInnerHTML={{ __html: '<iframe title="Email QA Review Timelines" aria-label="Scatter Plot" id="datawrapper-chart-OYtBw" src="https://datawrapper.dwcdn.net/OYtBw/7/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="480" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>' }} />
+        </>
+    ),
+
+    "Chart of email error rate": (caption: string, mobileCaption?: string) => (
+        <>
+            <div dangerouslySetInnerHTML={{ __html: '<iframe title="Email Error Rate by Month" aria-label="Stacked Bars" id="datawrapper-chart-PzUBC" src="https://datawrapper.dwcdn.net/PzUBC/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="356" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>' }} />
+        </>
+    ),
+
+} as { [key: string]: (caption: string, mobileCaption?: string) => React.ReactNode };
