@@ -43,6 +43,7 @@ const fragmentShader = /* glsl */ `
     uniform float uRevealResidue;    // 0..1, glyph amount left on revealed image
     uniform float uRevealDir;        // 1.0 = reveal, 0.0 = unreveal
     uniform float uGroupCells;       // grouping size in cells (e.g. 2.0 => 2x2)
+    uniform float uKeyWhiteToAlpha;  // 1.0 = key white bg, 0.0 = keep whites
 
 
     float hash12(vec2 p) { // from https://www.shadertoy.com/view/4djSRW
@@ -185,7 +186,8 @@ const fragmentShader = /* glsl */ `
         // ink becomes black in highlights, stays colored elsewhere
         vec3 inkFinal = mix(ink, vec3(0.0), tHi);
 
-        vec3 asciiCol = mix(vec3(1.0), inkFinal, aa);
+        vec3 asciiCol = inkFinal;
+        float asciiAlpha = aa;
 
         // Diagonal cascade order in grouped cells
         vec2 grid = max(ceil(uResolution / uCell), vec2(1.0));
@@ -212,16 +214,39 @@ const fragmentShader = /* glsl */ `
         // Unreveal path (uRevealProgress: 1 -> 0), still TL -> BR
         float unrevealForward = 1.0 - smoothstep(order - soft, order + soft, 1.0 - uRevealProgress);
 
+        // Clamp endpoints so first/last diagonal groups don't get stuck at 0.5.
+        if (uRevealProgress <= 0.0) {
+            revealForward = 0.0;
+            unrevealForward = 0.0;
+        } else if (uRevealProgress >= 1.0) {
+            revealForward = 1.0;
+            unrevealForward = 1.0;
+        }
+
         float revealCell = mix(unrevealForward, revealForward, uRevealDir);
 
         vec3 originalCol = texture2D(uImage, vUv).rgb;
-        vec3 baseCol = mix(asciiCol, originalCol, revealCell);
+        // Key out only bright, low-saturation pixels (white/light gray backgrounds),
+        // while preserving bright saturated colors.
+        vec3 originalHsv = rgb2hsv(originalCol);
+        float lowSaturation = 1.0 - smoothstep(0.03, 0.18, originalHsv.y);
+        float highValue = smoothstep(0.86, 0.99, originalHsv.z);
+        float whiteMask = lowSaturation * highValue;
+        float keyedImageAlpha = 1.0 - whiteMask;
+        float imageAlpha = mix(1.0, keyedImageAlpha, uKeyWhiteToAlpha);
+        // Crossfade in premultiplied-alpha space so dark glyph ink doesn't
+        // tint transparent cell backgrounds while transitioning.
+        vec4 asciiOutPM = vec4(asciiCol * asciiAlpha, asciiAlpha);
+        vec4 imageOutPM = vec4(originalCol * imageAlpha, imageAlpha);
+        vec4 baseOutPM = mix(asciiOutPM, imageOutPM, revealCell);
+        vec3 baseRgb = baseOutPM.a > 1e-5 ? (baseOutPM.rgb / baseOutPM.a) : vec3(0.0);
 
         // Leave a little glyph opacity behind when revealed
-        float residueA = aa * uRevealResidue * revealCell;
-        vec3 outCol = mix(baseCol, inkFinal, residueA);
+        float residueA = asciiAlpha * uRevealResidue * revealCell;
+        vec3 outCol = mix(baseRgb, inkFinal, residueA);
+        float outAlpha = max(baseOutPM.a, residueA);
 
-        gl_FragColor = vec4(outCol, 1.0);
+        gl_FragColor = vec4(outCol, outAlpha);
         #include <colorspace_fragment>
     }
 `;
@@ -281,6 +306,7 @@ function AsciiImagePlane({
     hoverCell, // cell size when hovered
     groupCells = 4, // 2 => 2x2 groups
     showGlyphOnHover = true, // whether to show glyphs at all when hovered
+    keyWhiteToAlpha = false, // whether to remove near-white pixels on reveal
 }: {
     imageUrl: string;
     cell?: number;
@@ -294,6 +320,7 @@ function AsciiImagePlane({
     hoverCell: number;
     groupCells?: number;
     showGlyphOnHover?: boolean;
+    keyWhiteToAlpha?: boolean;
 
 }) {
     const imageTex = useLoader(THREE.TextureLoader, imageUrl, undefined, undefined);
@@ -330,6 +357,7 @@ function AsciiImagePlane({
             uRevealDir: { value: reveal ? 1.0 : 0.0 },
             uRevealResidue: { value: showGlyphOnHover ? 0.33 : 0.0 },
             uGroupCells: { value: groupCells },
+            uKeyWhiteToAlpha: { value: keyWhiteToAlpha ? 1.0 : 0.0 },
 
 
         };
@@ -362,6 +390,8 @@ function AsciiImagePlane({
         uniforms.uPadding.value = padding;
         uniforms.uJitter.value = jitter;
         uniforms.uGroupCells.value = groupCells;
+        uniforms.uKeyWhiteToAlpha.value = keyWhiteToAlpha ? 1.0 : 0.0;
+        uniforms.uRevealResidue.value = showGlyphOnHover ? 0.33 : 0.0;
 
         uniforms.uEdgeStrength.value = uEdgeStrength;
         uniforms.uEdgeMix.value = uEdgeMix;
@@ -369,7 +399,7 @@ function AsciiImagePlane({
         uniforms.uFontGrid.value.set(atlas.cols, atlas.rows);
         uniforms.uCharCount.value = atlas.count;
         uniforms.uFont.value = atlas.texture;
-    }, [gl, uniforms, cell, sample, padding, jitter, atlas]);
+    }, [gl, uniforms, cell, sample, padding, jitter, groupCells, keyWhiteToAlpha, showGlyphOnHover, uEdgeStrength, uEdgeMix, atlas]);
 
     useFrame((state, delta) => {
         if (!matRef.current) return;
@@ -406,6 +436,7 @@ function AsciiImagePlane({
                 fragmentShader={fragmentShader}
                 uniforms={uniforms}
                 toneMapped={false}
+                transparent
             />
         </mesh>
     );
@@ -420,6 +451,8 @@ export default function GlyphImage({
     hoveredCellSize = 8,
     isHovered = false,
     showGlyphOnHover = true,
+    keyWhiteToAlpha = false,
+    className = "",
 }: {
     imageUrl: string;
     height?: number;
@@ -429,24 +462,28 @@ export default function GlyphImage({
     hoveredCellSize?: number;
     isHovered?: boolean;
     showGlyphOnHover?: boolean;
+    keyWhiteToAlpha?: boolean;
+    className?: string;
 }) {
 
     return (
         <ErrorBoundary errorComponent={
             () => <div style={{ height, background: "lightgray", width }}> </div>
         }>
-            <div style={{ height, background: "white", width }}>
+            <div className={className} style={{ height, background: "transparent", width }}>
                 <Canvas
                     orthographic
                     dpr={dpr}
+                    gl={{ alpha: true }}
                     camera={{ position: [0, 0, 5], zoom: 100 }}
-                    onCreated={({ gl }) => gl.setClearColor("#ffffff", 1)}
+                    onCreated={({ gl }) => gl.setClearColor("#000000", 0)}
                 >
                     <AsciiImagePlane imageUrl={imageUrl}
                         reveal={isHovered}
                         baseCell={cellSize}
                         hoverCell={hoveredCellSize}
                         showGlyphOnHover={showGlyphOnHover}
+                        keyWhiteToAlpha={keyWhiteToAlpha}
                     />
                 </Canvas>
             </div>
