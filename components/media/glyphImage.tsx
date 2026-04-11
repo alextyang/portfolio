@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const RAMP = ".,:;i1tfLCG08@"; // Glyph ramp from light to dark
@@ -251,6 +251,54 @@ const fragmentShader = /* glsl */ `
     }
 `;
 
+type GlyphImageVisualProps = {
+    imageUrl: string;
+    cellSize?: number;
+    hoveredCellSize?: number;
+    isHovered?: boolean;
+    showGlyphOnHover?: boolean;
+    keyWhiteToAlpha?: boolean;
+    sample?: number;
+    jitter?: number;
+    padding?: number;
+    uEdgeStrength?: number;
+    uEdgeMix?: number;
+    groupCells?: number;
+};
+
+export type GlyphImageMeshProps = GlyphImageVisualProps & {
+    width: number;
+    height: number;
+    resolutionWidth: number;
+    resolutionHeight: number;
+    position?: [number, number, number];
+};
+
+type FontAtlas = ReturnType<typeof makeFontAtlas>;
+type GlyphShaderUniforms = {
+    uImage: { value: THREE.Texture };
+    uFont: { value: THREE.Texture };
+    uResolution: { value: THREE.Vector2 };
+    uFontGrid: { value: THREE.Vector2 };
+    uCharCount: { value: number };
+    uCell: { value: number };
+    uSample: { value: number };
+    uPadding: { value: number };
+    uTime: { value: number };
+    uJitter: { value: number };
+    uImageSize: { value: THREE.Vector2 };
+    uEdgeStrength: { value: number };
+    uEdgeMix: { value: number };
+    uRevealProgress: { value: number };
+    uCascadeSoftness: { value: number };
+    uRevealDir: { value: number };
+    uRevealResidue: { value: number };
+    uGroupCells: { value: number };
+    uKeyWhiteToAlpha: { value: number };
+};
+
+let cachedFontAtlas: FontAtlas | null = null;
+
 // Build a font atlas texture using a sans font
 function makeFontAtlas(opts: {
     chars: string;
@@ -293,142 +341,168 @@ function makeFontAtlas(opts: {
     return { texture: tex, cols, rows, count };
 }
 
-function AsciiImagePlane({
-    imageUrl, // image to represent with glyphs
-    cell = 16, // cell size in pixels
-    sample = 1, // sampling quantization in pixels
-    jitter = 1, // sampling jitter in pixels
-    padding = 0.005, // padding on glyph inside cell
-    uEdgeStrength = 3.0, // edge darkening strength
-    uEdgeMix = 0.8, // edge effect mix
-    reveal, // whether the background image is revealed
-    baseCell, // base cell size
-    hoverCell, // cell size when hovered
-    groupCells = 4, // 2 => 2x2 groups
-    showGlyphOnHover = true, // whether to show glyphs at all when hovered
-    keyWhiteToAlpha = false, // whether to remove near-white pixels on reveal
-}: {
-    imageUrl: string;
-    cell?: number;
-    sample?: number;
-    jitter?: number;
-    padding?: number;
-    uEdgeStrength?: number;
-    uEdgeMix?: number;
-    reveal: boolean;
-    baseCell: number;
-    hoverCell: number;
-    groupCells?: number;
-    showGlyphOnHover?: boolean;
-    keyWhiteToAlpha?: boolean;
-
-}) {
-    const imageTex = useLoader(THREE.TextureLoader, imageUrl, undefined, undefined);
-    const { gl, viewport } = useThree();
-    const matRef = useRef<THREE.ShaderMaterial>(null!);
-
-    const atlas = useMemo(() => {
-        return makeFontAtlas({
+function getFontAtlas() {
+    if (!cachedFontAtlas) {
+        cachedFontAtlas = makeFontAtlas({
             chars: RAMP,
             fontCss: FONT_CSS,
             cellPx: 128,
             cols: 8,
         });
-    }, []);
+    }
 
-    const uniforms = useMemo(() => {
-        return {
-            uImage: { value: imageTex },
-            uFont: { value: atlas.texture },
-            uResolution: { value: new THREE.Vector2(1, 1) },
-            uFontGrid: { value: new THREE.Vector2(atlas.cols, atlas.rows) },
-            uCharCount: { value: atlas.count },
-            uCell: { value: cell },
-            uSample: { value: sample },
-            uPadding: { value: padding },
-            uTime: { value: 0 },
-            uJitter: { value: jitter },
-            uImageSize: { value: new THREE.Vector2(1, 1) },
-            uEdgeStrength: { value: 3.0 },
-            uEdgeMix: { value: 0.8 },
+    return cachedFontAtlas;
+}
 
-            uRevealProgress: { value: reveal ? 1 : 0 },
-            uCascadeSoftness: { value: 2.5 },
-            uRevealDir: { value: reveal ? 1.0 : 0.0 },
-            uRevealResidue: { value: showGlyphOnHover ? 0.33 : 0.0 },
-            uGroupCells: { value: groupCells },
-            uKeyWhiteToAlpha: { value: keyWhiteToAlpha ? 1.0 : 0.0 },
+function createGlyphUniforms({
+    atlas,
+    cellSize,
+    groupCells,
+    imageTex,
+    isHovered,
+    jitter,
+    keyWhiteToAlpha,
+    padding,
+    resolutionHeight,
+    resolutionWidth,
+    sample,
+    showGlyphOnHover,
+    uEdgeMix,
+    uEdgeStrength,
+}: {
+    atlas: FontAtlas;
+    cellSize: number;
+    groupCells: number;
+    imageTex: THREE.Texture;
+    isHovered: boolean;
+    jitter: number;
+    keyWhiteToAlpha: boolean;
+    padding: number;
+    resolutionHeight: number;
+    resolutionWidth: number;
+    sample: number;
+    showGlyphOnHover: boolean;
+    uEdgeMix: number;
+    uEdgeStrength: number;
+}): GlyphShaderUniforms {
+    return {
+        uImage: { value: imageTex },
+        uFont: { value: atlas.texture },
+        uResolution: { value: new THREE.Vector2(resolutionWidth, resolutionHeight) },
+        uFontGrid: { value: new THREE.Vector2(atlas.cols, atlas.rows) },
+        uCharCount: { value: atlas.count },
+        uCell: { value: cellSize },
+        uSample: { value: sample },
+        uPadding: { value: padding },
+        uTime: { value: 0 },
+        uJitter: { value: jitter },
+        uImageSize: { value: new THREE.Vector2(1, 1) },
+        uEdgeStrength: { value: uEdgeStrength },
+        uEdgeMix: { value: uEdgeMix },
+        uRevealProgress: { value: isHovered ? 1 : 0 },
+        uCascadeSoftness: { value: 2.5 },
+        uRevealDir: { value: isHovered ? 1.0 : 0.0 },
+        uRevealResidue: { value: showGlyphOnHover ? 0.33 : 0.0 },
+        uGroupCells: { value: groupCells },
+        uKeyWhiteToAlpha: { value: keyWhiteToAlpha ? 1.0 : 0.0 },
+    };
+}
 
+export function GlyphImageMesh({
+    imageUrl,
+    width,
+    height,
+    resolutionWidth,
+    resolutionHeight,
+    position = [0, 0, 0],
+    cellSize = 16,
+    hoveredCellSize = 8,
+    isHovered = false,
+    showGlyphOnHover = true,
+    keyWhiteToAlpha = false,
+    sample = 1,
+    jitter = 1,
+    padding = 0.005,
+    uEdgeStrength = 3.0,
+    uEdgeMix = 0.8,
+    groupCells = 4,
+}: GlyphImageMeshProps) {
+    void hoveredCellSize;
 
-        };
-    }, [imageTex, atlas, cell, sample, padding, jitter]);
-
-    useEffect(() => {
-        imageTex.colorSpace = THREE.SRGBColorSpace;
-        imageTex.minFilter = THREE.LinearFilter;
-        imageTex.magFilter = THREE.LinearFilter;
-        imageTex.wrapS = THREE.ClampToEdgeWrapping;
-        imageTex.wrapT = THREE.ClampToEdgeWrapping;
-        imageTex.needsUpdate = true;
+    const imageTex = useLoader(THREE.TextureLoader, imageUrl, undefined, undefined);
+    const matRef = useRef<THREE.ShaderMaterial>(null!);
+    const atlas = useMemo(() => getFontAtlas(), []);
+    const configuredImageTex = useMemo(() => {
+        const nextTexture = imageTex.clone();
+        nextTexture.colorSpace = THREE.SRGBColorSpace;
+        nextTexture.minFilter = THREE.LinearFilter;
+        nextTexture.magFilter = THREE.LinearFilter;
+        nextTexture.wrapS = THREE.ClampToEdgeWrapping;
+        nextTexture.wrapT = THREE.ClampToEdgeWrapping;
+        nextTexture.needsUpdate = true;
+        return nextTexture;
     }, [imageTex]);
+    const [uniforms] = useState(() => {
+        return createGlyphUniforms({
+            atlas,
+            cellSize,
+            groupCells,
+            imageTex: configuredImageTex,
+            isHovered,
+            jitter,
+            keyWhiteToAlpha,
+            padding,
+            resolutionHeight,
+            resolutionWidth,
+            sample,
+            showGlyphOnHover,
+            uEdgeMix,
+            uEdgeStrength,
+        });
+    });
 
     useEffect(() => {
-        const img: any = imageTex.image;
-        if (img?.width && img?.height) {
-            uniforms.uImageSize.value.set(img.width, img.height);
-        }
-    }, [imageTex, uniforms]);
-
-    // Use real drawing buffer size (most reliable)
-    useEffect(() => {
-        const v = new THREE.Vector2();
-        gl.getDrawingBufferSize(v);
-        uniforms.uResolution.value.copy(v);
-
-        uniforms.uCell.value = cell;
-        uniforms.uSample.value = sample;
-        uniforms.uPadding.value = padding;
-        uniforms.uJitter.value = jitter;
-        uniforms.uGroupCells.value = groupCells;
-        uniforms.uKeyWhiteToAlpha.value = keyWhiteToAlpha ? 1.0 : 0.0;
-        uniforms.uRevealResidue.value = showGlyphOnHover ? 0.33 : 0.0;
-
-        uniforms.uEdgeStrength.value = uEdgeStrength;
-        uniforms.uEdgeMix.value = uEdgeMix;
-
-        uniforms.uFontGrid.value.set(atlas.cols, atlas.rows);
-        uniforms.uCharCount.value = atlas.count;
-        uniforms.uFont.value = atlas.texture;
-    }, [gl, uniforms, cell, sample, padding, jitter, groupCells, keyWhiteToAlpha, showGlyphOnHover, uEdgeStrength, uEdgeMix, atlas]);
+        return () => {
+            configuredImageTex.dispose();
+        };
+    }, [configuredImageTex]);
 
     useFrame((state, delta) => {
         if (!matRef.current) return;
 
-        matRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
-        matRef.current.uniforms.uRevealDir.value = reveal ? 1.0 : 0.0;
+        const materialUniforms = matRef.current.uniforms as GlyphShaderUniforms;
+        materialUniforms.uImage.value = configuredImageTex;
+        materialUniforms.uFont.value = atlas.texture;
+        materialUniforms.uResolution.value.set(resolutionWidth, resolutionHeight);
+        materialUniforms.uFontGrid.value.set(atlas.cols, atlas.rows);
+        materialUniforms.uCharCount.value = atlas.count;
+        materialUniforms.uCell.value = cellSize;
+        materialUniforms.uSample.value = sample;
+        materialUniforms.uPadding.value = padding;
+        materialUniforms.uJitter.value = jitter;
+        materialUniforms.uEdgeStrength.value = uEdgeStrength;
+        materialUniforms.uEdgeMix.value = uEdgeMix;
+        materialUniforms.uGroupCells.value = groupCells;
+        materialUniforms.uKeyWhiteToAlpha.value = keyWhiteToAlpha ? 1.0 : 0.0;
+        materialUniforms.uRevealResidue.value = showGlyphOnHover ? 0.33 : 0.0;
 
-        const damp = (cur: number, tgt: number) =>
-            THREE.MathUtils.damp(cur, tgt, 24, delta); // number = snappiness
+        const image = configuredImageTex.image as HTMLImageElement | undefined;
+        if (image?.width && image?.height) {
+            materialUniforms.uImageSize.value.set(image.width, image.height);
+        }
 
-        // Smooth cell size
-        // const targetCell = reveal ? hoverCell : baseCell;
-        // const curCell = matRef.current.uniforms.uCell.value;
-        // matRef.current.uniforms.uCell.value = damp(curCell, targetCell);
+        materialUniforms.uTime.value = state.clock.getElapsedTime();
+        materialUniforms.uRevealDir.value = isHovered ? 1.0 : 0.0;
 
         const revealRate = 6; // progress units/sec (lower = slower sweep)
-        const dir = reveal ? 1 : -1;
-        const curReveal = matRef.current.uniforms.uRevealProgress.value;
-        const nextReveal = THREE.MathUtils.clamp(curReveal + dir * revealRate * delta, 0, 1);
-        matRef.current.uniforms.uRevealProgress.value = nextReveal;
-
-        // keep resolution updated (covers resize + DPR changes)
-        const v = new THREE.Vector2();
-        gl.getDrawingBufferSize(v);
-        matRef.current.uniforms.uResolution.value.copy(v);
+        const direction = isHovered ? 1 : -1;
+        const currentReveal = materialUniforms.uRevealProgress.value;
+        const nextReveal = THREE.MathUtils.clamp(currentReveal + direction * revealRate * delta, 0, 1);
+        materialUniforms.uRevealProgress.value = nextReveal;
     });
 
     return (
-        <mesh scale={[viewport.width, viewport.height, 1]}>
+        <mesh position={position} scale={[width, height, 1]}>
             <planeGeometry args={[1, 1]} />
             <shaderMaterial
                 ref={matRef}
@@ -442,6 +516,33 @@ function AsciiImagePlane({
     );
 }
 
+function GlyphCanvasPlane(props: GlyphImageVisualProps) {
+    const { gl, size, viewport } = useThree();
+
+    return (
+        <GlyphImageMesh
+            {...props}
+            width={viewport.width}
+            height={viewport.height}
+            resolutionWidth={size.width * gl.getPixelRatio()}
+            resolutionHeight={size.height * gl.getPixelRatio()}
+        />
+    );
+}
+
+export type GlyphImageProps = {
+    imageUrl: string;
+    height?: number;
+    width?: number;
+    dpr?: number;
+    cellSize?: number;
+    hoveredCellSize?: number;
+    isHovered?: boolean;
+    showGlyphOnHover?: boolean;
+    keyWhiteToAlpha?: boolean;
+    className?: string;
+};
+
 export default function GlyphImage({
     imageUrl,
     height = 700,
@@ -453,18 +554,14 @@ export default function GlyphImage({
     showGlyphOnHover = true,
     keyWhiteToAlpha = false,
     className = "",
-}: {
-    imageUrl: string;
-    height?: number;
-    width?: number;
-    dpr?: number;
-    cellSize?: number;
-    hoveredCellSize?: number;
-    isHovered?: boolean;
-    showGlyphOnHover?: boolean;
-    keyWhiteToAlpha?: boolean;
-    className?: string;
-}) {
+}: GlyphImageProps) {
+    const [canvasKey, setCanvasKey] = useState(0);
+
+    const handleContextLost = useCallback((event: Event) => {
+        // Allow restoration and immediately remount to recover renderer state.
+        event.preventDefault();
+        setCanvasKey((current) => current + 1);
+    }, []);
 
     return (
         <ErrorBoundary errorComponent={
@@ -472,16 +569,22 @@ export default function GlyphImage({
         }>
             <div className={className} style={{ height, background: "transparent", width }}>
                 <Canvas
+                    key={canvasKey}
                     orthographic
                     dpr={dpr}
+                    frameloop="always"
                     gl={{ alpha: true }}
                     camera={{ position: [0, 0, 5], zoom: 100 }}
-                    onCreated={({ gl }) => gl.setClearColor("#000000", 0)}
+                    onCreated={({ gl }) => {
+                        gl.setClearColor("#000000", 0);
+                        gl.domElement.addEventListener("webglcontextlost", handleContextLost, { once: true });
+                    }}
                 >
-                    <AsciiImagePlane imageUrl={imageUrl}
-                        reveal={isHovered}
-                        baseCell={cellSize}
-                        hoverCell={hoveredCellSize}
+                    <GlyphCanvasPlane
+                        imageUrl={imageUrl}
+                        isHovered={isHovered}
+                        cellSize={cellSize}
+                        hoveredCellSize={hoveredCellSize}
                         showGlyphOnHover={showGlyphOnHover}
                         keyWhiteToAlpha={keyWhiteToAlpha}
                     />

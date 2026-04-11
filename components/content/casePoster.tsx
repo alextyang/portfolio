@@ -1,40 +1,97 @@
 "use client";
 
 import { CaseStudy } from "@/content/cases";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GlyphImage from "../media/glyphImage";
+import { usePosterGlyphRegistry } from "./posterGlyphCanvasHost";
 
 
-export function CasePoster({ caseStudy }: { caseStudy: CaseStudy }) {
+export function CasePoster({
+    caseStudy,
+    isAboutSubPage = false,
+}: {
+    caseStudy: CaseStudy;
+    isAboutSubPage?: boolean;
+}) {
     const [isHovered, setIsHovered] = useState(false);
-    const searchParams = useSearchParams();
-    const isAboutSubPage = searchParams.get("p") === "about";
+    const glyphAnchorRef = useRef<HTMLDivElement>(null);
+    const initialPosterStateRef = useRef({
+        isHovered,
+        keyWhiteToAlpha: isAboutSubPage,
+    });
+    const posterGlyphRegistry = usePosterGlyphRegistry();
     const hoverBackgroundClass = isAboutSubPage ? "hover:after:bg-white/80" : "hover:after:bg-(--hover-bg-color)";
+    const imageUrl = `/case/${caseStudy.slug}/${caseStudy.coverImageFilename}`;
+
+    useEffect(() => {
+        if (!posterGlyphRegistry) return;
+
+        posterGlyphRegistry.registerPoster(caseStudy.slug, {
+            anchorRef: glyphAnchorRef,
+            imageUrl,
+            width: 300,
+            height: 525,
+            dpr: 3,
+            cellSize: 16,
+            hoveredCellSize: 8,
+            showGlyphOnHover: false,
+            keyWhiteToAlpha: initialPosterStateRef.current.keyWhiteToAlpha,
+            isHovered: initialPosterStateRef.current.isHovered,
+        });
+
+        return () => {
+            posterGlyphRegistry.unregisterPoster(caseStudy.slug);
+        };
+    }, [caseStudy.slug, imageUrl, posterGlyphRegistry]);
+
+    useEffect(() => {
+        if (!posterGlyphRegistry) return;
+
+        posterGlyphRegistry.updatePosterState(caseStudy.slug, {
+            isHovered,
+            keyWhiteToAlpha: isAboutSubPage,
+        });
+    }, [caseStudy.slug, isAboutSubPage, isHovered, posterGlyphRegistry]);
 
     return (
         <a
-            className={`group w-74 cursor-pointer relative z-0 after:content-[''] after:absolute after:-top-4.5 after:-left-4.5 after:-right-5.75 after:-bottom-3 after:bg-transparent after:-z-10 after:rounded-md after:scale-98 after:transition-all after:duration-300 after:ease-out ${hoverBackgroundClass} hover:after:scale-100`}
+            className={`group w-74 cursor-pointer relative after:content-[''] after:absolute after:-top-4.5 after:-left-4.5 after:-right-5.75 after:-bottom-3.5 after:bg-transparent after:z-0 after:rounded-lg after:scale-98 after:transition-all after:duration-300 after:ease-out ${hoverBackgroundClass} hover:after:scale-100 ` + (isAboutSubPage ? "mr-2.5 ml-1.5" : " ")}
             href={`/case/${caseStudy.slug}`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="relative w-75 h-[510px] mb-4">
+            <div
+                className={`pointer-events-none absolute -inset-3.5 -bottom-3 z-[1] rounded-xl bg-black/30 mix-blend-overlay inset-shadow-sm transition-opacity duration-150 ease-out ${isAboutSubPage ? "opacity-100 delay-75" : "opacity-0"}`}
+            />
+            <div
+                className={`pointer-events-none absolute -inset-3.5 -bottom-3 z-[1] rounded-xl inset-shadow-sm transition-opacity duration-150 ease-out ${isAboutSubPage && !isHovered ? "opacity-40" : "opacity-0"}`}
+                style={{ transitionDelay: isAboutSubPage && !isHovered ? "75ms" : "0ms" }}
+            />
+            <div className="relative z-[2] w-75 h-[510px] mb-4">
                 <div className="absolute w-74 h-111 top-0 left-0  ">
-                    <GlyphImage
-                        imageUrl={`/case/${caseStudy.slug}/${caseStudy.coverImageFilename}`}
-                        height={525}
-                        width={300}
-                        isHovered={isHovered}
-                        showGlyphOnHover={false}
-                        keyWhiteToAlpha={isAboutSubPage}
-                    />
+                    {posterGlyphRegistry ? (
+                        <div
+                            ref={glyphAnchorRef}
+                            style={{ width: 300, height: 525 }}
+                        />
+                    ) : (
+                        <GlyphImage
+                            imageUrl={imageUrl}
+                            height={525}
+                            width={300}
+                            isHovered={isHovered}
+                            showGlyphOnHover={false}
+                            keyWhiteToAlpha={isAboutSubPage}
+                        />
+                    )}
                 </div>
             </div>
-            <h3 className="">{caseStudy.previewTitle}</h3>
-            <p className="opacity-60 sans small mt-1! mb-1!">
-                {caseStudy.previewSubtitle}
-            </p>
+            <div className="relative z-[2]">
+                <h3 className="">{caseStudy.previewTitle}</h3>
+                <p className="opacity-60 sans small mt-1! mb-1!">
+                    {caseStudy.previewSubtitle}
+                </p>
+            </div>
         </a>
     );
 }
