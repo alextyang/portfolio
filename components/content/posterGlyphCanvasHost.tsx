@@ -26,6 +26,7 @@ type PosterGlyphDescriptor = {
     hoveredCellSize: number;
     showGlyphOnHover: boolean;
     keyWhiteToAlpha: boolean;
+    pauseNoiseAnimation: boolean;
     isHovered: boolean;
 };
 
@@ -157,6 +158,7 @@ function RegisteredPosterGlyph({
             isHovered={poster.isHovered}
             showGlyphOnHover={poster.showGlyphOnHover}
             keyWhiteToAlpha={poster.keyWhiteToAlpha}
+            pauseNoiseAnimation={poster.pauseNoiseAnimation}
             position={[
                 layout.left + layout.width / 2 - size.width / 2,
                 size.height / 2 - (layout.top + layout.height / 2),

@@ -9,6 +9,7 @@ type BackgroundVideoPlaylistProps = {
     poster?: string
     crossFadeMs?: number
     fadeInDelayMs?: number
+    loopPlaylist?: boolean
     visible?: boolean
     visibleOnSubPage?: string
 }
@@ -54,11 +55,19 @@ function getVideoMimeType(source: string) {
     return undefined
 }
 
-function getPreparedVideo(queue: string[], currentIndex: number, activeSlot: 0 | 1, allSources: string[]): PreparedVideo {
+function getPreparedVideo(
+    queue: string[],
+    currentIndex: number,
+    activeSlot: 0 | 1,
+    allSources: string[],
+    loopPlaylist: boolean
+): PreparedVideo {
     if (queue.length <= 1) return null
 
     const nextIndex = currentIndex + 1
     const wrapsQueue = nextIndex >= queue.length
+    if (wrapsQueue && !loopPlaylist) return null
+
     const nextQueue = wrapsQueue ? shuffleSources(allSources, queue[currentIndex]) : queue
     const resolvedIndex = wrapsQueue ? 0 : nextIndex
     const nextSource = nextQueue[resolvedIndex]
@@ -79,14 +88,17 @@ function BackgroundVideoPlaylist({
     poster,
     crossFadeMs = 300,
     fadeInDelayMs = 0,
+    loopPlaylist = false,
     visible = true,
     visibleOnSubPage,
 }: BackgroundVideoPlaylistProps) {
     const searchParams = useSearchParams()
-    const videoRefs = [
-        React.useRef<HTMLVideoElement>(null),
-        React.useRef<HTMLVideoElement>(null),
-    ]
+    const firstVideoRef = React.useRef<HTMLVideoElement>(null)
+    const secondVideoRef = React.useRef<HTMLVideoElement>(null)
+    const videoRefs = React.useMemo(
+        () => [firstVideoRef, secondVideoRef] as const,
+        []
+    )
     const loadedSourcesRef = React.useRef<[string, string]>(["", ""])
 
     const [playbackQueue, setPlaybackQueue] = React.useState<string[]>([])
@@ -95,7 +107,7 @@ function BackgroundVideoPlaylist({
     const [activeSlot, setActiveSlot] = React.useState<0 | 1>(0)
     const [readySlots, setReadySlots] = React.useState<[boolean, boolean]>([false, false])
     const [preparedVideo, setPreparedVideo] = React.useState<PreparedVideo>(null)
-    const [isDelayedVisible, setIsDelayedVisible] = React.useState(false)
+    const [shouldShowVideoLayer, setShouldShowVideoLayer] = React.useState(false)
 
     const normalizedSources = React.useMemo(
         () => sources.filter((source) => source.trim().length > 0),
@@ -107,17 +119,17 @@ function BackgroundVideoPlaylist({
 
     React.useEffect(() => {
         if (!shouldBeVisible) {
-            setIsDelayedVisible(false)
+            setShouldShowVideoLayer(false)
             return
         }
 
         if (fadeInDelayMs <= 0) {
-            setIsDelayedVisible(true)
+            setShouldShowVideoLayer(true)
             return
         }
 
         const timeoutId = window.setTimeout(() => {
-            setIsDelayedVisible(true)
+            setShouldShowVideoLayer(true)
         }, fadeInDelayMs)
 
         return () => {
@@ -133,6 +145,7 @@ function BackgroundVideoPlaylist({
             setReadySlots([false, false])
             setActiveSlot(0)
             setPreparedVideo(null)
+            setShouldShowVideoLayer(false)
             return
         }
 
@@ -145,8 +158,17 @@ function BackgroundVideoPlaylist({
         setPreparedVideo(null)
     }, [normalizedSources])
 
+    const activeSlotIsReady = readySlots[activeSlot]
+    const shouldRenderVideoLayer = shouldShowVideoLayer && activeSlotIsReady
+
     React.useEffect(() => {
-        const nextPreparedVideo = getPreparedVideo(playbackQueue, currentQueueIndex, activeSlot, normalizedSources)
+        const nextPreparedVideo = getPreparedVideo(
+            playbackQueue,
+            currentQueueIndex,
+            activeSlot,
+            normalizedSources,
+            loopPlaylist
+        )
         setPreparedVideo(nextPreparedVideo)
 
         if (!nextPreparedVideo) {
@@ -164,7 +186,7 @@ function BackgroundVideoPlaylist({
             nextReadySlots[nextPreparedVideo.slot] = false
             return nextReadySlots
         })
-    }, [activeSlot, currentQueueIndex, normalizedSources, playbackQueue])
+    }, [activeSlot, currentQueueIndex, loopPlaylist, normalizedSources, playbackQueue])
 
     React.useEffect(() => {
         const cleanupCallbacks = videoRefs.map((videoRef, slotIndex) => {
@@ -238,12 +260,13 @@ function BackgroundVideoPlaylist({
     }, [activeSlot, shouldBeVisible, slotSources, videoRefs])
 
     React.useEffect(() => {
+        let pauseTimeoutId: number | null = null
+
         videoRefs.forEach((videoRef, slotIndex) => {
             const video = videoRef.current
             if (!video) return
 
             if (!shouldBeVisible) {
-                video.pause()
                 return
             }
 
@@ -251,7 +274,23 @@ function BackgroundVideoPlaylist({
                 void video.play().catch(() => { })
             }
         })
-    }, [activeSlot, shouldBeVisible, videoRefs])
+
+        if (!shouldBeVisible) {
+            pauseTimeoutId = window.setTimeout(() => {
+                videoRefs.forEach((videoRef) => {
+                    const video = videoRef.current
+                    if (!video) return
+                    video.pause()
+                })
+            }, crossFadeMs)
+        }
+
+        return () => {
+            if (pauseTimeoutId !== null) {
+                window.clearTimeout(pauseTimeoutId)
+            }
+        }
+    }, [activeSlot, crossFadeMs, shouldBeVisible, videoRefs])
 
     const switchToPreparedVideo = React.useCallback(() => {
         if (!preparedVideo) return false
@@ -267,7 +306,6 @@ function BackgroundVideoPlaylist({
 
         if (previousVideo) {
             previousVideo.pause()
-            previousVideo.currentTime = 0
         }
 
         return true
@@ -281,8 +319,7 @@ function BackgroundVideoPlaylist({
 
         const activeVideo = videoRefs[activeSlot].current
         if (activeVideo) {
-            activeVideo.currentTime = 0
-            void activeVideo.play().catch(() => { })
+            activeVideo.pause()
         }
     }, [activeSlot, shouldBeVisible, switchToPreparedVideo, videoRefs])
 
@@ -294,8 +331,7 @@ function BackgroundVideoPlaylist({
 
         const activeVideo = videoRefs[activeSlot].current
         if (activeVideo) {
-            activeVideo.currentTime = 0
-            void activeVideo.play().catch(() => { })
+            activeVideo.pause()
         }
     }, [activeSlot, shouldBeVisible, switchToPreparedVideo, videoRefs])
 
@@ -305,36 +341,43 @@ function BackgroundVideoPlaylist({
         <div
             aria-hidden="true"
             className={`pointer-events-none fixed inset-0 -z-20 overflow-hidden bg-white ${className ?? ""}`}
-            style={{
-                opacity: isDelayedVisible ? 1 : 0,
-                transition: `opacity ${crossFadeMs}ms ease`,
-            }}
         >
-            {slotSources.map((source, slotIndex) => {
-                if (!source) return null
+            <div
+                className="absolute inset-0"
+                style={{
+                    opacity: shouldRenderVideoLayer ? 1 : 0,
+                    transition: `opacity ${crossFadeMs}ms ease`,
+                    willChange: "opacity",
+                }}
+            >
+                {slotSources.map((source, slotIndex) => {
+                    if (!source) return null
 
-                const isActiveSlot = activeSlot === slotIndex
-                const slotIsReady = readySlots[slotIndex]
+                    const isActiveSlot = activeSlot === slotIndex
+                    const slotIsReady = readySlots[slotIndex]
 
-                return (
-                    <video
-                        key={`${slotIndex}-${source}`}
-                        ref={videoRefs[slotIndex]}
-                        className="absolute inset-0 h-full w-full object-cover"
-                        muted
-                        onEnded={isActiveSlot ? handleEnded : undefined}
-                        onError={isActiveSlot ? handleError : undefined}
-                        playsInline
-                        poster={poster}
-                        preload="auto"
-                        style={{
-                            opacity: isActiveSlot && slotIsReady ? 1 : 0,
-                        }}
-                    >
-                        <source src={source} type={getVideoMimeType(source)} />
-                    </video>
-                )
-            })}
+                    return (
+                        <video
+                            key={`${slotIndex}-${source}`}
+                            ref={videoRefs[slotIndex]}
+                            className="absolute inset-0 h-full w-full object-cover"
+                            muted
+                            onEnded={isActiveSlot ? handleEnded : undefined}
+                            onError={isActiveSlot ? handleError : undefined}
+                            playsInline
+                            poster={poster}
+                            preload="auto"
+                            style={{
+                                opacity: isActiveSlot && slotIsReady ? 1 : 0,
+                                transition: `opacity ${crossFadeMs}ms ease`,
+                                willChange: "opacity",
+                            }}
+                        >
+                            <source src={source} type={getVideoMimeType(source)} />
+                        </video>
+                    )
+                })}
+            </div>
         </div>
     )
 }

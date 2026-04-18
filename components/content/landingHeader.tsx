@@ -1,8 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import WritingText from "../media/textFadeIn";
+
+function AnimatedWidthSpan({ children }: { children: ReactNode }) {
+    const innerRef = useRef<HTMLSpanElement>(null);
+    const [width, setWidth] = useState<number | undefined>(undefined);
+
+    useEffect(() => {
+        if (!innerRef.current) return;
+        setWidth(innerRef.current.getBoundingClientRect().width);
+        const observer = new ResizeObserver((entries) => {
+            const entry = entries[0];
+            if (entry) setWidth(entry.contentRect.width);
+        });
+        observer.observe(innerRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <motion.span
+            style={{ display: "inline-block", overflow: "visible" }}
+            animate={{ width: width !== undefined ? width : "auto" }}
+            transition={{ type: "spring", bounce: 0, duration: 0.6 }}
+        >
+            <span ref={innerRef} style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+                {children}
+            </span>
+        </motion.span>
+    );
+}
 
 const SUBPAGE_KEY = "p";
 const RESUME_URL = "/AlexanderYang_Resume.pdf";
@@ -52,20 +82,19 @@ export default function LandingHeader() {
             <div className="inline-block">
                 <h2>Alexander Yang</h2>
                 <div className={"overflow-hidden " + introTransitionClass + " " + (showSubPagePanel ? "max-h-0 opacity-0 -mb-px" : "max-h-32 opacity-100")}>
-                    <p>I&apos;m a full-stack developer who uses TypeScript and Next.js to turn vision into shipped products.&nbsp;
-                        <span className="opacity-50">
+                    <p>I&apos;m a full-stack developer using TypeScript and Next.js to turn vision into<br />
+                        <AnimatedWidthSpan>
                             <WritingText
                                 texts={[
-                                    "Your launch-eager PM's favorite developer.",
-                                    "Your ambitious designer's favorite developer.",
-                                    "Your creative director's favorite developer.",
-                                    "Your velocity-first founder's favorite developer.",
-                                    "Your power users' favorite developer.",
-                                    "Your no-nonsense client's favorite developer.",
-                                    "Your support team's favorite developer.",
+                                    "polished products",
+                                    "better workflows",
+                                    "fine-tuned interaction",
+                                    "engaging experiences",
+                                    "smoother launches",
                                 ]}
                             />
-                        </span>
+                        </AnimatedWidthSpan> and the systems behind them.&nbsp;
+
                     </p>
                 </div>
             </div>
@@ -92,13 +121,13 @@ export default function LandingHeader() {
 
                 <div className={"rounded-lg px-1 py-5 " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-100 delay-75' : 'opacity-0')}>
                     <p className="mt-0!">
-                        I build web apps, internal tooling, and infrastructure to ship polished, impactful experiences and help shape effective organizations.
+                        I build web apps, internal tooling, and infrastructure to ship polished, impactful experiences and shape effective organizations.
                     </p>
                     <p>
-                        With a background primarily in software, I use education and experience in design, user experience, and media production to add impactful velocity to small and growing teams.
+                        While my background is primarily in software, I use an education in design, user experience, and media production to add impactful velocity to collaborations in small and growing teams.
                     </p>
                     <p>
-                        Recently at Center Centre, I cut website development timelines in half with a component library and design system, streamlined bottom-of-funnel UX with front-end features and optimization, and saved the team &gt;25 hours a week with collaboratively-built internal tools.
+                        Recently, at Center Centre, I cut website development timelines in half (with a component library and encoded design system), streamlined bottom-of-funnel UX (with front-end features and optimization), and saved the team &gt;25 hours a week (with cross-functional internal tools).
                     </p>
                 </div>
             </div>

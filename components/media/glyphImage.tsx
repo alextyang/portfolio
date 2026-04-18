@@ -44,8 +44,6 @@ const fragmentShader = /* glsl */ `
     uniform float uRevealDir;        // 1.0 = reveal, 0.0 = unreveal
     uniform float uGroupCells;       // grouping size in cells (e.g. 2.0 => 2x2)
     uniform float uKeyWhiteToAlpha;  // 1.0 = key white bg, 0.0 = keep whites
-
-
     float hash12(vec2 p) { // from https://www.shadertoy.com/view/4djSRW
         float h = dot(p, vec2(127.1, 311.7));
         return fract(sin(h) * 43758.5453123);
@@ -258,6 +256,7 @@ type GlyphImageVisualProps = {
     isHovered?: boolean;
     showGlyphOnHover?: boolean;
     keyWhiteToAlpha?: boolean;
+    pauseNoiseAnimation?: boolean;
     sample?: number;
     jitter?: number;
     padding?: number;
@@ -420,6 +419,7 @@ export function GlyphImageMesh({
     isHovered = false,
     showGlyphOnHover = true,
     keyWhiteToAlpha = false,
+    pauseNoiseAnimation = false,
     sample = 1,
     jitter = 1,
     padding = 0.005,
@@ -467,7 +467,7 @@ export function GlyphImageMesh({
         };
     }, [configuredImageTex]);
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         if (!matRef.current) return;
 
         const materialUniforms = matRef.current.uniforms as GlyphShaderUniforms;
@@ -491,7 +491,9 @@ export function GlyphImageMesh({
             materialUniforms.uImageSize.value.set(image.width, image.height);
         }
 
-        materialUniforms.uTime.value = state.clock.getElapsedTime();
+        if (!pauseNoiseAnimation) {
+            materialUniforms.uTime.value += delta;
+        }
         materialUniforms.uRevealDir.value = isHovered ? 1.0 : 0.0;
 
         const revealRate = 6; // progress units/sec (lower = slower sweep)
@@ -540,6 +542,7 @@ export type GlyphImageProps = {
     isHovered?: boolean;
     showGlyphOnHover?: boolean;
     keyWhiteToAlpha?: boolean;
+    pauseNoiseAnimation?: boolean;
     className?: string;
 };
 
@@ -553,6 +556,7 @@ export default function GlyphImage({
     isHovered = false,
     showGlyphOnHover = true,
     keyWhiteToAlpha = false,
+    pauseNoiseAnimation = false,
     className = "",
 }: GlyphImageProps) {
     const [canvasKey, setCanvasKey] = useState(0);
@@ -587,6 +591,7 @@ export default function GlyphImage({
                         hoveredCellSize={hoveredCellSize}
                         showGlyphOnHover={showGlyphOnHover}
                         keyWhiteToAlpha={keyWhiteToAlpha}
+                        pauseNoiseAnimation={pauseNoiseAnimation}
                     />
                 </Canvas>
             </div>

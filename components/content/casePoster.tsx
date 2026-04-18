@@ -18,6 +18,7 @@ export function CasePoster({
     const initialPosterStateRef = useRef({
         isHovered,
         keyWhiteToAlpha: isAboutSubPage,
+        pauseNoiseAnimation: isAboutSubPage,
     });
     const posterGlyphRegistry = usePosterGlyphRegistry();
     const hoverBackgroundClass = isAboutSubPage ? "hover:after:bg-white/80" : "hover:after:bg-(--hover-bg-color)";
@@ -36,6 +37,7 @@ export function CasePoster({
             hoveredCellSize: 8,
             showGlyphOnHover: false,
             keyWhiteToAlpha: initialPosterStateRef.current.keyWhiteToAlpha,
+            pauseNoiseAnimation: initialPosterStateRef.current.pauseNoiseAnimation,
             isHovered: initialPosterStateRef.current.isHovered,
         });
 
@@ -50,6 +52,7 @@ export function CasePoster({
         posterGlyphRegistry.updatePosterState(caseStudy.slug, {
             isHovered,
             keyWhiteToAlpha: isAboutSubPage,
+            pauseNoiseAnimation: isAboutSubPage,
         });
     }, [caseStudy.slug, isAboutSubPage, isHovered, posterGlyphRegistry]);
 
@@ -82,6 +85,7 @@ export function CasePoster({
                             isHovered={isHovered}
                             showGlyphOnHover={false}
                             keyWhiteToAlpha={isAboutSubPage}
+                            pauseNoiseAnimation={isAboutSubPage}
                         />
                     )}
                 </div>
