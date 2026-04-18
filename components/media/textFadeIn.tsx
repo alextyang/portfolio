@@ -20,7 +20,7 @@ type WritingTextProps = Omit<HTMLMotionProps<"span">, "children"> & {
     holdDurationMs?: number
 }
 
-function shuffleIndices(count: number, firstIndexToAvoid?: number) {
+function shuffleIndices(count: number) {
     const result = Array.from({ length: count }, (_, index) => index)
     for (let i = result.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1))
@@ -28,20 +28,6 @@ function shuffleIndices(count: number, firstIndexToAvoid?: number) {
         result[i] = result[j]
         result[j] = temp
     }
-
-    if (
-        typeof firstIndexToAvoid === "number" &&
-        result.length > 1 &&
-        result[0] === firstIndexToAvoid
-    ) {
-        const swapIndex = result.findIndex((index) => index !== firstIndexToAvoid)
-        if (swapIndex > 0) {
-            const temp = result[0]
-            result[0] = result[swapIndex]
-            result[swapIndex] = temp
-        }
-    }
-
     return result
 }
 
@@ -52,8 +38,8 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
     spacing = 5,
     text,
     texts,
-    holdDurationMs = 1200,
-    transition = { type: "spring", bounce: 0, duration: 2, delay: 0.5 },
+    holdDurationMs = 3000,
+    transition = { type: "spring", bounce: 0, duration: 2, delay: 0.25 },
     ...props
 }, ref) {
     const localRef = React.useRef<HTMLSpanElement>(null)
@@ -102,7 +88,7 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
         0,
         ((Math.max(words.length - 1, 0) * wordStaggerSeconds) + transitionDurationSeconds) * 1000
     )
-    const fadeOutDurationMs = Math.max(0, transitionDurationSeconds * 1000)
+    const fadeOutDurationMs = 450
 
     React.useEffect(() => {
         if (!isInView || lines.length <= 1 || lineOrder.length === 0) return
@@ -116,11 +102,7 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
         const nextLineTimer = window.setTimeout(() => {
             setLineOrderIndex((current) => {
                 const next = current + 1
-                if (next < lineOrder.length) return next
-
-                const lastShownIndex = lineOrder[current] ?? 0
-                setLineOrder(shuffleIndices(lines.length, lastShownIndex))
-                return 0
+                return next < lineOrder.length ? next : 0
             })
         }, revealDurationMs + holdDurationMs + fadeOutDurationMs)
 
@@ -128,17 +110,17 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
             window.clearTimeout(fadeOutTimer)
             window.clearTimeout(nextLineTimer)
         }
-    }, [fadeOutDurationMs, holdDurationMs, isInView, lineOrder, lineOrderIndex, lines.length, revealDurationMs])
+    }, [fadeOutDurationMs, holdDurationMs, isInView, lineOrder, lineOrderIndex, revealDurationMs])
 
     return (
         <motion.span
             animate={isInView && isSentenceVisible ? { opacity: 1 } : { opacity: 0 }}
             data-slot="writing-text"
             ref={localRef}
-            transition={{
+            transition={isSentenceVisible ? {
                 ...transition,
                 delay: 0,
-            }}
+            } : { type: "tween", ease: "easeIn", duration: fadeOutDurationMs / 1000 }}
             {...props}
         >
             {words.map((word, index) => (
