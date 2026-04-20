@@ -14,7 +14,7 @@ import {
     useRef,
     useState,
 } from "react";
-import { GlyphImageMesh } from "../media/glyphImage";
+import { GlyphImageHoverNoiseMesh } from "../media/glyphImageHoverNoise";
 
 type PosterGlyphDescriptor = {
     anchorRef: RefObject<HTMLDivElement | null>;
@@ -147,7 +147,7 @@ function RegisteredPosterGlyph({
     if (!layout) return null;
 
     return (
-        <GlyphImageMesh
+        <GlyphImageHoverNoiseMesh
             imageUrl={poster.imageUrl}
             width={layout.width}
             height={layout.height}
@@ -155,10 +155,9 @@ function RegisteredPosterGlyph({
             resolutionHeight={layout.resolutionHeight}
             cellSize={poster.cellSize}
             hoveredCellSize={poster.hoveredCellSize}
+            imageCellSize={1}
             isHovered={poster.isHovered}
-            showGlyphOnHover={poster.showGlyphOnHover}
             keyWhiteToAlpha={poster.keyWhiteToAlpha}
-            pauseNoiseAnimation={poster.pauseNoiseAnimation}
             position={[
                 layout.left + layout.width / 2 - size.width / 2,
                 size.height / 2 - (layout.top + layout.height / 2),

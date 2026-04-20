@@ -2,7 +2,7 @@
 
 import { CaseStudy } from "@/content/cases";
 import { useEffect, useRef, useState } from "react";
-import GlyphImage from "../media/glyphImage";
+import GlyphImageHoverNoise from "../media/glyphImageHoverNoise";
 import { usePosterGlyphRegistry } from "./posterGlyphCanvasHost";
 
 
@@ -34,7 +34,7 @@ export function CasePoster({
             height: 525,
             dpr: 3,
             cellSize: 16,
-            hoveredCellSize: 8,
+            hoveredCellSize: 6,
             showGlyphOnHover: false,
             keyWhiteToAlpha: initialPosterStateRef.current.keyWhiteToAlpha,
             pauseNoiseAnimation: initialPosterStateRef.current.pauseNoiseAnimation,
@@ -78,14 +78,11 @@ export function CasePoster({
                             style={{ width: 300, height: 525 }}
                         />
                     ) : (
-                        <GlyphImage
+                        <GlyphImageHoverNoise
                             imageUrl={imageUrl}
                             height={525}
                             width={300}
-                            isHovered={isHovered}
-                            showGlyphOnHover={false}
                             keyWhiteToAlpha={isAboutSubPage}
-                            pauseNoiseAnimation={isAboutSubPage}
                         />
                     )}
                 </div>
