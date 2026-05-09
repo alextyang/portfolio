@@ -1,13 +1,58 @@
 import { CaseBody } from "@/components/content/caseBody";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { caseStudies, CaseStudy } from "../../../content/cases";
 
+type CasePageProps = {
+    params: Promise<{ caseStudySlug: string }>
+};
+
+export async function generateMetadata({
+    params,
+}: CasePageProps): Promise<Metadata> {
+    const { caseStudySlug } = await params;
+    const c = (caseStudies as CaseStudy[]).find((caseStudy) => caseStudy.slug === caseStudySlug);
+
+    if (!c || c.isWip) {
+        return {
+            title: "Alexander Yang",
+            alternates: {
+                canonical: "/",
+            },
+        };
+    }
+
+    return {
+        title: c.title,
+        description: c.subtitle,
+        alternates: {
+            canonical: `/case/${c.slug}`,
+        },
+        openGraph: {
+            title: c.title,
+            description: c.subtitle,
+            url: `/case/${c.slug}`,
+            images: [
+                {
+                    url: `/case/${c.slug}/${c.coverImageFilename}`,
+                    alt: c.coverImageAlt || c.previewTitle,
+                },
+            ],
+            type: "article",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: c.title,
+            description: c.subtitle,
+            images: [`/case/${c.slug}/${c.coverImageFilename}`],
+        },
+    };
+}
+
 export default async function Page({
     params,
-}: {
-    params: Promise<{ caseStudySlug: string }>
-}) {
+}: CasePageProps) {
     const { caseStudySlug } = await params;
     const c = (caseStudies as CaseStudy[]).find((caseStudy) => caseStudy.slug === caseStudySlug);
 
