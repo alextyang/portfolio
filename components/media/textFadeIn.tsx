@@ -40,6 +40,7 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
     texts,
     holdDurationMs = 3000,
     transition = { type: "spring", bounce: 0, duration: 2, delay: 0.25 },
+    style,
     ...props
 }, ref) {
     const localRef = React.useRef<HTMLSpanElement>(null)
@@ -60,6 +61,11 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
     const [lineOrder, setLineOrder] = React.useState<number[]>([])
     const [lineOrderIndex, setLineOrderIndex] = React.useState(0)
     const [isSentenceVisible, setIsSentenceVisible] = React.useState(true)
+    const [hasMounted, setHasMounted] = React.useState(false)
+
+    React.useEffect(() => {
+        setHasMounted(true)
+    }, [])
 
     React.useEffect(() => {
         if (lines.length === 0) {
@@ -74,7 +80,8 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
             return
         }
 
-        setLineOrder(shuffleIndices(lines.length))
+        const shuffledRemainingLines = shuffleIndices(lines.length - 1).map((index) => index + 1)
+        setLineOrder([0, ...shuffledRemainingLines])
         setLineOrderIndex(0)
     }, [lines])
 
@@ -110,13 +117,22 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
             window.clearTimeout(fadeOutTimer)
             window.clearTimeout(nextLineTimer)
         }
-    }, [fadeOutDurationMs, holdDurationMs, isInView, lineOrder, lineOrderIndex, revealDurationMs])
+    }, [fadeOutDurationMs, holdDurationMs, isInView, lineOrder, lineOrderIndex, lines.length, revealDurationMs])
 
     return (
         <motion.span
             animate={isInView && isSentenceVisible ? { opacity: 1 } : { opacity: 0 }}
             data-slot="writing-text"
             ref={localRef}
+            style={{
+                display: "inline-block",
+                lineHeight: "inherit",
+                marginBottom: "-0.75em",
+                overflow: "visible",
+                paddingBottom: "0.75em",
+                verticalAlign: "baseline",
+                ...style,
+            }}
             transition={isSentenceVisible ? {
                 ...transition,
                 delay: 0,
@@ -127,7 +143,7 @@ const WritingText = React.forwardRef<HTMLSpanElement, WritingTextProps>(function
                 <motion.span
                     animate={isInView ? { opacity: 1, y: 0 } : undefined}
                     className="inline-block will-change-transform will-change-opacity"
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={hasMounted ? { opacity: 0, y: 10 } : false}
                     key={`${currentLineIndex}-${lineOrderIndex}-${index}`}
                     style={{ marginRight: spacing }}
                     transition={{
