@@ -9,9 +9,13 @@ import { usePosterGlyphRegistry } from "./posterGlyphCanvasHost";
 export function CasePoster({
     caseStudy,
     isAboutSubPage = false,
+    disabled = false,
+    titleSuffix = "",
 }: {
     caseStudy: CaseStudy;
     isAboutSubPage?: boolean;
+    disabled?: boolean;
+    titleSuffix?: string;
 }) {
     const [isHovered, setIsHovered] = useState(false);
     const glyphAnchorRef = useRef<HTMLDivElement>(null);
@@ -58,8 +62,10 @@ export function CasePoster({
 
     return (
         <a
-            className={`group w-74 cursor-pointer relative after:content-[''] after:absolute after:-top-4.5 after:-left-4.5 after:-right-5.75 after:-bottom-3.5 after:bg-transparent after:z-0 after:rounded-lg after:scale-98 after:transition-all after:duration-300 after:ease-out ${hoverBackgroundClass} hover:after:scale-100 ` + (isAboutSubPage ? "mr-2.5 ml-1.5" : " ")}
-            href={`/case/${caseStudy.slug}`}
+            className={`group w-74 relative after:content-[''] after:absolute after:-top-4.5 after:-left-4.5 after:-right-5.75 after:-bottom-3.5 after:bg-transparent after:z-0 after:rounded-lg after:scale-98 after:transition-all after:duration-300 after:ease-out ${disabled ? "pointer-events-none cursor-default" : `cursor-pointer ${hoverBackgroundClass} hover:after:scale-100`} ` + (isAboutSubPage ? "mr-2.5 ml-1.5" : " ")}
+            href={disabled ? undefined : `/case/${caseStudy.slug}`}
+            aria-disabled={disabled}
+            tabIndex={disabled ? -1 : undefined}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -88,7 +94,7 @@ export function CasePoster({
                 </div>
             </div>
             <div className="relative z-[2]">
-                <h3 className="">{caseStudy.previewTitle}</h3>
+                <h3 className="">{caseStudy.previewTitle}{titleSuffix && <span aria-hidden="true"> {titleSuffix}</span>}</h3>
                 <p className="opacity-60 sans small mt-1! mb-1!">
                     {caseStudy.previewSubtitle}
                 </p>

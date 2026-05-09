@@ -25,7 +25,9 @@ const aboutVideoSources = [
 ];
 
 const centerCentreCaseStudies = caseStudies.filter((caseStudy) => !caseStudy.isWip && caseStudy.projectAffiliation === "Center Centre");
-const hasWipIndependentWork = caseStudies.some((caseStudy) => caseStudy.isWip && caseStudy.projectAffiliation === "Independent");
+const independentWipCaseStudies = caseStudies
+    .filter((caseStudy) => caseStudy.isWip && caseStudy.projectAffiliation === "Independent")
+    .slice(0, 2);
 
 export default function HomePageClient() {
     const searchParams = useSearchParams();
@@ -62,12 +64,20 @@ export default function HomePageClient() {
                             ))}
                         </div>
 
-                        {hasWipIndependentWork && (
+                        {independentWipCaseStudies.length > 0 && (
                             <>
                                 <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Independent Work - WIP&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
-                                <p className="opacity-60 sans small mt-8! mb-20! max-w-[30rem]">
-                                    Additional independent projects are being edited and will return once the case studies are publication-ready.
-                                </p>
+                                <div className="flex flex-row -mx-1 gap-8 mt-8 mb-20 ">
+                                    {independentWipCaseStudies.map((caseStudy) => (
+                                        <CasePoster
+                                            key={caseStudy.slug}
+                                            caseStudy={caseStudy}
+                                            isAboutSubPage={isAboutSubPage}
+                                            disabled
+                                            titleSuffix="🚧"
+                                        />
+                                    ))}
+                                </div>
                             </>
                         )}
                     </PosterGlyphCanvasHost>
