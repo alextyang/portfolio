@@ -24,6 +24,9 @@ const aboutVideoSources = [
     "/about/IMG_4677.mp4",
 ];
 
+const centerCentreCaseStudies = caseStudies.filter((caseStudy) => !caseStudy.isWip && caseStudy.projectAffiliation === "Center Centre");
+const hasWipIndependentWork = caseStudies.some((caseStudy) => caseStudy.isWip && caseStudy.projectAffiliation === "Independent");
+
 export default function HomePageClient() {
     const searchParams = useSearchParams();
     const isAboutSubPage = searchParams.get("p") === "about";
@@ -51,22 +54,22 @@ export default function HomePageClient() {
 
                 <main className="relative w-full mt-5">
                     <PosterGlyphCanvasHost>
-                        <p className="opacity-60 sans small !mt-20 !mb-0">Web Dev Fellow @ Center Centre&nbsp;&nbsp;<span className="opacity-50 ml-1">------------------------------------------------------------------------------------</span></p>
+                        <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Web Dev Fellow @ Center Centre&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
 
                         <div className="flex flex-row -mx-[2px] gap-8 mt-10 ">
-                            <CasePoster caseStudy={caseStudies[0]} isAboutSubPage={isAboutSubPage} />
-                            <CasePoster caseStudy={caseStudies[1]} isAboutSubPage={isAboutSubPage} />
+                            {centerCentreCaseStudies.map((caseStudy) => (
+                                <CasePoster key={caseStudy.slug} caseStudy={caseStudy} isAboutSubPage={isAboutSubPage} />
+                            ))}
                         </div>
 
-                        <p className="opacity-60 sans small !mt-20 !mb-0">Independent Work&nbsp;&nbsp;<span className="opacity-50 ml-1">----------------------------------------------------------------------------------------------------</span></p>
-
-                        <div className="flex flex-row -mx-1 gap-8 mt-8 mb-20 ">
-                            <CasePoster caseStudy={caseStudies[2]} isAboutSubPage={isAboutSubPage} />
-                            <CasePoster caseStudy={caseStudies[3]} isAboutSubPage={isAboutSubPage} />
-                        </div>
-                        <div className="flex flex-row -mx-1 gap-8 mt-8 mb-20 ">
-                            <CasePoster caseStudy={caseStudies[4]} isAboutSubPage={isAboutSubPage} />
-                        </div>
+                        {hasWipIndependentWork && (
+                            <>
+                                <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Independent Work - WIP&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
+                                <p className="opacity-60 sans small mt-8! mb-20! max-w-[30rem]">
+                                    Additional independent projects are being edited and will return once the case studies are publication-ready.
+                                </p>
+                            </>
+                        )}
                     </PosterGlyphCanvasHost>
                 </main>
             </div>

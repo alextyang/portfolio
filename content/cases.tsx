@@ -1,6 +1,7 @@
 
 export type CaseStudy = {
     slug: string;
+    isWip?: boolean;
 
     // For preview cards
     previewTitle: string;
@@ -72,6 +73,7 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     {
         slug: "songs",
+        isWip: true,
 
         // For preview cards
         previewTitle: "Spotify Research Companion",
@@ -95,6 +97,7 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     {
         slug: "brands",
+        isWip: true,
 
         // For preview cards
         previewTitle: "Accountability Wiki",
@@ -118,6 +121,7 @@ export const caseStudies: readonly CaseStudy[] = [
     },
     {
         slug: "iot",
+        isWip: true,
 
         // For preview cards
         previewTitle: "Smart Home Automation UX",

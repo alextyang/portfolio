@@ -155,7 +155,6 @@ function RegisteredPosterGlyph({
             resolutionHeight={layout.resolutionHeight}
             cellSize={poster.cellSize}
             hoveredCellSize={poster.hoveredCellSize}
-            imageCellSize={1}
             isHovered={poster.isHovered}
             keyWhiteToAlpha={poster.keyWhiteToAlpha}
             position={[
