@@ -81,8 +81,8 @@ export default function LandingHeader() {
         <div className="relative max-w-(--page-width) w-full bg-white/0">
             <div className="inline-block">
                 <h2>Alexander Yang</h2>
-                <div className={"overflow-hidden " + introTransitionClass + " " + (showSubPagePanel ? "max-h-0 opacity-0 -mb-px" : "max-h-32 opacity-100")}>
-                    <p>I&apos;m a full-stack developer using TypeScript and Next.js to turn vision into<br />
+                <div className={"overflow-hidden " + introTransitionClass + " " + (showSubPagePanel ? "max-h-0 opacity-0 -mb-px" : "max-h-56 sm:max-h-32 opacity-100")}>
+                    <p>I&apos;m a full-stack developer using TypeScript and Next.js to turn vision into <br className="hidden sm:block" />
                         <AnimatedWidthSpan>
                             <WritingText
                                 texts={[
@@ -98,24 +98,24 @@ export default function LandingHeader() {
                     </p>
                 </div>
             </div>
-            <div className="mt-4.5! grid grid-cols-2 mb-1!">
+            <div className="mt-4.5! grid grid-cols-1 sm:grid-cols-2 mb-1!">
                 <p className="m-0! text-base! font-light! italic ">
                     {subPage === 'about' ?
-                        <a onClick={() => updateSubPageInUrl(null)} className={"pr-1.75 py-1.5 " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</a>
-                        : <a onClick={() => updateSubPageInUrl('about')} className={"pr-1.75 py-1.5 opacity-60 hover:opacity-100 hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>About</a>
+                        <a onClick={() => updateSubPageInUrl(null)} className={"inline-block pr-1.75 py-1.5 " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</a>
+                        : <a onClick={() => updateSubPageInUrl('about')} className={"inline-block pr-1.75 py-1.5 opacity-60 hover:opacity-100 hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>About</a>
                     }
                     {subPage === 'resume' ?
-                        <a onClick={() => updateSubPageInUrl(null)} className={"px-1.75 py-1.5 opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Resume</a>
-                        : <a onClick={() => updateSubPageInUrl('resume')} className={"px-1.75 py-1.5 " + (subPage === "about" ? "opacity-90 font-medium pl-2.25" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Resume</a>
+                        <a onClick={() => updateSubPageInUrl(null)} className={"inline-block px-1.75 py-1.5 opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Resume</a>
+                        : <a onClick={() => updateSubPageInUrl('resume')} className={"inline-block px-1.75 py-1.5 " + (subPage === "about" ? "opacity-90 font-medium sm:pl-2.25" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Resume</a>
                     }
                     {subPage === 'contact' ?
-                        <a onClick={() => updateSubPageInUrl(null)} className={"px-1.75 py-1.5  opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Contact</a>
-                        : <a onClick={() => updateSubPageInUrl('contact')} className={"px-1.75 py-1.5 " + (subPage === "about" ? "opacity-90 font-medium" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Contact</a>
+                        <a onClick={() => updateSubPageInUrl(null)} className={"inline-block px-1.75 py-1.5  opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Contact</a>
+                        : <a onClick={() => updateSubPageInUrl('contact')} className={"inline-block px-1.75 py-1.5 " + (subPage === "about" ? "opacity-90 font-medium" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Contact</a>
                     }
                 </p>
             </div>
 
-            <div className={"relative -mx-4 px-4.5 " + panelTransitionClass + " " + (subPage === 'about' ? 'mt-5 max-h-96 opacity-100' : 'mt-0 max-h-0 opacity-100 overflow-hidden')}>
+            <div className={"relative -mx-3 px-3 sm:-mx-4 sm:px-4.5 " + panelTransitionClass + " " + (subPage === 'about' ? 'mt-5 max-h-[46rem] sm:max-h-96 opacity-100' : 'mt-0 max-h-0 opacity-100 overflow-hidden')}>
                 <div className={"pointer-events-none absolute inset-0 -z-10 rounded-xl bg-black/30 mix-blend-overlay inset-shadow-sm " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-100 delay-75' : 'opacity-0')} />
                 <div className={"pointer-events-none absolute inset-0 -z-5 rounded-xl inset-shadow-sm " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-50 delay-75' : 'opacity-0')} />
 
@@ -132,17 +132,17 @@ export default function LandingHeader() {
                 </div>
             </div>
 
-            <div className={"relative overflow-hidden " + stackedPanelTransitionClass + " " + ((subPage === 'resume' || subPage === 'contact') ? 'mt-5 max-h-[56rem] opacity-100' : 'mt-0 max-h-0 opacity-0')}>
+            <div className={"relative overflow-hidden " + stackedPanelTransitionClass + " " + ((subPage === 'resume' || subPage === 'contact') ? 'mt-5 max-h-[90rem] sm:max-h-[56rem] opacity-100' : 'mt-0 max-h-0 opacity-0')}>
                 <div className={panelOpacityTransitionClass + " " + (subPage === 'resume' ? 'opacity-100 delay-75' : 'opacity-0 absolute inset-0 pointer-events-none')}>
                     <div className="border-t border-black/12 py-5">
-                        <div className="flex flex-row items-start justify-between gap-6">
+                        <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
                             <div className="max-w-[26rem]">
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Resume</p>
                                 <p className="mt-0!">
                                     Full-stack developer with a background in product engineering, web systems, and interface design.
                                 </p>
                             </div>
-                            <div className="flex flex-col items-start gap-1 pt-0.5">
+                            <div className="flex flex-row sm:flex-col items-start gap-4 sm:gap-1 pt-0.5">
                                 <a href={RESUME_URL} target="_blank" rel="noreferrer" className="sans small underline underline-offset-4 opacity-80 hover:opacity-100 transition-opacity">
                                     Open PDF
                                 </a>
@@ -152,7 +152,7 @@ export default function LandingHeader() {
                             </div>
                         </div>
 
-                        <div className="mt-6 grid grid-cols-2 gap-x-10 gap-y-6">
+                        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
                             <div>
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Education</p>
                                 <p className="mt-0!">B.S. in Integrated Design &amp; Media, NYU Tandon. Coursework in web development, UX, graphic design, AI, and data structures.</p>
@@ -184,10 +184,10 @@ export default function LandingHeader() {
                             Best for product engineering roles, collaborations, and projects that need someone comfortable moving between implementation, systems thinking, and design-sensitive execution.
                         </p>
 
-                        <div className="mt-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-10 gap-y-5">
+                        <div className="mt-6 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-10 gap-y-5">
                             <div>
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Email</p>
-                                <a href="mailto:alexanderyang20@gmail.com" className="underline underline-offset-4 opacity-80 hover:opacity-100 transition-opacity">
+                                <a href="mailto:alexanderyang20@gmail.com" className="break-words underline underline-offset-4 opacity-80 hover:opacity-100 transition-opacity">
                                     alexanderyang20@gmail.com
                                 </a>
                             </div>

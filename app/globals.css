@@ -24,6 +24,13 @@
   --text-heading: rgb(30, 30, 30);
 }
 
+@media (max-width: 640px) {
+  :root {
+    --page-x-margin: 20px;
+    --page-top: 76px;
+  }
+}
+
 
 
 @theme inline {
@@ -37,6 +44,7 @@ body {
   font-family: "Baskervville", serif;
   font-optical-sizing: auto;
   font-style: normal;
+  overflow-x: clip;
 }
 
 
@@ -113,6 +121,18 @@ h3 {
   --weight-heading: 450;
 
   color: var(--text-copy);
+}
+
+@media (max-width: 640px) {
+  p,
+  li {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: 21px;
+  }
 }
 
 .figure-container {
