@@ -45,7 +45,7 @@ export default function HomePageClient() {
             <div id="page-content-container" className="relative max-w-(--page-width) w-full bg-white/0">
                 <GlassBackground
                     containerId="page-content-container"
-                    className="bg-white/75 backdrop-blur-lg absolute -top-10 -left-10 -right-10 -z-10 rounded-lg"
+                    className="bg-white/60 backdrop-blur-lg absolute -top-10 left-0 right-0 sm:-left-10 sm:-right-10 -z-10 rounded-lg"
                     topOffsetPx={40}
                     visibleOnSubPage="about"
                     fadeOutDelayMs={380}
@@ -58,7 +58,7 @@ export default function HomePageClient() {
                     <PosterGlyphCanvasHost>
                         <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Web Dev Fellow @ Center Centre&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
 
-                        <div className="flex flex-col sm:flex-row items-start gap-10 sm:gap-8 mt-10 sm:-mx-[2px]">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-10 sm:gap-8 mt-10 sm:-mx-[2px]">
                             {centerCentreCaseStudies.map((caseStudy) => (
                                 <CasePoster key={caseStudy.slug} caseStudy={caseStudy} isAboutSubPage={isAboutSubPage} />
                             ))}
@@ -67,7 +67,7 @@ export default function HomePageClient() {
                         {independentWipCaseStudies.length > 0 && (
                             <>
                                 <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Independent Work - WIP&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
-                                <div className="flex flex-col sm:flex-row items-start gap-10 sm:gap-8 mt-8 mb-20 sm:-mx-1">
+                                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-10 sm:gap-8 mt-8 mb-20 sm:-mx-1">
                                     {independentWipCaseStudies.map((caseStudy) => (
                                         <CasePoster
                                             key={caseStudy.slug}

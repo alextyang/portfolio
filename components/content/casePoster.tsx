@@ -17,15 +17,18 @@ export function CasePoster({
     disabled?: boolean;
     titleSuffix?: string;
 }) {
-    const [isHovered, setIsHovered] = useState(false);
+    const [isPointerHovered, setIsPointerHovered] = useState(false);
+    const [isViewportCentered, setIsViewportCentered] = useState(false);
+    const isHovered = isPointerHovered || isViewportCentered;
     const glyphAnchorRef = useRef<HTMLDivElement>(null);
+    const posterRef = useRef<HTMLAnchorElement>(null);
     const initialPosterStateRef = useRef({
         isHovered,
         keyWhiteToAlpha: isAboutSubPage,
         pauseNoiseAnimation: isAboutSubPage,
     });
     const posterGlyphRegistry = usePosterGlyphRegistry();
-    const hoverBackgroundClass = isAboutSubPage ? "hover:after:bg-white/80" : "hover:after:bg-(--hover-bg-color)";
+    const hoverBackgroundClass = isAboutSubPage ? "hover:after:bg-white/65" : "hover:after:bg-(--hover-bg-color)";
     const imageUrl = `/case/${caseStudy.slug}/${caseStudy.coverImageFilename}`;
 
     useEffect(() => {
@@ -60,14 +63,60 @@ export function CasePoster({
         });
     }, [caseStudy.slug, isAboutSubPage, isHovered, posterGlyphRegistry]);
 
+    useEffect(() => {
+        const poster = posterRef.current;
+        const mediaQuery = window.matchMedia("(max-width: 639px)");
+
+        if (!poster) return;
+
+        let frameId = 0;
+
+        const updateViewportCenteredState = () => {
+            frameId = 0;
+
+            if (!mediaQuery.matches) {
+                setIsViewportCentered(false);
+                return;
+            }
+
+            const rect = poster.getBoundingClientRect();
+            const viewportCenter = window.innerHeight / 2;
+            const posterCenter = rect.top + rect.height / 2;
+            const activeDistance = Math.min(window.innerHeight * 0.32, 260);
+
+            setIsViewportCentered(Math.abs(posterCenter - viewportCenter) <= activeDistance);
+        };
+
+        const scheduleUpdate = () => {
+            if (frameId !== 0) return;
+            frameId = window.requestAnimationFrame(updateViewportCenteredState);
+        };
+
+        updateViewportCenteredState();
+        window.addEventListener("scroll", scheduleUpdate, { passive: true });
+        window.addEventListener("resize", scheduleUpdate);
+        mediaQuery.addEventListener("change", scheduleUpdate);
+
+        return () => {
+            if (frameId !== 0) {
+                window.cancelAnimationFrame(frameId);
+            }
+
+            window.removeEventListener("scroll", scheduleUpdate);
+            window.removeEventListener("resize", scheduleUpdate);
+            mediaQuery.removeEventListener("change", scheduleUpdate);
+        };
+    }, []);
+
     return (
         <a
+            ref={posterRef}
             className={`group w-full max-w-[300px] relative after:content-[''] after:absolute after:-top-3 after:-left-3 after:-right-3 after:-bottom-3 sm:after:-top-4.5 sm:after:-left-4.5 sm:after:-right-5.75 sm:after:-bottom-3.5 after:bg-transparent after:z-0 after:rounded-lg after:scale-98 after:transition-all after:duration-300 after:ease-out ${disabled ? "pointer-events-none cursor-default" : `cursor-pointer ${hoverBackgroundClass} hover:after:scale-100`} ` + (isAboutSubPage ? "sm:mr-2.5 sm:ml-1.5" : " ")}
             href={disabled ? undefined : `/case/${caseStudy.slug}`}
             aria-disabled={disabled}
             tabIndex={disabled ? -1 : undefined}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onMouseEnter={() => setIsPointerHovered(true)}
+            onMouseLeave={() => setIsPointerHovered(false)}
         >
             <div
                 className={`pointer-events-none absolute -inset-3 sm:-inset-3.5 sm:-bottom-3 z-[1] rounded-xl bg-black/30 mix-blend-overlay inset-shadow-sm transition-opacity duration-150 ease-out ${isAboutSubPage ? "opacity-100 delay-75" : "opacity-0"}`}
