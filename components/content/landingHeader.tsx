@@ -115,7 +115,7 @@ export default function LandingHeader() {
                 </p>
             </div>
 
-            <div className={"relative mx-2 px-2 md:-mx-4 md:px-4.5 " + panelTransitionClass + " " + (subPage === 'about' ? 'mt-5 max-h-[46rem] md:max-h-96 opacity-100' : 'mt-0 max-h-0 opacity-100 overflow-hidden')}>
+            <div className={"relative mx-2 px-3 md:-mx-4 " + panelTransitionClass + " " + (subPage === 'about' ? 'mt-5 max-h-[46rem] md:max-h-96 opacity-100' : 'mt-0 max-h-0 opacity-100 overflow-hidden')}>
                 <div className={"pointer-events-none absolute inset-0 -z-10 rounded-xl bg-black/30 mix-blend-overlay inset-shadow-sm " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-100 delay-75' : 'opacity-0')} />
                 <div className={"pointer-events-none absolute inset-0 -z-5 rounded-xl inset-shadow-sm " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-50 delay-75' : 'opacity-0')} />
 

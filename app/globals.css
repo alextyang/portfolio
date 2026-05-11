@@ -24,9 +24,14 @@
   --text-heading: rgb(30, 30, 30);
 }
 
+@media (max-width: 768px) {
+  :root {
+    --page-x-margin: 40px;
+  }
+}
+
 @media (max-width: 640px) {
   :root {
-    --page-x-margin: 28px;
     --page-top: 76px;
   }
 }
