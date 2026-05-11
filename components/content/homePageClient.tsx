@@ -45,7 +45,7 @@ export default function HomePageClient() {
             <div id="page-content-container" className="relative max-w-(--page-width) w-full bg-white/0">
                 <GlassBackground
                     containerId="page-content-container"
-                    className="bg-white/60 backdrop-blur-lg absolute -top-10 left-0 right-0 sm:-left-10 sm:-right-10 -z-10 rounded-lg"
+                    className="bg-white/60 backdrop-blur-lg absolute -top-10 left-[calc(var(--page-x-margin)/-2)] right-[calc(var(--page-x-margin)/-2)] md:-left-10 md:-right-10 -z-10 rounded-lg"
                     topOffsetPx={40}
                     visibleOnSubPage="about"
                     fadeOutDelayMs={380}
