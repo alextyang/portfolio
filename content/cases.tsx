@@ -34,12 +34,12 @@ export const caseStudies: readonly CaseStudy[] = [
 
         primaryField: "Fullstack",
         fieldTags: ["Backend", "Frontend Integration"],
-        fieldDescription: "Fullstack development + product engineering",
+        fieldDescription: "Web developer + email production",
 
         toolTags: ["Framework - React, Next.js", "Language - TypeScript", "Styles - TailwindCSS", "Components - MantineUI", "Storage - Airtable", "Integrations - Google Drive, ActiveCampaign, Postmark, Notion, Slack"],
 
         projectAffiliation: "Center Centre",
-        affiliationDescription: "Center Centre, 2025",
+        affiliationDescription: "Web Developer, Center Centre, 2025",
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",
@@ -57,12 +57,12 @@ export const caseStudies: readonly CaseStudy[] = [
 
         primaryField: "Backend",
         fieldTags: ["Backend", "Frontend"],
-        fieldDescription: "Frontend + backend integration",
+        fieldDescription: "Web developer + backend integration",
 
         toolTags: ["Tools - React, Vite, Airtable, Next.js", "Technology - TypeScript, RESTful, Linux"],
 
         projectAffiliation: "Center Centre",
-        affiliationDescription: "Center Centre, 2025",
+        affiliationDescription: "Web Developer, Center Centre, 2025",
 
         coverImageFilename: "poster.png",
         coverImageAlt: "",

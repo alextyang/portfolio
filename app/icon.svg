@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#ffffff" />
+  <text
+    x="64"
+    y="64"
+    text-anchor="middle"
+    dominant-baseline="central"
+    fill="#1e1e1e"
+    font-family="Baskerville, Baskervville, Georgia, serif"
+    font-size="54"
+    font-weight="450"
+    letter-spacing="0"
+  >AY</text>
+</svg>

@@ -201,9 +201,15 @@ function BackgroundVideoPlaylist({
 
             video.muted = true
             video.defaultMuted = true
+            video.autoplay = shouldBeVisible && slotIndex === activeSlot
             video.playsInline = true
             video.preload = "auto"
             video.setAttribute("muted", "")
+            if (video.autoplay) {
+                video.setAttribute("autoplay", "")
+            } else {
+                video.removeAttribute("autoplay")
+            }
             video.setAttribute("playsinline", "")
             video.setAttribute("webkit-playsinline", "")
 
@@ -230,6 +236,7 @@ function BackgroundVideoPlaylist({
 
             const onLoadedData = () => {
                 markReady()
+                void tryPlay()
             }
 
             const onLoadedMetadata = () => {
@@ -295,7 +302,7 @@ function BackgroundVideoPlaylist({
                 window.clearTimeout(pauseTimeoutId)
             }
         }
-    }, [activeSlot, crossFadeMs, shouldBeVisible, videoRefs])
+    }, [activeSlot, crossFadeMs, readySlots, shouldBeVisible, videoRefs])
 
     const switchToPreparedVideo = React.useCallback(() => {
         if (!preparedVideo) return false
@@ -366,6 +373,7 @@ function BackgroundVideoPlaylist({
                             key={`${slotIndex}-${source}`}
                             ref={videoRefs[slotIndex]}
                             className="absolute inset-0 h-full w-full object-cover"
+                            autoPlay={isActiveSlot && shouldBeVisible}
                             muted
                             onEnded={isActiveSlot ? handleEnded : undefined}
                             onError={isActiveSlot ? handleError : undefined}

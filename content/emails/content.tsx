@@ -1,4 +1,4 @@
-export default `In 2025, I was a Web Development Fellow at Center Centre, where I was in charge of Center Centre’s emails. 
+export default `In 2025, I was a web developer at Center Centre, where I was in charge of Center Centre’s emails. 
 
 Emails are their primary form of communication: a critical part of running courses, events, and marketing. The timeliness and accuracy of these emails was essential for event turnouts, campaign effectiveness, and—over time—built trust with our students and clients. 
 

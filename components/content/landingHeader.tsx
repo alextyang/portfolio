@@ -2,29 +2,46 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import WritingText from "../media/textFadeIn";
 
 function AnimatedWidthSpan({ children }: { children: ReactNode }) {
     const innerRef = useRef<HTMLSpanElement>(null);
     const [width, setWidth] = useState<number | undefined>(undefined);
+    const [animateWidth, setAnimateWidth] = useState(false);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!innerRef.current) return;
-        setWidth(innerRef.current.getBoundingClientRect().width);
+
+        const updateWidth = () => {
+            if (!innerRef.current) return;
+            setWidth(innerRef.current.getBoundingClientRect().width);
+        };
+
+        updateWidth();
+
+        const frameId = window.requestAnimationFrame(() => {
+            setAnimateWidth(true);
+        });
+
         const observer = new ResizeObserver((entries) => {
             const entry = entries[0];
             if (entry) setWidth(entry.contentRect.width);
         });
         observer.observe(innerRef.current);
-        return () => observer.disconnect();
+
+        return () => {
+            window.cancelAnimationFrame(frameId);
+            observer.disconnect();
+        };
     }, []);
 
     return (
         <motion.span
             style={{ display: "inline-block", overflow: "visible" }}
+            initial={false}
             animate={{ width: width !== undefined ? width : "auto" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.6 }}
+            transition={animateWidth ? { type: "spring", bounce: 0, duration: 0.6 } : { duration: 0 }}
         >
             <span ref={innerRef} style={{ display: "inline-block", whiteSpace: "nowrap" }}>
                 {children}
@@ -101,7 +118,7 @@ export default function LandingHeader({
                 </p>
             </div>
 
-            <div className={"relative mx-2 px-3 md:-mx-4 " + panelTransitionClass + " " + (subPage === 'about' ? 'mt-5 max-h-[46rem] md:max-h-96 opacity-100' : 'mt-0 max-h-0 opacity-100 overflow-hidden')}>
+            <div className={"relative mx-0 px-3 md:-mx-4 " + panelTransitionClass + " " + (subPage === 'about' ? 'mt-5 max-h-[46rem] md:max-h-96 opacity-100' : 'mt-0 max-h-0 opacity-100 overflow-hidden')}>
                 <div className={"pointer-events-none absolute inset-0 -z-10 rounded-xl bg-black/30 mix-blend-overlay inset-shadow-sm " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-100 delay-75' : 'opacity-0')} />
                 <div className={"pointer-events-none absolute inset-0 -z-5 rounded-xl inset-shadow-sm " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-50 delay-75' : 'opacity-0')} />
 
