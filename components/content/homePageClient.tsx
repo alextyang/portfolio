@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import LandingHeader, { type SubPage } from "@/components/content/landingHeader";
 import { CasePoster } from "@/components/content/casePoster";
@@ -37,10 +36,12 @@ function normalizeSubPage(subPageParam: string | null): SubPage | null {
     return SUB_PAGES.find((subPage) => subPage === subPageParam) ?? null;
 }
 
-export default function HomePageClient() {
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [subPage, setSubPage] = useState<SubPage | null>(() => normalizeSubPage(searchParams.get(SUBPAGE_KEY)));
+export default function HomePageClient({
+    initialSubPageParam = null,
+}: {
+    initialSubPageParam?: string | null;
+}) {
+    const [subPage, setSubPage] = useState<SubPage | null>(() => normalizeSubPage(initialSubPageParam));
     const isAboutSubPage = subPage === "about";
 
     useEffect(() => {
@@ -68,7 +69,7 @@ export default function HomePageClient() {
         }
 
         const nextQuery = nextParams.toString();
-        const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+        const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
         window.history.replaceState(window.history.state, "", nextUrl);
     };
 
