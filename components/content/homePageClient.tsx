@@ -1,7 +1,8 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import LandingHeader from "@/components/content/landingHeader";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import LandingHeader, { type SubPage } from "@/components/content/landingHeader";
 import { CasePoster } from "@/components/content/casePoster";
 import { PosterGlyphCanvasHost } from "@/components/content/posterGlyphCanvasHost";
 import BackgroundVideoPlaylist from "@/components/media/bgVideo";
@@ -29,15 +30,53 @@ const independentWipCaseStudies = caseStudies
     .filter((caseStudy) => caseStudy.isWip && caseStudy.projectAffiliation === "Independent")
     .slice(0, 2);
 
+const SUBPAGE_KEY = "p";
+const SUB_PAGES: SubPage[] = ["about", "resume", "contact"];
+
+function normalizeSubPage(subPageParam: string | null): SubPage | null {
+    return SUB_PAGES.find((subPage) => subPage === subPageParam) ?? null;
+}
+
 export default function HomePageClient() {
+    const pathname = usePathname();
     const searchParams = useSearchParams();
-    const isAboutSubPage = searchParams.get("p") === "about";
+    const [subPage, setSubPage] = useState<SubPage | null>(() => normalizeSubPage(searchParams.get(SUBPAGE_KEY)));
+    const isAboutSubPage = subPage === "about";
+
+    useEffect(() => {
+        const syncSubPageFromUrl = () => {
+            const nextParams = new URLSearchParams(window.location.search);
+            setSubPage(normalizeSubPage(nextParams.get(SUBPAGE_KEY)));
+        };
+
+        window.addEventListener("popstate", syncSubPageFromUrl);
+
+        return () => {
+            window.removeEventListener("popstate", syncSubPageFromUrl);
+        };
+    }, []);
+
+    const updateSubPage = (nextSubPage: SubPage | null) => {
+        setSubPage(nextSubPage);
+
+        const nextParams = new URLSearchParams(window.location.search);
+
+        if (nextSubPage) {
+            nextParams.set(SUBPAGE_KEY, nextSubPage);
+        } else {
+            nextParams.delete(SUBPAGE_KEY);
+        }
+
+        const nextQuery = nextParams.toString();
+        const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+        window.history.replaceState(window.history.state, "", nextUrl);
+    };
 
     return (
         <div className="relative flex flex-col min-h-screen items-center justify-start px-(--page-x-margin) pt-(--page-top) ">
             <BackgroundVideoPlaylist
                 sources={aboutVideoSources}
-                visibleOnSubPage="about"
+                visible={isAboutSubPage}
                 crossFadeMs={550}
                 fadeInDelayMs={180}
             />
@@ -47,11 +86,11 @@ export default function HomePageClient() {
                     containerId="page-content-container"
                     className="bg-white/60 backdrop-blur-lg absolute -top-10 left-[calc(var(--page-x-margin)/-2)] right-[calc(var(--page-x-margin)/-2)] md:-left-10 md:-right-10 -z-10 rounded-lg"
                     topOffsetPx={40}
-                    visibleOnSubPage="about"
+                    visible={isAboutSubPage}
                     fadeOutDelayMs={380}
                 />
                 <div id="landing-header-container" className="relative w-full bg-white/0">
-                    <LandingHeader />
+                    <LandingHeader subPage={subPage} onSubPageChange={updateSubPage} />
                 </div>
 
                 <main className="relative w-full mt-5">

@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import WritingText from "../media/textFadeIn";
@@ -34,18 +33,18 @@ function AnimatedWidthSpan({ children }: { children: ReactNode }) {
     );
 }
 
-const SUBPAGE_KEY = "p";
 const RESUME_URL = "/AlexanderYang_Resume.pdf";
 
-export default function LandingHeader() {
-    const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
+export type SubPage = "about" | "resume" | "contact";
+
+export default function LandingHeader({
+    subPage,
+    onSubPageChange,
+}: {
+    subPage: SubPage | null;
+    onSubPageChange: (nextSubPage: SubPage | null) => void;
+}) {
     const [transitionsReady, setTransitionsReady] = useState(false);
-    const subPageParam = searchParams.get(SUBPAGE_KEY);
-    const subPage = subPageParam === "about" || subPageParam === "resume" || subPageParam === "contact"
-        ? subPageParam
-        : null;
 
     useEffect(() => {
         const frameId = window.requestAnimationFrame(() => {
@@ -56,19 +55,6 @@ export default function LandingHeader() {
             window.cancelAnimationFrame(frameId);
         };
     }, []);
-
-    const updateSubPageInUrl = (nextSubPage: string | null) => {
-        const nextParams = new URLSearchParams(searchParams.toString());
-
-        if (nextSubPage) {
-            nextParams.set(SUBPAGE_KEY, nextSubPage);
-        } else {
-            nextParams.delete(SUBPAGE_KEY);
-        }
-
-        const nextQuery = nextParams.toString();
-        router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, { scroll: false });
-    };
 
     const showSubPagePanel = subPage !== null;
     const introTransitionClass = transitionsReady ? "transition-[max-height,opacity] duration-350 ease-in-out" : "transition-none";
@@ -101,16 +87,16 @@ export default function LandingHeader() {
             <div className="mt-4.5! grid grid-cols-1 sm:grid-cols-2 mb-1!">
                 <p className="m-0! text-base! font-light! italic ">
                     {subPage === 'about' ?
-                        <a onClick={() => updateSubPageInUrl(null)} className={"inline-block pr-1.75 py-1.5 " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</a>
-                        : <a onClick={() => updateSubPageInUrl('about')} className={"inline-block pr-1.75 py-1.5 opacity-60 hover:opacity-100 hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>About</a>
+                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 italic font-light " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</button>
+                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('about')} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 italic font-light opacity-60 hover:opacity-100 hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>About</button>
                     }
                     {subPage === 'resume' ?
-                        <a onClick={() => updateSubPageInUrl(null)} className={"inline-block px-1.75 py-1.5 opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Resume</a>
-                        : <a onClick={() => updateSubPageInUrl('resume')} className={"inline-block px-1.75 py-1.5 " + (subPage === "about" ? "opacity-90 font-medium sm:pl-2.25" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Resume</a>
+                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Resume</button>
+                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('resume')} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light " + (subPage === "about" ? "opacity-90 font-medium sm:pl-2.25" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Resume</button>
                     }
                     {subPage === 'contact' ?
-                        <a onClick={() => updateSubPageInUrl(null)} className={"inline-block px-1.75 py-1.5  opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Contact</a>
-                        : <a onClick={() => updateSubPageInUrl('contact')} className={"inline-block px-1.75 py-1.5 " + (subPage === "about" ? "opacity-90 font-medium" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Contact</a>
+                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Contact</button>
+                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('contact')} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light " + (subPage === "about" ? "opacity-90 font-medium" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Contact</button>
                     }
                 </p>
             </div>

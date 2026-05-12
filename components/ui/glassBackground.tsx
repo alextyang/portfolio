@@ -7,6 +7,7 @@ type GlassBackgroundProps = {
     containerId: string;
     className?: string;
     topOffsetPx?: number;
+    visible?: boolean;
     visibleOnSubPage?: string;
     fadeOutDelayMs?: number;
 };
@@ -15,6 +16,7 @@ export default function GlassBackground({
     containerId,
     className = "",
     topOffsetPx = 40,
+    visible = true,
     visibleOnSubPage,
     fadeOutDelayMs = 0,
 }: GlassBackgroundProps) {
@@ -22,23 +24,25 @@ export default function GlassBackground({
     const backgroundRef = useRef<HTMLDivElement>(null);
     const isTopFillModeRef = useRef(false);
     const subPage = searchParams.get("p");
-    const isVisible = visibleOnSubPage ? subPage === visibleOnSubPage : true;
+    const isVisible = visibleOnSubPage ? subPage === visibleOnSubPage && visible : visible;
     const [isDisplayed, setIsDisplayed] = useState(isVisible);
 
     useEffect(() => {
+        let timeoutId: number;
+
         if (isVisible) {
-            setIsDisplayed(true);
-            return;
+            timeoutId = window.setTimeout(() => {
+                setIsDisplayed(true);
+            }, 0);
+
+            return () => {
+                window.clearTimeout(timeoutId);
+            };
         }
 
-        if (fadeOutDelayMs <= 0) {
+        timeoutId = window.setTimeout(() => {
             setIsDisplayed(false);
-            return;
-        }
-
-        const timeoutId = window.setTimeout(() => {
-            setIsDisplayed(false);
-        }, fadeOutDelayMs);
+        }, fadeOutDelayMs <= 0 ? 0 : fadeOutDelayMs);
 
         return () => {
             window.clearTimeout(timeoutId);
