@@ -82,7 +82,7 @@ export default function LandingHeader({
 
     return (
         <div className="relative max-w-(--page-width) w-full bg-white/0">
-            <div className="inline-block">
+            <div className="inline-block px-4 md:px-0">
                 <h2>Alexander Yang</h2>
                 <div className={"overflow-hidden " + introTransitionClass + " " + (showSubPagePanel ? "max-h-0 opacity-0 -mb-px" : "max-h-56 sm:max-h-32 opacity-100")}>
                     <p>I&apos;m a full-stack developer using TypeScript and Next.js to turn vision into{" "}
@@ -101,7 +101,7 @@ export default function LandingHeader({
                     </p>
                 </div>
             </div>
-            <div className="mt-4.5! grid grid-cols-1 sm:grid-cols-2 mb-1!">
+            <div className="mt-4.5! grid grid-cols-1 sm:grid-cols-2 mb-1! px-4 md:px-0">
                 <p className="m-0! text-base! font-light! italic ">
                     {subPage === 'about' ?
                         <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 italic font-light " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</button>
@@ -135,7 +135,7 @@ export default function LandingHeader({
                 </div>
             </div>
 
-            <div className={"relative overflow-hidden " + stackedPanelTransitionClass + " " + ((subPage === 'resume' || subPage === 'contact') ? 'mt-5 max-h-[90rem] sm:max-h-[56rem] opacity-100' : 'mt-0 max-h-0 opacity-0')}>
+            <div className={"relative overflow-hidden px-4 md:px-0 " + stackedPanelTransitionClass + " " + ((subPage === 'resume' || subPage === 'contact') ? 'mt-5 max-h-[90rem] sm:max-h-[56rem] opacity-100' : 'mt-0 max-h-0 opacity-0')}>
                 <div className={panelOpacityTransitionClass + " " + (subPage === 'resume' ? 'opacity-100 delay-75' : 'opacity-0 absolute inset-0 pointer-events-none')}>
                     <div className="border-t border-black/12 py-5">
                         <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
