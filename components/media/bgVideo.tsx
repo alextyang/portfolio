@@ -82,6 +82,11 @@ function getPreparedVideo(
     }
 }
 
+function replayVideo(video: HTMLVideoElement) {
+    video.currentTime = 0
+    void video.play().catch(() => { })
+}
+
 function BackgroundVideoPlaylist({
     sources,
     className,
@@ -319,7 +324,7 @@ function BackgroundVideoPlaylist({
 
         const activeVideo = videoRefs[activeSlot].current
         if (activeVideo) {
-            activeVideo.pause()
+            replayVideo(activeVideo)
         }
     }, [activeSlot, shouldBeVisible, switchToPreparedVideo, videoRefs])
 

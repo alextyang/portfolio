@@ -80,6 +80,7 @@ export default function HomePageClient({
                 visible={isAboutSubPage}
                 crossFadeMs={550}
                 fadeInDelayMs={180}
+                loopPlaylist
             />
 
             <div id="page-content-container" className="relative max-w-(--page-width) w-full bg-white/0">
