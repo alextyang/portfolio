@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: "Alexander Yang",
     template: "%s | Alexander Yang",
   },
-  description: "Full-stack developer using TypeScript and Next.js to build polished products, better workflows, and the systems behind them.",
+  description: "Full-stack product engineer building web apps, internal tools, and publishing systems with TypeScript and Next.js.",
   applicationName: "Alexander Yang",
   authors: [{ name: "Alexander Yang", url: "https://alexya.ng" }],
   creator: "Alexander Yang",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Alexander Yang",
-    description: "Full-stack developer using TypeScript and Next.js to build polished products, better workflows, and the systems behind them.",
+    description: "Full-stack product engineer building web apps, internal tools, and publishing systems with TypeScript and Next.js.",
     url: "/",
     siteName: "Alexander Yang",
     type: "website",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title: "Alexander Yang",
-    description: "Full-stack developer using TypeScript and Next.js to build polished products, better workflows, and the systems behind them.",
+    description: "Full-stack product engineer building web apps, internal tools, and publishing systems with TypeScript and Next.js.",
   },
   robots: {
     index: true,

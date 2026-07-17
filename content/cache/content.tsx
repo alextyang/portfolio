@@ -1,135 +1,89 @@
-export default `In 2025, I was a web developer at Center Centre, a UX-focused professional education company, where I owned development and maintenance of their suite of websites. As an online-only organization, Center Centre's websites are an essential public presence, the primary source of information on their courses, and the point-of-sale for enrolling students.
+export default `In 2025, I owned development and maintenance for Center Centre's course sites, where prospective students compared upcoming cohorts and followed enrollment links. Those controls often appeared 5–10 seconds after the rest of the page.
 
-Each of Center Centre’s courses has a website with topics, <abbr title='The courses are offered on a rolling basis—usually once a month—and students select an upcoming cohort to enroll in. When a cohort starts, students participate in a schedule of online sesssions alongside other members of their cohort.'>upcoming cohorts</abbr>, and enrollment pages. When I arrived, these sites had just been migrated from vanilla HTML/CSS/JS to a new React/Vite stack. 
+I built a 270-line Next.js cache service and integrated it in two stages. Warm proxy hits cut the wait to 1–2 seconds; a periodically generated snapshot removed the separate API request on snapshot hits. The sites remained statically hosted, and uncached requests could still fall back to Airtable.
 
-React was chosen to be a modern foundation for new development, and Vite provided a smooth transition. Vite bundles the React code into a <abbr title='A static website is delivered to the user as a collection of ready-to-go files. Because it does not require live storage or server-side processing, it is highly secure, fast, and inexpensive to host. For example, a simple HTML/CSS/JS project uploaded to Github Pages or Netlify.'>static site</abbr>, which can be deployed similarly to the previous versions. By keeping the sites static, we were able to keep our cost-efficient hosting and simple QA process.
+# The problem: enrollment actions arrived last
 
-FIGURE (Image of Cohort Selector | A landing page for one of Center Centre's UX courses, featuring a call-to-action that lists the options for upcoming cohorts.)
+Center Centre's course sites had recently moved from vanilla HTML, CSS, and JavaScript to React and Vite. They remained statically hosted, which kept deployment inexpensive and easy for a small team to review.
 
-Not all the content on these sites was purely static, though. The pages have a call-to-action that lists upcoming cohorts, with dates and links that need to stay current. To avoid re-deploying new versions of each selector every week, the previous fellows maintained a database in <abbr title='Airtable is a low-code database platform. It provides a user-friendly spreadsheet interface and spreadsheet-like relational tools to manage and link records. Developers can query the tables with a RESTful API.'>Airtable</abbr> with the schedules and pulled them on each page load. 
+Course schedules could not be static. Dates, topics, and enrollment links changed frequently, so each page fetched current records from Airtable in the browser. This hybrid setup was operationally simple, but slow for prospective students.
 
-The schedule fetch was an effective middle ground between dynamic and static: Airtable enabled smooth schedule turnover, while the rest of the site stayed lightweight, reliable, and low-maintenance.
+FIGURE (Image of Cohort Selector | This selector exposed upcoming cohort dates and enrollment links—the page's main call to action.)
+
+The browser could not request schedule data until the application loaded. Some pages then made several dependent Airtable requests. The shell appeared first, while the information needed to compare cohorts or enroll remained missing for another 5–10 seconds.
 
 FIGURE (Flowchart of Initial Solution)
 
-However, this Airtable fetch had a critical downside: latency. It would often take 5-10 additional seconds for the cohorts to load, after the rest of the page. 
+FIGURE (Videos of initial loading time - home & cohort pages | Before the cache, enrollment content appeared 5–10 seconds after the page shell. Cohort-heavy pages also waited on several dependent Airtable requests.)
 
-Airtable’s API was not designed to be a CDN, so it would frequently give slow responses to the elevated traffic. And more so, the client-side fetch couldn’t even begin until the website’s code had completely finished loading. Together, these factors created an egregiously long pause between the webpage displaying and the page's key touchpoint appearing.
+# Why I did not move the sites to SSR
 
-FIGURE (Videos of initial loading time - home & cohort pages | Almost all pages features dynamic content above the fold, and cohort-specific pages were almost entirely data-driven. On the timeline, the sequential requests have to all complete before the content renders.)
+Server-side rendering could have put the schedule data into the first response, but adopting it for this latency problem would also have changed hosting and the team's deployment and QA routines. That left a narrower target: keep Airtable and static deployment, and avoid duplicating each site's schedule-query logic in a second system.
 
-This delay was at odds with the websites’ core value to both the users and business. Until the Airtable data loaded, the list of available cohorts—and the enrollment buttons tied to them—were completely out-of-order. 
+My first idea was a periodic static export. I dropped it because the required queries varied by course, month, and cohort; each change would have to be mirrored in the exporter. A proxy keyed by the requests the sites already made could cache those responses without learning each site's data model.
 
-For a significant amount of time in UX terms, users are unable to evaluate their options or take a next step. These sites are a mandatory step for enrollment and a critical conversion point; friction here should be addressed as a priority.
+# Phase 1: cache requests at runtime
 
-# Searching for a Strategic Intervention
+Center Centre already had a DigitalOcean droplet that could host a small persistent service. Within an hour, I had a Next.js proof of concept running.
 
-The industry-standard solutions for this issue would have required sweeping changes. Usually, websites that display dynamic content are rendered server-side. A server would be able to remember Airtable’s responses locally and populate them instantly for each client. 
+The proxy accepted the same requests as Airtable, checked an in-memory cache for a matching response, and returned it when available. On a miss, it forwarded the request to Airtable and stored the response for the next visitor. I then added background refreshes and eviction for requests that were no longer used.
 
-A framework that supports <abbr title='Server-side rendering, where React code is run on a server; as opposed to client-side, static websites.'>SSR</abbr>, though, would have required a new type of hosting, a new QA structure, and a higher skill floor for a team that was unfamiliar with SSR. Such a migration would not have been a cheap solution for such a specific issue. I opted to explore some more localized fixes.
+FIGURE (Flow chart of runtime proxy cache)
 
-My first 'localized fix' idea: create a static version of the dynamic content. 
+After the cache warmed, dynamic content appeared in 1–2 seconds instead of 5–10. Except for pagination, the proxy used the request URL as its cache key and did not need to know a site's schema. New courses and query shapes therefore worked after the first miss, with no cache-specific setup.
 
-By periodically downloading the schedules from Airtable and saving them into a local file, the websites could access all the data they’d need. However, this would be difficult to implement without hard-coding a bunch of data-structure and course-specific logic. 
-
-The websites need to make a series of Airtable API calls that change based on the course, the month, and the scheduled cohorts. Each time a course or website structure changes, any program that pre-compiles data would need to be rewritten. 
-
-Considering the risk of headaches in the long-term, I put a pin in this idea. If a solution could respond to website needs in real time instead, it could be a robust and lighter-weight alternative.
-
-I drafted out a possible ‘runtime’ intervention: a service that serves as a middleman between our sites and the Airtable API, caching and reusing Airtable’s responses. This service would be easy to implement and wouldn't need to front the complexity of the schedule querying logic.
-
-# Deploying a Lightweight Proxy
-
-We already had a DigitalOcean droplet that could host a persistent web service, so it only took an hour to draft and upload a simple Next.js app to test out this idea. It accepted any requests formatted for Airtable’s API, checked a local cache for a matching response, and either returned the cached response or forwarded the request to Airtable and saved the response for next time.
-
-FIGURE (Flow chart of runtime middleman cache)
-
-I switched the websites' code to direct API calls to this new Next.js app’s URL, and the load times changed significantly.
-
-It only took 1-2 seconds of waiting before the dynamic content appeared. After an initial ‘<abbr title='All API calls need to be made once before they can be added to a cache. This means the first load still had a full 5-10 delay. Luckily, this only needs to happen once per site per cache, which means end users practically never experience this.'>priming</abbr>’ load, the middleman had a full key-value dictionary of all data the websites needed. And it was much faster to serve responses from memory than Airtable’s reluctant servers.
-
-I only needed to add a few more lines of code for <abbr title='Refreshing cached data periodically by re-requesting data and saving the latest version; keeping data up-to-date'>revalidation</abbr> and <abbr title='Forgetting cached responses when they go unused for an extended period; keeping the cache optimized for current needs'>eviction</abbr>, and we had a completely hands-free caching service.
-
-FIGURE (Videos of runtime cache loading time - home & cohort pages | The delay was now much better, only a few seconds at most. The data-driven pages, thought, still suffered from an awkward content shift after the requests returned.)
-
-This implementation was also completely neutral to specific requests, websites, and data structures. No matter how the schedule data and API queries were formatted, they can be stored as strings in a HTTP request-response dictionary. 
-
-Future features, courses, and websites that use Airtable's API would require no additional setup to work with this middleman.
+FIGURE (Videos of runtime cache loading time - home & cohort pages | Phase 1 reduced the wait to 1–2 seconds after warm-up. Data-heavy pages still shifted when the responses arrived.)
 
 FIGURE (Pros Cons chart of initial solutions)
 
-An interesting problem emerged during testing, the site for our longest course had an extra latency: two 16-week cohorts appeared quickly, but the third cohort consistently took a full 5-10 seconds, which indicated a cache-miss. 
+## Resolving an Airtable pagination edge case
 
-The key-value cache relies on a one-to-one relationship between requests and responses but, while inspecting the data, I noticed Airtable’s pagination system <abbr title='Airtable generates an ID for each page to prevent ongoing edits from unpredictably offsetting paginated requests.'>generates a random ID for each page over 100 records</abbr>. 
+Testing uncovered one exception. On the site for Center Centre's longest course, two cohorts loaded quickly while a third consistently missed the cache.
 
-With an unpredictable ID in the request, the cache would be unable to identify the corresponding responses. There wasn’t a simple way to prevent this, especially with asynchronous revalidation, so I opted to have the middleman automatically merge paginated data on receipt. 
+Airtable supplied an opaque \`offset\` token for the next request when a query returned more than 100 records. Because that token changed, second-page URLs did not reliably match earlier cache keys.
 
-The fix unfortunately locked us into Airtable as the API provider, but it was necessary for a compact and reliable middleman.
+I changed the proxy to follow Airtable's pagination itself and cache one merged response under the original request. That gave up provider independence, but these sites already depended on Airtable; reliable revalidation mattered more.
 
-# Why Wait for the Fetch?
+# Phase 2: make cached data available before the request
 
-The middleman had put out the fire, but a 1-2 second delay was still subpar compared to industry standard. Server-side rendering would insert the data before the page is shown. The API calls were finishing faster, but were still only starting after page load. 
+The proxy removed most of the delay, but the browser still could not ask for data until the application loaded. To remove that remaining round trip, I returned to the static-file idea with a new observation: the proxy had already created an automatically maintained inventory of every response each site used.
 
-Only a ‘pre-load’ approach, like my first idea, would be able to overcome this limitation; a complete bundle of data being ‘pre-loaded.’ I put a pin in this strategy above because the API calls change constantly, and would’ve required a new high-maintenance project just to anticipate.
-
-Fortunately, we had just incidentally created a complete, automated inventory of all the necessary data for each website: the middleman’s running cache. 
-
-The cache has each request that is currently in-use and its complete, corresponding response from Airtable. And its updated automatically: when a cohort goes off of sale, the unused requests are evicted; when a new cohort is scheduled, all the new responses are added within minutes.
-
-The middleman happened to be maintaining exactly what we would need to ‘pre-load’ our data. 
-
-If the clients could download this cache as a file, the websites would no longer need to make any network requests at all. Plus, as a static file, it could be downloaded _concurrently_ with the rest of the website. The cached data could be loaded locally before the page even renders. 
+The cache contained both sides of the problem: the current request URLs and their complete Airtable responses. Active queries stayed fresh through background revalidation; unused queries were evicted. That made it possible to generate a static snapshot without rebuilding the sites' schedule logic elsewhere.
 
 FIGURE (Flowchart of preload solution)
 
-I couldn’t find examples of other people downloading caches like this, but it seemed well worth pursuing. 
+I periodically serialized each site's active cache into a public JavaScript file. The browser loaded that file alongside the application's other assets and checked it before making a network request.
 
-In the middleman’s code, I saved the cache dictionaries for each site periodically into a publicly-accessible JavaScript file. Through some pre-written JavaScript in the file, the scripts save the cache data to a global variable, allowing our websites to import it concurrently like any other script/font/style asset and use the data anywhere.
+A snapshot hit resolved locally. A miss fell through to the proxy and, if necessary, directly to Airtable. New queries needed one priming request before appearing in a later snapshot; refresh and eviction happened automatically after that.
 
-In the websites' code, I added a line to the HTML header that imports the JavaScript cache file. Then, I had the clients check this downloaded cache when they’re about to make a remote fetch. If they find pre-loaded data for the request, they skip making a remote call altogether.
+FIGURE (Videos of preload solution loading time - home & cohort pages | After phase 2, cached course data rendered with the rest of the page instead of appearing seconds later.)
 
-FIGURE (Videos of preload solution loading time - home & cohort pages | The data was now populating on first render, so even the most dynamic components and pages felt completely integrated into the site.)
-
-This worked so well, it was hard to believe. The live data appeared instantly, at the same time as all other text on the screen. 
-
-All the sequential logic—locating upcoming cohorts, fetching their schedules, populating pages and components—was running locally and invisibly; at the full speed of the CPU.
+The first successful snapshot was startling: a cohort-heavy page that had assembled itself over several seconds now appeared complete at once. Finding active cohorts, retrieving their schedules, and populating components could all run against local data without separate API round trips.
 
 FIGURE (Pros Cons chart of final solutions)
 
-These websites are business-critical. They drive enrollment, which is Center Centre’s primary revenue source. With the ‘static cache’, the primary feature of the sites was finally fully integrated. 
+# Misses still reached Airtable
 
-_At first glance_, potential students and clients could now see the website’s full content and design exactly as crafted by our team.
+The two cache layers sat in front of the original request path:
 
-With the middleman service acting as both a runtime cache and a static snapshot provider, it is able to provide responses to requests before they are made: effectively ‘anticipating’ anything that the website might ask for. 
+1. The browser checked the preloaded snapshot.
+2. A miss went to the runtime proxy.
+3. An unavailable proxy fell through to Airtable.
 
-When the schedules roll over and the code starts making new queries, it only takes one priming fetch to add the new cohort to the static bundle. No ongoing maintenance is necessary: this process happens in the background for each new schedule, website, and Airtable configuration.
+I did not change the format of Airtable responses or the way the sites parsed them. A snapshot hit avoided a separate API request; a miss or unavailable proxy degraded to the old direct-Airtable behavior.
 
-Since no changes were made to how the Airtable responses are formatted and parsed, everything is backwards compatible with the previous, 5-10 second latency method. So if the droplet were to freeze or go offline, the client code’s fetch function can use a built-in fallback. 
+The tradeoff was freshness. Snapshot data could lag Airtable by the cache-revalidation and file-generation intervals. That was acceptable for schedule data, and a new request shape entered the proxy after one miss and appeared in a later snapshot.
 
-If the static cache misses or fails, the client fetches from the middleman. If the middleman doesn’t respond, the client calls the Airtable API directly. With the fallbacks, the worst case scenario is just business as usual, allowing universal implementation without sacrificing reliability.
+# What the cache enabled
 
-# Beyond the Better Latency
+The Next.js service itself totaled 270 lines. Once a site routed its Airtable requests through it, new query shapes did not require cache-specific configuration.
 
-Overall, the service only totaled to 270 lines of code. While it is designed to be robust and hands-free, a need for maintenance is always possible. With such a small codebase, though, the ‘tech debt’ footprint is minimized. 
+The handoff was tested in practice. During the response to a December 2025 Next.js vulnerability, the droplet became unresponsive; developers new to the service used the deployment and recovery notes to diagnose it and redeploy within a few hours, without my involvement.
 
-Equipped with documentation, junior developers were able to take complete ownership and effectively manage the system during the December 2025 Next.js vulnerability. When the droplet became unresponsive, they located the issue and re-deployed the cache service within only a few hours.
+The cache later powered an aggregated course schedule, dynamic resource links, and data-driven forms. Those features supported the marketing of several programs and the launch of a bundled-course product.
 
-As we transitioned more Center Centre websites to React, the access to instant dynamic content allowed us to create a range of new features: course schedules aggregated on one page, dynamic links to articles and videos, and data-driven forms. 
+FIGURE (Videos of aggregated schedules on one page | The cache later supported a unified schedule and other Airtable-backed content spanning Center Centre's courses, programs, and events.)
 
-Without the static cache, these powerful marketing and operational tools would have greatly suffered in usability and been far less feasible overall. Instead, they were simple to implement and required no additional configuration of the cache to begin serving new types of content. 
+# What I would repeat
 
-These features supported the marketing of a number of programs and ended up being critical to the launch of a new product that bundled courses together.
-
-FIGURE (Videos of aggregated schedules on one page | A new homepage for Center Centre relied heavily on the middleman, full of dynamic content and bridging the gap between various courses, programs, and events.)
-
-With an investment into thoughtful system design, our websites were able to receive the benefits of server-side rendering without bulldozing all of our existing technical and operational setup. 
-
-The unique solution we arrived at excels in its specific use-case—converting dynamic content to static  for zero-latency client-side fetches—with strategically minimized cost, risk, and technical debt. 
-
-If anyone found themselves in a similar situation and wanted to expand on the project, there are a number of further opportunities for scalability. While API-specific behaviors proved necessary, those behaviors could be applied dynamically with support for any API provider. To optimize speed beyond what was necessary for us, the static cache files could be periodically pushed to CDNs, and their infrastructure could accelerate the distribution.
-
-The project is a great demonstration for me on how important planning and experimentation are, especially for lightweight solutions. 
-
-This latency could have easily motivated a high-maintenance or expensive project, but instead it was solved with just a few hundred lines of easy-to-read, self-maintaining code. 
-
-Over time, I've learned that opting towards modernization at any cost can be alluring, but will often miss the opportunity and insight that getting to know your problems more intimately can offer.`;
+The part I would repeat is the sequence, not this exact cache. The first proxy took about an hour to test and solved most of the latency. Running it exposed the remaining client-side wait—and supplied the request inventory that made the snapshot possible. Learning the existing system closely produced a smaller answer than replacing it.`;
