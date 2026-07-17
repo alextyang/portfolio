@@ -7,7 +7,7 @@ export default {
     // Images
     "Image of Cohort Selector": (caption: string, mobileCaption?: string) => (
         <div className="relative w-full">
-            <Image src={'/case/cache/metrics-homepage.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
+            <Image src={'/case/cache/metrics-homepage.png'} width={625} height={300} alt='Course landing page with upcoming cohort dates and enrollment links' className="rounded-2xl"></Image>
             <p className="sans small opacity-60 mt-5!">{caption}</p>
         </div>
     ),
@@ -185,7 +185,7 @@ export default {
     "Flowchart of Initial Solution": (caption: string, mobileCaption?: string) => (
         <>
             <div className="relative w-full">
-                <Image src={'/case/cache/initial-flow.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
+                <Image src={'/case/cache/initial-flow.png'} width={625} height={300} alt='Static course site fetching schedule data directly from Airtable after the application loads' className="rounded-2xl"></Image>
                 {/* <p className="sans small opacity-60 mt-5!">A map of the initial 'direct fetch' implementation. The static React bundle is downloaded into the browser and begins rendering, then it makes a call directly to Airtable for the schedule data.</p> */}
             </div>
         </>
@@ -193,143 +193,143 @@ export default {
     "Pros Cons chart of initial solutions": (caption: string, mobileCaption?: string) => (
         <>
             <Table data={{
-                caption: "",
-                head: [" ", "Airtable API calls", "Pre-downloaded data file", "Middleware server cache"],
+                caption: "Comparison of the approaches considered before building the proxy",
+                head: [" ", "Direct Airtable", "Static export", "Runtime proxy"],
                 body: [
                     [
-                        'Implementation',
+                        'Client integration',
                         <Pill bg='green' c='white' className=" font-medium">
-                            Simple
+                            Existing request path
                         </Pill>,
                         <Pill bg='orange' c='white' className=" font-medium">
-                            Moderate
+                            Load exported data
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Simple
+                            Route requests through proxy
                         </Pill>
                     ],
                     [
-                        'Added Latency',
+                        'Observed data wait',
                         <Pill bg='red' c='white' className=" font-medium">
-                            High (5-10s)
+                            5–10 sec
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
                             None
                         </Pill>,
                         <Pill bg='yellow' c='white' className=" font-medium">
-                            Low (1-3s)
+                            1–2 sec after warm-up
                         </Pill>
                     ],
                     [
-                        'Reliability',
+                        'Freshness',
                         <Pill bg='green' c='white' className=" font-medium">
-                            Extremely reliable
+                            Request-time
                         </Pill>,
                         <Pill bg='yellow' c='white' className=" font-medium">
-                            Risk of out-of-date data
+                            Export interval
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Falls back to direct API calls if downtime
+                            Revalidation interval
                         </Pill>,
                     ],
                     [
-                        'Regular Maintenance',
+                        'Miss or failure path',
                         <Pill bg='green' c='white' className=" font-medium">
-                            None
+                            Airtable is the only path
                         </Pill>,
                         <Pill bg='yellow' c='white' className=" font-medium">
-                            Risk of regular update needs
+                            Last exported data
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Low risk
+                            Direct Airtable
                         </Pill>,
                     ],
                     [
-                        'Long-term Maintenance',
+                        'New query shapes',
                         <Pill bg='green' c='white' className=" font-medium">
-                            None
+                            Works on next request
                         </Pill>,
                         <Pill bg='orange' c='white' className=" font-medium">
-                            High risk of long term change
+                            Exporter must change
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Low risk
+                            Cached after first request
                         </Pill>,
                     ],
                 ]
             }} classNames={{ 'td': 'sans' }} />
         </>
     ),
-    "Flow chart of runtime middleman cache": (caption: string, mobileCaption?: string) => (
+    "Flow chart of runtime proxy cache": (caption: string, mobileCaption?: string) => (
         <>
-            <Image src={'/case/cache/runtime-flow.png'} width={625} height={300} alt='' className="rounded-2xl"></Image>
-            {/* <p className="sans small opacity-60 mt-5!">A map of the 'runtime' middleman implementation. Instead of calling to Airtable directly, API calls are made to the Next.js service, which serves cached requests much faster.</p> */}
+            <Image src={'/case/cache/runtime-flow.png'} width={625} height={300} alt='Course site requesting data through a proxy that returns a cached response or calls Airtable on a miss' className="rounded-2xl"></Image>
+            {/* Runtime proxy: the site requests data from the Next.js cache, which calls Airtable on a miss. */}
         </>
     ),
     "Pros Cons chart of final solutions": (caption: string, mobileCaption?: string) => (
         <>
             <Table data={{
-                caption: "",
-                head: [" ", "Airtable API calls", "Middleware server cache", "Middleware prehydrated cache"],
+                caption: "Observed behavior of the direct, proxy, and snapshot request paths",
+                head: [" ", "Direct Airtable", "Runtime proxy", "Preloaded snapshot"],
                 body: [
                     [
-                        'Implementation',
+                        'Client integration',
                         <Pill bg='green' c='white' className=" font-medium">
-                            Simple
+                            Existing request path
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Simple
+                            Route requests through proxy
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Simple
+                            Load and check snapshot
                         </Pill>,
                     ],
                     [
-                        'Added Latency',
+                        'Observed data wait',
                         <Pill bg='red' c='white' className=" font-medium">
-                            High (5-10s)
+                            5–10 sec
                         </Pill>,
                         <Pill bg='yellow' c='white' className=" font-medium">
-                            Low (1-3s)
+                            1–2 sec after warm-up
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            None
-                        </Pill>,
-                    ],
-                    [
-                        'Reliability',
-                        <Pill bg='green' c='white' className=" font-medium">
-                            Extremely reliable
-                        </Pill>,
-                        <Pill bg='green' c='white' className=" font-medium">
-                            Falls back to direct API calls if downtime
-                        </Pill>,
-                        <Pill bg='green' c='white' className=" font-medium">
-                            Same fallback system
+                            None on hit
                         </Pill>,
                     ],
                     [
-                        'Regular Maintenance',
+                        'Freshness',
                         <Pill bg='green' c='white' className=" font-medium">
-                            None
+                            Request-time
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Low risk
+                            Revalidation interval
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Low risk
+                            Revalidation + snapshot interval
                         </Pill>,
                     ],
                     [
-                        'Long-term Maintenance',
+                        'Miss or failure path',
                         <Pill bg='green' c='white' className=" font-medium">
-                            None
+                            Airtable is the only path
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Low risk
+                            Direct Airtable
                         </Pill>,
                         <Pill bg='green' c='white' className=" font-medium">
-                            Low risk
+                            Proxy, then Airtable
+                        </Pill>,
+                    ],
+                    [
+                        'New query shape',
+                        <Pill bg='green' c='white' className=" font-medium">
+                            Works on next request
+                        </Pill>,
+                        <Pill bg='green' c='white' className=" font-medium">
+                            Cached after first request
+                        </Pill>,
+                        <Pill bg='green' c='white' className=" font-medium">
+                            Added after first request and next snapshot
                         </Pill>,
                     ],
                 ]
@@ -338,8 +338,8 @@ export default {
     ),
     "Flowchart of preload solution": (caption: string, mobileCaption?: string) => (
         <>
-            <Image src={'/case/cache/static-flow.png'} width={1225} height={600} alt='' className="rounded-2xl "></Image>
-            {/* <p className="sans small opacity-60 mt-5!">A map of the static bundle implementation. The middleman's cache is pre-loaded onto the client, and it can instantly serve itself all cached requests.</p> */}
+            <Image src={'/case/cache/static-flow.png'} width={1225} height={600} alt='Course site checking a preloaded snapshot, then the runtime proxy, then Airtable' className="rounded-2xl "></Image>
+            {/* Snapshot path: the browser checks preloaded data before falling through to the proxy and Airtable. */}
         </>
     ),
 

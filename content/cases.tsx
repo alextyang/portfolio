@@ -30,11 +30,11 @@ export const caseStudies: readonly CaseStudy[] = [
 
         // For preview cards
         previewTitle: "Email Production App",
-        previewSubtitle: "An internal email templating & publishing tool, start-to-finish managing 5 million sends/month.",
+        previewSubtitle: "An internal app that cut active production time by 75% across a workflow sending roughly 5 million emails a month.",
 
-        primaryField: "Fullstack",
+        primaryField: "Full-stack",
         fieldTags: ["Backend", "Frontend Integration"],
-        fieldDescription: "Web developer + email production",
+        fieldDescription: "Internal tools + email operations",
 
         toolTags: ["Framework - React, Next.js", "Language - TypeScript", "Styles - TailwindCSS", "Components - MantineUI", "Storage - Airtable", "Integrations - Google Drive, ActiveCampaign, Postmark, Notion, Slack"],
 
@@ -45,19 +45,19 @@ export const caseStudies: readonly CaseStudy[] = [
         coverImageAlt: "",
 
         // For case study page
-        title: "Email Production App",
-        subtitle: "Designing and building an internal tool that automated Center Centre's email production, supporting 5M sends/month.",
+        title: "Automating Email Production",
+        subtitle: "Cutting active production time by 75% while preserving the team's editing tools and final QA review.",
     },
     {
         slug: "cache",
 
         // For preview cards
-        previewTitle: "Prehydrated Data Service",
-        previewSubtitle: "A helper that eliminated latency for 3rd-party data on our static websites.",
+        previewTitle: "Faster Enrollment Data",
+        previewSubtitle: "A 270-line cache service that moved cohort data from a 5–10-second wait to first-render availability on snapshot hits, without changing the static hosting model.",
 
         primaryField: "Backend",
         fieldTags: ["Backend", "Frontend"],
-        fieldDescription: "Web developer + backend integration",
+        fieldDescription: "Caching + Airtable integration",
 
         toolTags: ["Tools - React, Vite, Airtable, Next.js", "Technology - TypeScript, RESTful, Linux"],
 
@@ -68,8 +68,8 @@ export const caseStudies: readonly CaseStudy[] = [
         coverImageAlt: "",
 
         // For case study page
-        title: "Prehydrated Data Service",
-        subtitle: "Implementing a cache service that anticipates data needs of static websites, and automatically adapts to variation on both sides of the stack.",
+        title: "Preloading Enrollment Data on Static Course Sites",
+        subtitle: "How I evolved a runtime Airtable proxy into a browser-side cache snapshot while preserving the original direct-request fallback.",
     },
     {
         slug: "songs",
@@ -77,9 +77,9 @@ export const caseStudies: readonly CaseStudy[] = [
 
         // For preview cards
         previewTitle: "Spotify Research Companion",
-        previewSubtitle: "A Spotify-synced web app that finds and summarizes journalism on the current song.",
+        previewSubtitle: "A Spotify-synced app that finds and summarizes journalism about the song currently playing.",
 
-        primaryField: "Fullstack",
+        primaryField: "Full-stack",
         fieldTags: ["Frontend", "Backend", "Product Design", "UX/UI"],
         fieldDescription: "",
 
@@ -101,9 +101,9 @@ export const caseStudies: readonly CaseStudy[] = [
 
         // For preview cards
         previewTitle: "Accountability Wiki",
-        previewSubtitle: "A Mediawiki-powered platform to track anti-consumer behavior and patterns of corporate abuse.",
+        previewSubtitle: "A MediaWiki-based community site for tracking recurring anti-consumer practices by major brands.",
 
-        primaryField: "Fullstack",
+        primaryField: "Full-stack",
         fieldTags: ["Frontend", "Backend", "Product Design", "UX/UI"],
         fieldDescription: "",
 
@@ -124,8 +124,8 @@ export const caseStudies: readonly CaseStudy[] = [
         isWip: true,
 
         // For preview cards
-        previewTitle: "Smart Home Automation UX",
-        previewSubtitle: "An alternative vision for IoT automation interfaces, outperforming the current convention.",
+        previewTitle: "Timeline-Based Smart Home Automation",
+        previewSubtitle: "A prototype comparing a timeline interface with a conventional smart-home automation flow.",
 
         primaryField: "UX/UI",
         fieldTags: ["UX/UI", "Frontend", "Product Design"],

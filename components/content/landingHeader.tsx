@@ -85,18 +85,17 @@ export default function LandingHeader({
             <div className="inline-block px-4 md:px-0">
                 <h2>Alexander Yang</h2>
                 <div className={"overflow-hidden " + introTransitionClass + " " + (showSubPagePanel ? "max-h-0 opacity-0 -mb-px" : "max-h-56 sm:max-h-32 opacity-100")}>
-                    <p>I&apos;m a full-stack developer using TypeScript and Next.js to turn vision into{" "}
+                    <p>I&apos;m a full-stack product engineer using TypeScript and Next.js to build{" "}
                         <AnimatedWidthSpan>
                             <WritingText
                                 texts={[
-                                    "polished products",
-                                    "better workflows",
-                                    "fine-tuned interaction",
-                                    "engaging experiences",
-                                    "smoother launches",
+                                    "customer-facing web apps",
+                                    "internal tools",
+                                    "publishing systems",
+                                    "fast, clear interfaces",
                                 ]}
                             />
-                        </AnimatedWidthSpan> and the systems behind them.&nbsp;
+                        </AnimatedWidthSpan> for small teams.&nbsp;
 
                     </p>
                 </div>
@@ -124,13 +123,13 @@ export default function LandingHeader({
 
                 <div className={"rounded-lg px-1 py-5 " + panelOpacityTransitionClass + " " + (subPage === 'about' ? 'opacity-100 delay-75' : 'opacity-0')}>
                     <p className="mt-0!">
-                        I build web apps, internal tooling, and infrastructure to ship polished, impactful experiences and shape effective organizations.
+                        On a small team, a feature rarely stops at the interface. I like following it through the data layer, the publishing process, and whatever internal tool the team needs to keep it running.
                     </p>
                     <p>
-                        While my background is primarily in software, I use an education in design, user experience, and media production to add impactful velocity to collaborations in small and growing teams.
+                        I studied interaction design and media production alongside software, so I pay attention to whether an interface feels fast and clear—not only whether the code works.
                     </p>
                     <p>
-                        Recently, at Center Centre, I cut website development timelines in half (with a component library and encoded design system), streamlined bottom-of-funnel UX (with front-end features and optimization), and saved the team &gt;25 hours a week (with cross-functional internal tools).
+                        At Center Centre, I cut most site build times in half with a shared component and data library. I also built the email production app and enrollment-data cache featured below.
                     </p>
                 </div>
             </div>
@@ -142,7 +141,7 @@ export default function LandingHeader({
                             <div className="max-w-[26rem]">
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Resume</p>
                                 <p className="mt-0!">
-                                    Full-stack developer with a background in product engineering, web systems, and interface design.
+                                    Full-stack product engineer working primarily in React and TypeScript on public web products and internal tools for publishing and operations.
                                 </p>
                             </div>
                             <div className="flex flex-row sm:flex-col items-start gap-4 sm:gap-1 pt-0.5">
@@ -158,23 +157,27 @@ export default function LandingHeader({
                         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
                             <div>
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Education</p>
-                                <p className="mt-0!">B.S. in Integrated Design &amp; Media, NYU Tandon. Coursework in web development, UX, graphic design, AI, and data structures.</p>
+                                <p className="mt-0!">B.S. in Integrated Design &amp; Media, NYU Tandon School of Engineering. Coursework included web development, UX design, graphic design, AI, and data structures.</p>
                             </div>
                             <div>
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Center Centre</p>
-                                <p className="mt-0!">Built shared React and TypeScript systems, consolidated backend data flows, and developed internal tools for publishing and operations.</p>
+                                <p className="mt-0!">Built React course sites, connected Airtable data to enrollment flows, and shipped internal tools for email publishing and operations.</p>
                             </div>
                             <div>
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Selected Work</p>
                                 <ul className="mt-0! ml-4">
                                     <li className="mt-0!">Cut most website build timelines in half with a shared component and data library.</li>
-                                    <li>Built an email publishing app supporting roughly 100 designs and 5 million sends per month.</li>
-                                    <li>Rebuilt Harvestworks&apos; website and designed a more flexible content model for the team.</li>
+                                    <li>Built an email production app that reduced active work by 75% in a workflow sending roughly 5 million emails each month.</li>
+                                    <li>Rebuilt Harvestworks&apos; website and created a more flexible content model for its team.</li>
                                 </ul>
                             </div>
                             <div>
                                 <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Independent Projects</p>
-                                <p className="mt-0!">Built a Spotify research companion, a community accountability platform, and an IoT usability study whose timeline-based interface was preferred by 94% of participants.</p>
+                                <ul className="mt-0! ml-4">
+                                    <li className="mt-0!">Built a Spotify companion that finds and summarizes journalism about the song currently playing.</li>
+                                    <li>Built a MediaWiki-based community site for tracking recurring anti-consumer practices by major brands.</li>
+                                    <li>Designed and tested a timeline-based alternative to conventional smart-home automation interfaces.</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -184,7 +187,7 @@ export default function LandingHeader({
                     <div className="border-t border-black/12 py-5">
                         <p className="sans small uppercase tracking-[0.18em] opacity-45 mt-0! mb-2!">Contact</p>
                         <p className="mt-0! max-w-[31rem]">
-                            Best for product engineering roles, collaborations, and projects that need someone comfortable moving between implementation, systems thinking, and design-sensitive execution.
+                            I&apos;m looking for product engineering roles on small teams, and I&apos;m open to project work where I can contribute to both the interface and the systems behind it.
                         </p>
 
                         <div className="mt-6 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-10 gap-y-5">
@@ -215,7 +218,7 @@ export default function LandingHeader({
                         </div>
 
                         <p className="mt-6 max-w-[31rem] opacity-70">
-                            If you&apos;re reaching out about a role or project, a note with the team, timeline, and problem space is plenty.
+                            Reaching out about a role or project? A short note about the team, what you&apos;re building, and where you think I could help is plenty.
                         </p>
                     </div>
                 </div>

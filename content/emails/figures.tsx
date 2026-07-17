@@ -1,6 +1,6 @@
 import { SegmentedContent } from "@/components/content/segmentedContent";
 import Image from "next/image";
-import { ErrorsSavedEstimate, ErrorsSavedSnippet, HoursSavedSnippet, IncidentsSavedSnippet, TimeSavedEstimate } from "./clientFigures";
+import { TimeSavedEstimate } from "./clientFigures";
 
 export default {
     // Images
@@ -112,7 +112,7 @@ export default {
     ),
     "Simple Stripo template, variable documentation page": (caption: string, mobileCaption?: string) => (
         <>
-            <SegmentedContent labels={['Template-ized Design', 'Variable System Documentation']} segments={[
+            <SegmentedContent labels={['Reusable Template', 'Variable Documentation']} segments={[
                 (
                     <div className="relative w-full mt-4">
                         <Image src={'/case/emails/dynamic-template-simple.png'} width={625} height={300} alt='' className="rounded-2xl shadow-md"></Image>
@@ -212,23 +212,6 @@ export default {
         <TimeSavedEstimate />
     ),
 
-    "Hours saved header": (caption: string, mobileCaption?: string) => (
-        <h2 className="block w-fit -mt-2! -mb-3! ">
-            a. <span className=" text-2xl! relative -top-0.5 inline-block h-0! "><HoursSavedSnippet /></span> Hours Saved (so Far)
-        </h2>
-    ),
-
-    "Errors saved estimate": (caption: string, mobileCaption?: string) => (
-        <span className="sans opacity-100 font-[350]! text-lg bg-gray-100 px-2 -mt-3! -mb-5! block w-fit">
-            <ErrorsSavedEstimate />
-        </span>
-    ),
-    "Errors saved header": (caption: string, mobileCaption?: string) => (
-        <h2 className="block w-fit -mt-2! -mb-3! ">
-            b. <span className=" text-2xl! relative -top-0.5 inline-block h-0! "><ErrorsSavedSnippet /></span> Mistakes Prevented (<span className=" text-2xl! relative -top-0.5 inline-block h-0! "><IncidentsSavedSnippet /></span> in production)
-        </h2>
-    ),
-
     // Compound figures
     "Gallery of email tool": (caption: string, mobileCaption?: string) => (
         <>
@@ -240,7 +223,7 @@ export default {
                                 src={'/case/emails/eta-demo-edit-popup.png'}
                                 className="relative rounded-2xl shadow-md w-full"
                             />
-                            <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">A warning system to prevent local & exported versions from conflicting.</p>
+                            <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">The app warns when local and exported versions conflict.</p>
                         </div>
                         <div className="">
                             <video
@@ -263,7 +246,7 @@ export default {
                             autoPlay
                             loop
                         />
-                        <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">Dynamically-generated template form.</p>
+                        <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">The form includes only the values used by the selected template.</p>
                     </div>
                 </div>
 
@@ -288,7 +271,7 @@ export default {
                             autoPlay
                             loop
                         />
-                        <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">In-progress emails in sidebar.</p>
+                        <p className="sans small opacity-60 mt-2! px-2.5 text-xs! h-0 mb-2!">In-progress emails remain available in the sidebar.</p>
                     </div>
 
                     <div className="flex flex-col gap-5">
@@ -333,14 +316,14 @@ export default {
                             autoPlay
                             loop
                         />
-                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A bundled-course product, launched with a brand-new data driven website and navigation design.</p>
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A new website and navigation system for a bundled-course product.</p>
                     </div>
                     <div className="">
                         <img
                             src={'/case/emails/backlog-redesign.png'}
                             className="relative rounded-2xl shadow-md w-full"
                         />
-                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A re-designed landing page with new branding for our flagship 16-week leadership course.</p>
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A redesigned landing page introduced new branding for the flagship 16-week leadership course.</p>
                     </div>
                 </div>
                 <div className="relative w-full flex flex-col md:flex-row gap-8 md:gap-5 lg:gap-8">
@@ -349,7 +332,7 @@ export default {
                             src={'/case/emails/backlog-footer.png'}
                             className="relative rounded-2xl shadow-md w-full"
                         />
-                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">An new universal footer, providing a newly succinct map of Center Centre programs.</p>
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A shared footer presented the same compact map of Center Centre&apos;s programs across its sites.</p>
                     </div>
                     <div className="">
                         <video
@@ -359,7 +342,7 @@ export default {
                             autoPlay
                             loop
                         />
-                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">Call to actions on a new website that explores corporate-oriented services in detail, a key profit driver.</p>
+                        <p className="sans small opacity-60 mt-3.5! px-2.5 h-0 mb-8!">A new services site explained Center Centre&apos;s work with corporate clients.</p>
                     </div>
                 </div>
             </div>
