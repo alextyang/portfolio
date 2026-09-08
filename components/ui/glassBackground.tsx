@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 type GlassBackgroundProps = {
@@ -8,7 +7,6 @@ type GlassBackgroundProps = {
     className?: string;
     topOffsetPx?: number;
     visible?: boolean;
-    visibleOnSubPage?: string;
     fadeOutDelayMs?: number;
 };
 
@@ -17,14 +15,11 @@ export default function GlassBackground({
     className = "",
     topOffsetPx = 40,
     visible = true,
-    visibleOnSubPage,
     fadeOutDelayMs = 0,
 }: GlassBackgroundProps) {
-    const searchParams = useSearchParams();
     const backgroundRef = useRef<HTMLDivElement>(null);
     const isTopFillModeRef = useRef(false);
-    const subPage = searchParams.get("p");
-    const isVisible = visibleOnSubPage ? subPage === visibleOnSubPage && visible : visible;
+    const isVisible = visible;
     const [isDisplayed, setIsDisplayed] = useState(isVisible);
 
     useEffect(() => {

@@ -1,12 +1,22 @@
 import { CaseBody } from "@/components/content/caseBody";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { caseStudies, CaseStudy } from "../../../content/cases";
 
 type CasePageProps = {
     params: Promise<{ caseStudySlug: string }>
 };
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+    return (caseStudies as CaseStudy[])
+        .filter((caseStudy) => !caseStudy.isWip)
+        .map((caseStudy) => ({
+            caseStudySlug: caseStudy.slug,
+        }));
+}
 
 export async function generateMetadata({
     params,
@@ -57,10 +67,10 @@ export default async function Page({
     const c = (caseStudies as CaseStudy[]).find((caseStudy) => caseStudy.slug === caseStudySlug);
 
     if (!c)
-        redirect("/");
+        notFound();
 
     if (c.isWip)
-        redirect("/");
+        notFound();
 
     return (
         <div className="flex min-h-screen items-start justify-center px-(--page-x-margin) pt-(--page-top) ">

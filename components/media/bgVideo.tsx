@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useSearchParams } from "next/navigation"
 
 type BackgroundVideoPlaylistProps = {
     sources: string[]
@@ -11,7 +10,6 @@ type BackgroundVideoPlaylistProps = {
     fadeInDelayMs?: number
     loopPlaylist?: boolean
     visible?: boolean
-    visibleOnSubPage?: string
 }
 
 type PreparedVideo = {
@@ -95,9 +93,7 @@ function BackgroundVideoPlaylist({
     fadeInDelayMs = 0,
     loopPlaylist = false,
     visible = true,
-    visibleOnSubPage,
 }: BackgroundVideoPlaylistProps) {
-    const searchParams = useSearchParams()
     const firstVideoRef = React.useRef<HTMLVideoElement>(null)
     const secondVideoRef = React.useRef<HTMLVideoElement>(null)
     const videoRefs = React.useMemo(
@@ -119,8 +115,7 @@ function BackgroundVideoPlaylist({
         [sources]
     )
 
-    const subPage = searchParams.get("p")
-    const shouldBeVisible = visibleOnSubPage ? subPage === visibleOnSubPage && visible : visible
+    const shouldBeVisible = visible
 
     React.useEffect(() => {
         if (!shouldBeVisible) {

@@ -36,12 +36,8 @@ function normalizeSubPage(subPageParam: string | null): SubPage | null {
     return SUB_PAGES.find((subPage) => subPage === subPageParam) ?? null;
 }
 
-export default function HomePageClient({
-    initialSubPageParam = null,
-}: {
-    initialSubPageParam?: string | null;
-}) {
-    const [subPage, setSubPage] = useState<SubPage | null>(() => normalizeSubPage(initialSubPageParam));
+export default function HomePageClient() {
+    const [subPage, setSubPage] = useState<SubPage | null>(null);
     const isAboutSubPage = subPage === "about";
 
     useEffect(() => {
@@ -50,6 +46,7 @@ export default function HomePageClient({
             setSubPage(normalizeSubPage(nextParams.get(SUBPAGE_KEY)));
         };
 
+        syncSubPageFromUrl();
         window.addEventListener("popstate", syncSubPageFromUrl);
 
         return () => {
