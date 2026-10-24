@@ -29,7 +29,7 @@ export const caseStudies: readonly CaseStudy[] = [
         slug: "emails",
 
         // For preview cards
-        previewTitle: "Email ContentOps App",
+        previewTitle: "Content Operations App",
         previewSubtitle: "Cut hands-on email production by 75% for a team sending roughly 5 million messages a month.",
 
         primaryField: "Fullstack",
@@ -45,7 +45,7 @@ export const caseStudies: readonly CaseStudy[] = [
         coverImageAlt: "",
 
         // For case study page
-        title: "Email Production App",
+        title: "Content Operations App",
         subtitle: "Designing and building an internal tool that automated Center Centre's email production, supporting 5M sends/month.",
     },
     {
@@ -68,7 +68,7 @@ export const caseStudies: readonly CaseStudy[] = [
         coverImageAlt: "",
 
         // For case study page
-        title: "Prehydrated Data Service",
+        title: "Enrollment Data Cache",
         subtitle: "Implementing a cache service that anticipates data needs of static websites, and automatically adapts to variation on both sides of the stack.",
     },
     {

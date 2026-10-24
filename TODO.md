@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Synchronize project titles (2026-10-24): Content Operations App and Enrollment Data Cache now match across posters and case studies.
+  - Acceptance Gate: Passed production build, targeted ESLint and automated HTTP checks of both poster titles, case-study h1 headings, browser titles, Open Graph titles and Twitter titles.
 - Migrate all 13 About videos to Oracle at `https://assets.alexya.ng/about/` (2026-10-24), removing 709,668,039 bytes of MP4s from the current repository tree.
   - Acceptance Gate: Passed independent SHA-256 verification, public HTTPS HEAD and byte-matched beginning/end range requests for every file, production build and targeted ESLint, all 13 legacy URL redirects, and advancing browser playback. GitHub main tree readback confirmed external playlist URLs and no public/about MP4s; unrelated file blobs were preserved.
 - Revise the intro and first two posters, and hide Independent Work (2026-10-24).
