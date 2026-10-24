@@ -9,25 +9,22 @@ import GlassBackground from "@/components/ui/glassBackground";
 import { caseStudies } from "@/content/cases";
 
 const aboutVideoSources = [
-    "/about/IMG_0481.mp4",
-    "/about/IMG_0485.mp4",
-    "/about/IMG_1786.mp4",
-    "/about/IMG_1871.mp4",
-    "/about/IMG_1928.mp4",
-    "/about/IMG_2007.mp4",
-    "/about/IMG_2121.mp4",
-    "/about/IMG_2589.mp4",
-    "/about/IMG_3137.mp4",
-    "/about/IMG_3361.mp4",
-    "/about/IMG_3734.mp4",
-    "/about/IMG_3939.mp4",
-    "/about/IMG_4677.mp4",
+    "https://assets.alexya.ng/about/IMG_0481.mp4",
+    "https://assets.alexya.ng/about/IMG_0485.mp4",
+    "https://assets.alexya.ng/about/IMG_1786.mp4",
+    "https://assets.alexya.ng/about/IMG_1871.mp4",
+    "https://assets.alexya.ng/about/IMG_1928.mp4",
+    "https://assets.alexya.ng/about/IMG_2007.mp4",
+    "https://assets.alexya.ng/about/IMG_2121.mp4",
+    "https://assets.alexya.ng/about/IMG_2589.mp4",
+    "https://assets.alexya.ng/about/IMG_3137.mp4",
+    "https://assets.alexya.ng/about/IMG_3361.mp4",
+    "https://assets.alexya.ng/about/IMG_3734.mp4",
+    "https://assets.alexya.ng/about/IMG_3939.mp4",
+    "https://assets.alexya.ng/about/IMG_4677.mp4",
 ];
 
 const centerCentreCaseStudies = caseStudies.filter((caseStudy) => !caseStudy.isWip && caseStudy.projectAffiliation === "Center Centre");
-const independentWipCaseStudies = caseStudies
-    .filter((caseStudy) => caseStudy.isWip && caseStudy.projectAffiliation === "Independent")
-    .slice(0, 2);
 
 const SUBPAGE_KEY = "p";
 const SUB_PAGES: SubPage[] = ["about", "resume", "contact"];
@@ -105,22 +102,6 @@ export default function HomePageClient({
                             ))}
                         </div>
 
-                        {independentWipCaseStudies.length > 0 && (
-                            <>
-                                <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Independent Work - WIP&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
-                                <div className="flex flex-col sm:flex-row items-start gap-10 sm:gap-8 mt-8 mb-20 sm:-mx-1">
-                                    {independentWipCaseStudies.map((caseStudy) => (
-                                        <CasePoster
-                                            key={caseStudy.slug}
-                                            caseStudy={caseStudy}
-                                            isAboutSubPage={isAboutSubPage}
-                                            disabled
-                                            titleSuffix="🚧"
-                                        />
-                                    ))}
-                                </div>
-                            </>
-                        )}
                     </PosterGlyphCanvasHost>
                 </main>
             </div>

@@ -29,8 +29,8 @@ export const caseStudies: readonly CaseStudy[] = [
         slug: "emails",
 
         // For preview cards
-        previewTitle: "Email Production App",
-        previewSubtitle: "An internal email templating & publishing tool, start-to-finish managing 5 million sends/month.",
+        previewTitle: "Email ContentOps App",
+        previewSubtitle: "Cut hands-on email production by 75% for a team sending roughly 5 million messages a month.",
 
         primaryField: "Fullstack",
         fieldTags: ["Backend", "Frontend Integration"],
@@ -52,8 +52,8 @@ export const caseStudies: readonly CaseStudy[] = [
         slug: "cache",
 
         // For preview cards
-        previewTitle: "Prehydrated Data Service",
-        previewSubtitle: "A helper that eliminated latency for 3rd-party data on our static websites.",
+        previewTitle: "Enrollment Data Cache",
+        previewSubtitle: "270 lines of Next.js that took product data on our static sites from a 5–30-second wait to rendering with the page.",
 
         primaryField: "Backend",
         fieldTags: ["Backend", "Frontend"],

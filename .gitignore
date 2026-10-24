@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# About videos are hosted on Oracle at https://assets.alexya.ng/about/
+/public/about/*.mp4
