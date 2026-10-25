@@ -389,7 +389,7 @@ export function GlyphImageHoverNoiseMesh({
             hoverProgressRef.current + dir * delta / cellTransitionDuration, 0, 1
         );
         const progress = hoverProgressRef.current;
-        u.uHoverProgress.value = 2.4 * (0.4 * progress + 0.6 * progress * progress);
+        u.uHoverProgress.value = 2.4 * (0.4 * progress + 0.6 * progress * progress * progress);
     });
 
     return (

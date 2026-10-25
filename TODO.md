@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Strengthen acceleration at the very end (2026-10-25): 40% linear/60% cubic progress keeps the initial speed and 0.72-second duration while increasing endpoint speed by 37.5% over the previous curve.
+  - Acceptance Gate: Previous curve failed the sharper-final-quarter check; actual Three.js material/uniform frame checks now pass at 30/60/120 fps for completion, initial/end speed and continuous reversal. Production build, targeted ESLint and browser WebGL hover checks passed without errors.
 - Add the greeting and soften reveal opening (2026-10-25): tagline starts with Hi!; the 40% linear/60% quadratic curve reduces initial speed by 11.1% while retaining the 0.72-second duration and fast finish.
   - Acceptance Gate: Actual Three.js material/uniform frame checks passed at 30/60/120 fps for completion, softer initial speed, fast endpoint and continuous reversal. Production build, targeted ESLint, rendered greeting and browser WebGL hover checks passed without errors.
 - Sharpen the poster reveal finish (2026-10-25): 0.72-second duration with a 45% linear/55% quadratic curve keeps the prior initial speed and raises endpoint speed by 14.8%.
