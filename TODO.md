@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Rename the homepage section label (2026-10-25): Fellowship @ Center Centre replaces Web & Email Dev @ Center Centre.
+  - Acceptance Gate: Production build and targeted ESLint passed; automated checks of generated homepage HTML confirmed the new label and absence of the former label.
 - Strengthen acceleration at the very end (2026-10-25): 40% linear/60% cubic progress keeps the initial speed and 0.72-second duration while increasing endpoint speed by 37.5% over the previous curve.
   - Acceptance Gate: Previous curve failed the sharper-final-quarter check; actual Three.js material/uniform frame checks now pass at 30/60/120 fps for completion, initial/end speed and continuous reversal. Production build, targeted ESLint and browser WebGL hover checks passed without errors.
 - Add the greeting and soften reveal opening (2026-10-25): tagline starts with Hi!; the 40% linear/60% quadratic curve reduces initial speed by 11.1% while retaining the 0.72-second duration and fast finish.

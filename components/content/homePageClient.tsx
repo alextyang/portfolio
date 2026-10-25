@@ -94,7 +94,7 @@ export default function HomePageClient({
 
                 <main className="relative w-full mt-5 px-4 md:px-0">
                     <PosterGlyphCanvasHost>
-                        <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Web &amp; Email Dev @ Center Centre&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
+                        <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Fellowship @ Center Centre&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
 
                         <div className="flex flex-col sm:flex-row items-start gap-10 sm:gap-8 mt-10 sm:-mx-[2px]">
                             {centerCentreCaseStudies.map((caseStudy) => (
