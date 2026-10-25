@@ -38,7 +38,7 @@ const fragmentShader = /* glsl */ `
     uniform vec2  uImageSize;
     uniform float uEdgeStrength;
     uniform float uEdgeMix;
-    uniform float uHoverProgress;    // 0..3, animated from JS
+    uniform float uHoverProgress;    // 0..2.4, animated from JS
     uniform float uStagger;          // 0..1, how spread-out the per-cell stagger is
     uniform float uKeyWhiteToAlpha;  // 1.0 = key out white/near-white backgrounds
 
@@ -141,11 +141,11 @@ const fragmentShader = /* glsl */ `
         // Shared time step so both passes jitter in sync
         float tStep = floor(uTime * 28.0);
 
-        // uHoverProgress runs 0→3.2, glyph phases offset 0.4 each, image phase 2x longer:
+        // uHoverProgress runs 0→2.4, with overlapping glyph phases and image reveal:
         //   phase1 = [0.0..1.0]: cell1(coarse) → cell2(medium)
         //   phase2 = [0.4..1.4]: cell2(medium) → cell3(medium-fine)
         //   phase3 = [0.8..1.8]: cell3(medium-fine) → cell4(fine)
-        //   phase4 = [0.9..3.4]: cell4(fine) → image  (span 2.5)
+        //   phase4 = [0.9..2.4]: cell4(fine) → image
         float phase1 = clamp(uHoverProgress - 0.0,         0.0, 1.0);
         float phase2 = clamp(uHoverProgress - 0.4,         0.0, 1.0);
         float phase3 = clamp(uHoverProgress - 0.8,         0.0, 1.0);
@@ -319,6 +319,7 @@ export function GlyphImageHoverNoiseMesh({
 }: GlyphImageHoverNoiseMeshProps) {
     const imageTex = useLoader(THREE.TextureLoader, imageUrl, undefined, undefined);
     const matRef = useRef<THREE.ShaderMaterial>(null!);
+    const hoverProgressRef = useRef(0);
     const atlas = useMemo(() => getFontAtlas(), []);
 
     const configuredImageTex = useMemo(() => {
@@ -382,10 +383,13 @@ export function GlyphImageHoverNoiseMesh({
             u.uImageSize.value.set(image.width, image.height);
         }
 
-        // Animate hover progress 0→2 across two phases (0→1 glyph, 1→2 image)
-        const rate = 1 / cellTransitionDuration;
-        const dir  = isHovered ? 1 : -1;
-        u.uHoverProgress.value = THREE.MathUtils.clamp(u.uHoverProgress.value + dir * rate * delta, 0, 2.4);
+        // Accelerate into the final image; reversing preserves the current position.
+        const dir = isHovered ? 1 : -1;
+        hoverProgressRef.current = THREE.MathUtils.clamp(
+            hoverProgressRef.current + dir * delta / cellTransitionDuration, 0, 1
+        );
+        const progress = hoverProgressRef.current;
+        u.uHoverProgress.value = 2.4 * (0.5 * progress + 0.5 * progress * progress);
     });
 
     return (

@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Accelerate poster hover reveals (2026-10-25): full transition now takes 0.8 seconds with a responsive quadratic curve that accelerates toward the image and reverses continuously.
+  - Acceptance Gate: Original frame callback failed the speed check; updated real Three.js material/uniform frame checks pass at 30/60/120 fps for completion, final-quarter acceleration, idle return and interrupted reversal. Production build, targeted ESLint and real browser WebGL hover/pixel-change checks passed with no browser errors.
 - Remove navigation italics (2026-10-25): About, Resume and Contact now use normal text in both default and selected states.
   - Acceptance Gate: Passed production build, targeted ESLint and browser-computed font-style assertions for all three links in the default, About, Resume and Contact states.
 - Synchronize project titles (2026-10-24): Content Operations App and Enrollment Data Cache now match across posters and case studies.
