@@ -85,7 +85,7 @@ export default function LandingHeader({
             <div className="inline-block px-4 md:px-0">
                 <h2>Alexander Yang</h2>
                 <div className={"overflow-hidden " + introTransitionClass + " " + (showSubPagePanel ? "max-h-0 opacity-0 -mb-px" : "max-h-56 sm:max-h-32 opacity-100")}>
-                    <p>I&apos;m a full-stack product engineer using TypeScript and Next.js to build{" "}
+                    <p>Hi! I&apos;m a full-stack product engineer using TypeScript and Next.js to build{" "}
                         <AnimatedWidthSpan>
                             <WritingText
                                 texts={[

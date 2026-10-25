@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Add the greeting and soften reveal opening (2026-10-25): tagline starts with Hi!; the 40% linear/60% quadratic curve reduces initial speed by 11.1% while retaining the 0.72-second duration and fast finish.
+  - Acceptance Gate: Actual Three.js material/uniform frame checks passed at 30/60/120 fps for completion, softer initial speed, fast endpoint and continuous reversal. Production build, targeted ESLint, rendered greeting and browser WebGL hover checks passed without errors.
 - Sharpen the poster reveal finish (2026-10-25): 0.72-second duration with a 45% linear/55% quadratic curve keeps the prior initial speed and raises endpoint speed by 14.8%.
   - Acceptance Gate: Actual Three.js material/uniform frame checks passed at 30/60/120 fps for completion, unchanged initial speed, increased endpoint speed and continuous reversal. Production build, targeted ESLint and browser WebGL hover checks passed without errors.
 - Accelerate poster hover reveals (2026-10-25): full transition now takes 0.8 seconds with a responsive quadratic curve that accelerates toward the image and reverses continuously.
