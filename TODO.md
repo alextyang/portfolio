@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Remove navigation italics (2026-10-25): About, Resume and Contact now use normal text in both default and selected states.
+  - Acceptance Gate: Passed production build, targeted ESLint and browser-computed font-style assertions for all three links in the default, About, Resume and Contact states.
 - Synchronize project titles (2026-10-24): Content Operations App and Enrollment Data Cache now match across posters and case studies.
   - Acceptance Gate: Passed production build, targeted ESLint and automated HTTP checks of both poster titles, case-study h1 headings, browser titles, Open Graph titles and Twitter titles.
 - Migrate all 13 About videos to Oracle at `https://assets.alexya.ng/about/` (2026-10-24), removing 709,668,039 bytes of MP4s from the current repository tree.

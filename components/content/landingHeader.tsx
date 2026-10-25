@@ -99,18 +99,18 @@ export default function LandingHeader({
                 </div>
             </div>
             <div className="mt-4.5! grid grid-cols-1 sm:grid-cols-2 mb-1! px-4 md:px-0">
-                <p className="m-0! text-base! font-light! italic ">
+                <p className="m-0! text-base! font-light! ">
                     {subPage === 'about' ?
-                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 italic font-light " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</button>
-                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('about')} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 italic font-light opacity-60 hover:opacity-100 hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>About</button>
+                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 font-light " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</button>
+                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('about')} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 font-light opacity-60 hover:opacity-100 hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>About</button>
                     }
                     {subPage === 'resume' ?
-                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Resume</button>
-                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('resume')} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light " + (subPage === "about" ? "opacity-90 font-medium sm:pl-2.25" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Resume</button>
+                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 font-light opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Resume</button>
+                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('resume')} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 font-light " + (subPage === "about" ? "opacity-90 font-medium sm:pl-2.25" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Resume</button>
                     }
                     {subPage === 'contact' ?
-                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Contact</button>
-                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('contact')} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 italic font-light " + (subPage === "about" ? "opacity-90 font-medium" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Contact</button>
+                        <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 font-light opacity-60 hover:opacity-100 underline cursor-pointer underline-offset-4 font-semibold! " + navTransitionClass}>Contact</button>
+                        : <button type="button" aria-pressed="false" onClick={() => onSubPageChange('contact')} className={"inline-block px-1.75 py-1.5 text-left bg-transparent border-0 font-light " + (subPage === "about" ? "opacity-90 font-medium" : "opacity-60 hover:opacity-100") + " hover:underline cursor-pointer underline-offset-4 " + navTransitionClass}>Contact</button>
                     }
                 </p>
             </div>
