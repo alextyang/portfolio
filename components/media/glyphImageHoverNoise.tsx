@@ -307,7 +307,7 @@ export function GlyphImageHoverNoiseMesh({
     mediumCellSize = 11,
     mediumFineCellSize = 8,
     hoveredCellSize = 6,
-    cellTransitionDuration = 0.8,
+    cellTransitionDuration = 0.72,
     stagger = 0.6,
     isHovered = false,
     keyWhiteToAlpha = false,
@@ -389,7 +389,7 @@ export function GlyphImageHoverNoiseMesh({
             hoverProgressRef.current + dir * delta / cellTransitionDuration, 0, 1
         );
         const progress = hoverProgressRef.current;
-        u.uHoverProgress.value = 2.4 * (0.5 * progress + 0.5 * progress * progress);
+        u.uHoverProgress.value = 2.4 * (0.45 * progress + 0.55 * progress * progress);
     });
 
     return (
@@ -442,7 +442,7 @@ export default function GlyphImageHoverNoise({
     dpr = 3,
     cellSize = 16,
     hoveredCellSize = 6,
-    cellTransitionDuration = 0.8,
+    cellTransitionDuration = 0.72,
     stagger = 0.6,
     keyWhiteToAlpha = false,
     className = "",

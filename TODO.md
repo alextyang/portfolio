@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Sharpen the poster reveal finish (2026-10-25): 0.72-second duration with a 45% linear/55% quadratic curve keeps the prior initial speed and raises endpoint speed by 14.8%.
+  - Acceptance Gate: Actual Three.js material/uniform frame checks passed at 30/60/120 fps for completion, unchanged initial speed, increased endpoint speed and continuous reversal. Production build, targeted ESLint and browser WebGL hover checks passed without errors.
 - Accelerate poster hover reveals (2026-10-25): full transition now takes 0.8 seconds with a responsive quadratic curve that accelerates toward the image and reverses continuously.
   - Acceptance Gate: Original frame callback failed the speed check; updated real Three.js material/uniform frame checks pass at 30/60/120 fps for completion, final-quarter acceleration, idle return and interrupted reversal. Production build, targeted ESLint and real browser WebGL hover/pixel-change checks passed with no browser errors.
 - Remove navigation italics (2026-10-25): About, Resume and Contact now use normal text in both default and selected states.
