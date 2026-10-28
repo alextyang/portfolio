@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Temporarily hide the About, Resume and Contact navigation (2026-10-28), preserving the section for restoration.
+  - Acceptance Gate: Production build and targeted ESLint passed. Automated browser assertions confirmed all three buttons are hidden with a zero-height navigation container, while the intro and both project posters remain visible.
 - Rename the homepage section label (2026-10-25): Fellowship @ Center Centre replaces Web & Email Dev @ Center Centre.
   - Acceptance Gate: Production build and targeted ESLint passed; automated checks of generated homepage HTML confirmed the new label and absence of the former label.
 - Strengthen acceleration at the very end (2026-10-25): 40% linear/60% cubic progress keeps the initial speed and 0.72-second duration while increasing endpoint speed by 37.5% over the previous curve.

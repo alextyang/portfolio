@@ -98,7 +98,8 @@ export default function LandingHeader({
                     </p>
                 </div>
             </div>
-            <div className="mt-4.5! grid grid-cols-1 sm:grid-cols-2 mb-1! px-4 md:px-0">
+            {/* Temporarily hidden; replace hidden with grid to restore the info links. */}
+            <div className="hidden mt-4.5! grid-cols-1 sm:grid-cols-2 mb-1! px-4 md:px-0">
                 <p className="m-0! text-base! font-light! ">
                     {subPage === 'about' ?
                         <button type="button" aria-pressed="true" onClick={() => onSubPageChange(null)} className={"inline-block pr-1.75 py-1.5 text-left bg-transparent border-0 font-light " + navTransitionClass + " " + (subPage === "about" ? "opacity-100" : "opacity-60 hover:opacity-100") + " underline cursor-pointer underline-offset-4 font-semibold!"}>About</button>
