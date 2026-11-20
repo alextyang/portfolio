@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Update the homepage intro and summarize the Center Centre role above the project cards (2026-11-20).
+  - Acceptance Gate: Production build and targeted ESLint passed. Automated assertions confirmed the rendered homepage contains the revised tagline, section label and résumé-based summary in order before both cards.
 - Temporarily hide the About, Resume and Contact navigation (2026-10-28), preserving the section for restoration.
   - Acceptance Gate: Production build and targeted ESLint passed. Automated browser assertions confirmed all three buttons are hidden with a zero-height navigation container, while the intro and both project posters remain visible.
 - Rename the homepage section label (2026-10-25): Fellowship @ Center Centre replaces Web & Email Dev @ Center Centre.
