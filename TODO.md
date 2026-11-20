@@ -7,6 +7,8 @@ None.
 None.
 
 ## [COMPLETED]
+- Describe the overall scope of the Center Centre role above the project cards.
+  - Acceptance Gate: Production build and targeted ESLint passed. Rendered HTML checks confirmed that the role summary replaces the earlier project-level recap and appears before both cards.
 - Update the homepage intro and summarize the Center Centre role above the project cards (2026-11-20).
   - Acceptance Gate: Production build and targeted ESLint passed. Automated assertions confirmed the rendered homepage contains the revised tagline, section label and résumé-based summary in order before both cards.
 - Temporarily hide the About, Resume and Contact navigation (2026-10-28), preserving the section for restoration.

@@ -96,7 +96,7 @@ export default function HomePageClient({
                     <PosterGlyphCanvasHost>
                         <p className="opacity-60 sans small mt-20! mb-0! flex items-baseline overflow-hidden"><span className="shrink-0">Developer @ Center Centre&nbsp;&nbsp;</span><span className="opacity-50 ml-1 flex-1 overflow-hidden whitespace-nowrap">{"-".repeat(400)}</span></p>
                         <p>
-                            At Center Centre, I built a shared React and TypeScript library that cut most website development timelines in half. I also consolidated the backend so teams could update content themselves, and built internal tools for email publishing, QA, and reporting.
+                            I worked across Center Centre’s websites, backend systems, and internal tools, helping the team ship updates faster and giving nontechnical staff more control over their day-to-day work.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-start gap-10 sm:gap-8 mt-8 sm:-mx-[2px]">
